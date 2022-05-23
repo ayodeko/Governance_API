@@ -4,4 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Meetings\" />
+    <Folder Include="Controllers\Resolutions\" />
+    <Folder Include="Controllers\TaskManagement\" />
+    <Folder Include="Helpers\ExceptionHandler\" />
+  </ItemGroup>
+
 </Project>
