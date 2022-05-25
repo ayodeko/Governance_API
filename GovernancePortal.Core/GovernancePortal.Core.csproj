@@ -4,10 +4,4 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Meetings\" />
-    <Folder Include="Resolutions\" />
-    <Folder Include="TaskManagement\" />
-  </ItemGroup>
-
 </Project>
