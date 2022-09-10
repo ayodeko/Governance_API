@@ -15,9 +15,11 @@ namespace GovernancePortal.EF
         {
             _context = context;
             Tasks = new TaskRepo(_context);
+            Meetings = new MeetingRepo(_context);
         }
 
         public ITaskRepo Tasks { get; set; }
+        public IMeetingsRepo Meetings { get; }
 
         public int SaveToDB()
         {
