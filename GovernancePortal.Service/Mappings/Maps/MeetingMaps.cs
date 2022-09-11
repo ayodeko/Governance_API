@@ -13,6 +13,8 @@ namespace GovernancePortal.Service.Mappings.Maps
         public MeetingAutoMapper()
         {
             CreateMap<MeetingModel, CreateMeetingPOST>();
+            CreateMap<MeetingModel, MeetingListGET>()
+                .ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
         }
     }
     public class MeetingMaps : IMeetingMaps
@@ -24,15 +26,10 @@ namespace GovernancePortal.Service.Mappings.Maps
             var mapperConfiguration = new MapperConfiguration(config => config.AddProfiles(profiles));
             _autoMapper = mapperConfiguration.CreateMapper();
         }
-        public MeetingModel InMap(CreateMeetingPOST source,  MeetingModel destination)
-        {
-            return _autoMapper.Map(source, destination);
-        }
-        
-        
-        public MeetingModel InMap(UpdateMeetingPOST source,  MeetingModel destination)
-        {
-            return _autoMapper.Map(source, destination);
-        }
+        public MeetingModel InMap(CreateMeetingPOST source,  MeetingModel destination) => _autoMapper.Map(source, destination);
+        public MeetingModel InMap(UpdateMeetingPOST source,  MeetingModel destination) =>_autoMapper.Map(source, destination);
+        public MeetingModel InMap(AddPastMeetingPOST source,  MeetingModel destination) => _autoMapper.Map(source, destination);
+        public MeetingModel InMap(AddPastMinutesPOST source,  MeetingModel destination) => _autoMapper.Map(source, destination);
+        public List<MeetingListGET> OutMap(List<MeetingModel> source,  List<MeetingListGET> destination) =>  _autoMapper.Map(source, destination);
     }
 }

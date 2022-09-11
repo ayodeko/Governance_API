@@ -1,4 +1,5 @@
-﻿using GovernancePortal.Core.Meetings;
+﻿using System.Collections.Generic;
+using GovernancePortal.Core.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings;
 
 namespace GovernancePortal.Service.Mappings.IMaps
@@ -7,5 +8,8 @@ namespace GovernancePortal.Service.Mappings.IMaps
     {
         MeetingModel InMap(CreateMeetingPOST source, MeetingModel destination);
         MeetingModel InMap(UpdateMeetingPOST source, MeetingModel destination);
+        MeetingModel InMap(AddPastMeetingPOST source, MeetingModel destination);
+        MeetingModel InMap(AddPastMinutesPOST source, MeetingModel destination);
+        List<MeetingListGET> OutMap(List<MeetingModel> source, List<MeetingListGET> destination);
     }
 }

@@ -24,10 +24,14 @@ namespace GovernancePortal.Core.Meetings
         public MeetingFrequency Frequency { get; set; }
         public MeetingMedium Medium { get; set; }
         public MeetingType Type { get; set; }
+        public MeetingStatus Status { get; set; }
         public DateTime DateTime { get; set; }
+        public int Duration { get; set; }
         public List<string> AttendeeIds { get; set; }
         public List<MeetingAgendaItem> Items { get; set; }
         public List<string> GuestIds { get; set; }
+        public Minutes Minutes { get; set; }
+        public MeetingAttendance Attendance { get; set; }
     }
 
     public enum MeetingType
@@ -45,6 +49,10 @@ namespace GovernancePortal.Core.Meetings
     public enum MeetingMedium
     {
         Physical, Virtual, Hybrid
+    }
+    public enum MeetingStatus
+    {
+        Edited, NoticeSent
     }
     
 }
