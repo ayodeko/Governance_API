@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace GovernancePortal.Service.ClientModels.General
 {
@@ -18,6 +21,11 @@ namespace GovernancePortal.Service.ClientModels.General
             this.PageNumber = pageNumber < 1 ? 1 : pageNumber;
             this.PageSize = pageSize > 50 ? 50 : pageSize;
         }
+        
+        public static ValueTask<PageQuery> BindAsync(HttpContext context)
+            => new ValueTask<PageQuery>(new PageQuery(
+                pageNumber: int.TryParse(context.Request.Query["skip"], out var skip) ? skip : 1,
+                pageSize: int.TryParse(context.Request.Query["take"], out var take) ? take : 50));
     }
 
     public class Pagination<T> where T: class

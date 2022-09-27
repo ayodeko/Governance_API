@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
@@ -10,6 +11,7 @@ using GovernancePortal.Service.ClientModels.Meetings;
 using GovernancePortal.Service.ClientModels.TaskManagement;
 using GovernancePortal.Service.Interface;
 using GovernancePortal.Service.Mappings.IMaps;
+using Microsoft.Extensions.Logging;
 
 namespace GovernancePortal.Service.Implementation
 {
@@ -17,24 +19,49 @@ namespace GovernancePortal.Service.Implementation
     {
         private IMeetingMaps _meetingMaps;
         private IUnitOfWork _unit;
+        private ILogger _logger;
         
-        public MeetingService(IMeetingMaps meetingMaps)
+        public MeetingService(IMeetingMaps meetingMaps, ILogger logger)
         {
             _meetingMaps = meetingMaps;
+            _logger = logger;
         }
-        public async Task<MeetingModel> CreateMeeting(Person user, CreateMeetingPOST meetingDto)
+        
+        private Person GetLoggedUser()
         {
+            return new Person()
+            {
+                Id = Guid.NewGuid().ToString(),
+                CompanyId = Guid.NewGuid().ToString(),
+                Name = "Abebefe Idris",
+            };
+        }
+        public async Task<Response> CreateMeeting(CreateMeetingPOST meetingDto)
+        {
+            var loggedInUser = GetLoggedUser();
+            _logger.LogInformation("Inside Create New Meeting");
             var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
-            await _unit.Meetings.Add(meeting, user);
+            await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
-            return meeting;
+            
+            var response = new Response
+            {
+                Data = meeting,
+                Message = "Meeting created successfully",
+                StatusCode = HttpStatusCode.Created.ToString(),
+                IsSuccessful = true
+            };
+            _logger.LogInformation("Create new meeting successful: {response}", response);
+            return response;
         }
 
-        public async Task<Pagination<MeetingListGET>> GetAllMeetings(string companyId, PageQuery pageQuery)
+        public async Task<Pagination<MeetingListGET>> GetAllMeetings(PageQuery pageQuery)
         {
-            var allMeetings = await _unit.Meetings.FindByPage(companyId, pageQuery.PageNumber, pageQuery.PageSize);
+            var loggedInUser = GetLoggedUser();
+            _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
+            var allMeetings = await _unit.Meetings.FindByPage(loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize);
             var meetingListGet = _meetingMaps.OutMap(allMeetings.ToList(), new List<MeetingListGET>());
-            var totalRecords = await _unit.Meetings.Count(companyId);
+            var totalRecords = await _unit.Meetings.Count(loggedInUser.CompanyId);
             return new Pagination<MeetingListGET>
             {
                 Data = meetingListGet,
@@ -47,29 +74,110 @@ namespace GovernancePortal.Service.Implementation
             };
         }
 
-        public async Task<MeetingModel> UpdateMeeting(string meetingId, Person user, UpdateMeetingPOST meetingDto)
+        public async Task<Response> UpdateMeeting(string meetingId, UpdateMeetingPOST meetingDto)
         {
-            var existingMeeting = await _unit.Meetings.FindById(meetingId, user.CompanyId);
+            var loggedInUser = GetLoggedUser();
+            _logger.LogInformation("Inside Update Meeting, {ID}", meetingId);
+            var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
             if (existingMeeting == null || existingMeeting.IsDeleted)
                 throw new Exception($"Meeting with Id: {meetingId} not found");
             existingMeeting = _meetingMaps.InMap(meetingDto, existingMeeting);
             _unit.SaveToDB();
-            return existingMeeting;
+            
+            var response = new Response
+            {
+                Data = existingMeeting,
+                Message = "Meeting Updated successfully",
+                StatusCode = HttpStatusCode.Created.ToString(),
+                IsSuccessful = true
+            };
+            _logger.LogInformation("Updated meeting {ID} successful: {response}", meetingId, response);
+            return response;
         }
         
-        public async Task<MeetingModel> AddPastMeeting(Person user, AddPastMeetingPOST meetingDto)
+        public async Task<Response> AddPastMeeting(AddPastMeetingPOST meetingDto)
         {
+            var loggedInUser = GetLoggedUser();
             var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
-            await _unit.Meetings.Add(meeting, user);
+            await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
-            return meeting;
+            var response = new Response
+            {
+                Data = meeting,
+                Message = "Past meeting added successfully",
+                StatusCode = HttpStatusCode.Created.ToString(),
+                IsSuccessful = true
+            };
+            _logger.LogInformation("Added past meeting successfully {response}", response);
+            return response;
         }
-        public async Task<MeetingModel> AddPastMinutes(Person user, AddPastMinutesPOST meetingDto)
+        public async Task<Response> AddPastMinutes(AddPastMinutesPOST meetingDto)
         {
+            Person loggedInUser = GetLoggedUser();
+            _logger.LogInformation("Inside AddPastMinutes");
             var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
-            await _unit.Meetings.Add(meeting, user);
+            await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
-            return meeting;
+            
+            var response = new Response
+            {
+                Data = meeting,
+                Message = "Past minutes added successfully",
+                StatusCode = HttpStatusCode.Created.ToString(),
+                IsSuccessful = true
+            };
+            _logger.LogInformation("Added past minutes successfully {response}", response);
+            return response;
+        }
+
+        public async Task<Response> AddPastAttendance(AddPastAttendancePOST meetingDto)
+        {
+            var loggedUser = GetLoggedUser();
+            _logger.LogInformation("Inside AddPastMinutes");
+            var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
+            await _unit.Meetings.Add(meeting, loggedUser);
+            _unit.SaveToDB();
+            
+            var response = new Response
+            {
+                Data = meeting,
+                Message = "Past attendance added successfully",
+                StatusCode = HttpStatusCode.Created.ToString(),
+                IsSuccessful = true
+            };
+            _logger.LogInformation("Added past attendance successfully {response}", response);
+            return response;
+        }
+        
+        
+        
+        
+        
+        public async Task<Response> GetMeetingById(string meetingId)
+        {
+            var loggedInUser = GetLoggedUser();
+            var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+            if (existingMeeting == null || existingMeeting.IsDeleted)
+                throw new Exception($"Meeting with Id: {meetingId} not found");
+            var meetingDto = _meetingMaps.OutMap(existingMeeting, new MeetingGET());
+            var response = new Response
+            {
+                Data = meetingDto,
+                Message = $"Meeting with Id: {meetingId} retrieved successfully",
+                StatusCode = HttpStatusCode.Created.ToString(),
+                IsSuccessful = true
+            };
+            return response;
+        }
+
+        
+
+        async Task SendGeneratedCode(string generatedCode)
+        {
+        }
+        string GenerateAttendanceCode()
+        {
+            throw new NotImplementedException();
         }
     }
 }

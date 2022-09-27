@@ -145,6 +145,7 @@ namespace GovernancePortal.WebAPI
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseGovernancePortalExceptionHandler();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

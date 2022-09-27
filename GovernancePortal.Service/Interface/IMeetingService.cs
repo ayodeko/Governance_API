@@ -11,10 +11,12 @@ namespace GovernancePortal.Service.Interface
 {
     public interface IMeetingService
     {
-        Task<MeetingModel> CreateMeeting(Person user, CreateMeetingPOST meetingDto);
-        Task<Pagination<MeetingListGET>> GetAllMeetings(string companyId, PageQuery pageQuery);
-        Task<MeetingModel> UpdateMeeting(string meetingId, Person user, UpdateMeetingPOST meetingDto);
-        Task<MeetingModel> AddPastMeeting(Person user, AddPastMeetingPOST meetingDto);
-        Task<MeetingModel> AddPastMinutes(Person user, AddPastMinutesPOST meetingDto);
+        Task<Response> CreateMeeting(CreateMeetingPOST meetingDto);
+        Task<Pagination<MeetingListGET>> GetAllMeetings(PageQuery pageQuery);
+        Task<Response> UpdateMeeting(string meetingId, UpdateMeetingPOST meetingDto);
+        Task<Response> AddPastMeeting(AddPastMeetingPOST meetingDto);
+        Task<Response> AddPastMinutes(AddPastMinutesPOST meetingDto);
+        Task<Response> AddPastAttendance(AddPastAttendancePOST meetingDto);
+        Task<Response> GetMeetingById(string meetingId);
     }
 }

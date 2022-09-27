@@ -10,6 +10,8 @@ namespace GovernancePortal.Service.Mappings.IMaps
         MeetingModel InMap(UpdateMeetingPOST source, MeetingModel destination);
         MeetingModel InMap(AddPastMeetingPOST source, MeetingModel destination);
         MeetingModel InMap(AddPastMinutesPOST source, MeetingModel destination);
+        MeetingModel InMap(AddPastAttendancePOST source, MeetingModel destination);
         List<MeetingListGET> OutMap(List<MeetingModel> source, List<MeetingListGET> destination);
+        MeetingGET OutMap(MeetingModel source,  MeetingGET destination);
     }
 }

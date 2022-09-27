@@ -16,7 +16,7 @@ namespace GovernancePortal.Core.Meetings
     public class MeetingPackItem
     {
         public string MeetingPackId { get; set; }
-        public string Id { get; set; }
+        public string AgendaItemId { get; set; }
         public string Description { get; set; }
         public string PresenterUserId { get; set; }
         public List<string> CoCreatorUserIds { get; set; }

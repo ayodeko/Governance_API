@@ -24,23 +24,38 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
             _meetingService = meetingService;
             _exceptionHandler = exceptionHandler;
         }
+        
+        private Person GetLoggedUser()
+        {
+            return new Person()
+            {
+                Id = Guid.NewGuid().ToString(),
+                CompanyId = Guid.NewGuid().ToString(),
+                Name = "Abebefe Idris",
+            };
+        }
         [HttpPost("Meeting/Create")]
         public async Task<ActionResult<Response>> CreateMeeting(CreateMeetingPOST meeting)
         {
             try
             {
-                Person loggedUser = GetLoggedUser();
-                _logger.LogInformation("Inside Create New Meeting");
-                var newMeeting = await _meetingService.CreateMeeting(loggedUser, meeting);
-                var response = new Response
-                {
-                    Data = newMeeting,
-                    Message = "Meeting created successfully",
-                    StatusCode = HttpStatusCode.Created.ToString(),
-                    IsSuccessful = true
-                };
-                _logger.LogInformation("Create new meeting successful: {response}", response);
+                var response = await _meetingService.CreateMeeting(meeting);
                 return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return _exceptionHandler.GetResponse(ex);
+            }
+        }
+        
+        
+        [HttpGet("List")]
+        public async Task<ActionResult<Response>> GetAllMeetings([FromQuery] PageQuery pageQuery)
+        {
+            try
+            {
+                var pagedIndex = await _meetingService.GetAllMeetings(pageQuery);
+                return Ok(pagedIndex);
             }
             catch (Exception ex)
             {
@@ -53,17 +68,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                Person loggedUser = GetLoggedUser();
-                _logger.LogInformation("Inside Update Meeting, {ID}", meetingId);
-                var meetingModel = await _meetingService.UpdateMeeting(meetingId, loggedUser, meeting);
-                var response = new Response
-                {
-                    Data = meetingModel,
-                    Message = "Meeting Updated successfully",
-                    StatusCode = HttpStatusCode.Created.ToString(),
-                    IsSuccessful = true
-                };
-                _logger.LogInformation("Updated meeting {ID} successful: {response}", meetingId, response);
+                var response = await _meetingService.UpdateMeeting(meetingId, meeting);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -77,16 +82,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                Person loggedUser = GetLoggedUser();
-                var newMeeting = await _meetingService.AddPastMeeting(loggedUser, meeting);
-                var response = new Response
-                {
-                    Data = newMeeting,
-                    Message = "Past meeting added successfully",
-                    StatusCode = HttpStatusCode.Created.ToString(),
-                    IsSuccessful = true
-                };
-                _logger.LogInformation("Added past meeting successfully {response}", response);
+                var response = await _meetingService.AddPastMeeting(meeting);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -100,17 +96,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                Person loggedUser = GetLoggedUser();
-                _logger.LogInformation("Inside AddPastMinutes");
-                var newMinutes = await _meetingService.AddPastMinutes(loggedUser, meeting);
-                var response = new Response
-                {
-                    Data = newMinutes,
-                    Message = "Past meeting added successfully",
-                    StatusCode = HttpStatusCode.Created.ToString(),
-                    IsSuccessful = true
-                };
-                _logger.LogInformation("Added past minutes successfully {response}", response);
+                var response = await _meetingService.AddPastMinutes(meeting);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -119,16 +105,24 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
             }
         }
         
-        [HttpGet("List")]
-        public async Task<ActionResult<Response>> GetAllMeetings([FromQuery] PageQuery pageQuery)
+        [HttpPost("Meeting/AddPastAttendance")]
+        public async Task<ActionResult<Response>> AddPastAttendance(AddPastAttendancePOST meetingAttendance)
         {
-            var loggedUser = GetLoggedUser();
-            _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
             try
             {
-                var pagedIndex = await _meetingService.GetAllMeetings(loggedUser.CompanyId, pageQuery);
-                
-                return Ok(pagedIndex);
+                return await _meetingService.AddPastAttendance(meetingAttendance);
+            }
+            catch (Exception ex)
+            {
+                return _exceptionHandler.GetResponse(ex);
+            }
+        }
+        [HttpPost("{Id}")]
+        public async Task<ActionResult<Response>> GetMeetingById(string Id)
+        {
+            try
+            {
+                return await _meetingService.GetMeetingById(Id);
             }
             catch (Exception ex)
             {
@@ -136,14 +130,6 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
             }
         }
         
-        private Person GetLoggedUser()
-        {
-            return new Person()
-            {
-                Id = Guid.NewGuid().ToString(),
-                CompanyId = Guid.NewGuid().ToString(),
-                Name = "Abebefe Idris",
-            };
-        }
+        
     }
 }

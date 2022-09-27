@@ -24,4 +24,9 @@
     <ProjectReference Include="..\GovernancePortal.Service\GovernancePortal.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ReferencePathWithRefAssemblies Update="C:\Users\aakindeko\.nuget\packages\swashbuckle.aspnetcore.swagger\6.2.3\lib\netcoreapp3.0\Swashbuckle.AspNetCore.Swagger.dll" />
+    <ReferencePathWithRefAssemblies Update="C:\Users\aakindeko\.nuget\packages\swashbuckle.aspnetcore.swaggerui\6.2.3\lib\netcoreapp3.0\Swashbuckle.AspNetCore.SwaggerUI.dll" />
+  </ItemGroup>
+
 </Project>

@@ -20,13 +20,13 @@ namespace GovernancePortal.Service.ClientModels.Meetings
 
     public class CreateMeetingPOST : MeetingDTO
     {
-        public List<string> AttendeesId { get; set; }
+        public List<AttendingUser> Attendees { get; set; }
         public List<MeetingAgendaItem> Items { get; set; }
     }
     
     public class UpdateMeetingPOST : MeetingDTO
     {
-        public List<string> AttendeesId { get; set; }
+        public List<AttendingUser> Attendees { get; set; }
         public List<MeetingAgendaItem> Items { get; set; }
     }
 
@@ -37,7 +37,7 @@ namespace GovernancePortal.Service.ClientModels.Meetings
 
     public class AddPastMeetingPOST : MeetingDTO
     {
-        public MeetingAttendance Attendance { get; set; }
+        public List<AttendingUser> Attendees { get; set; }
         public Minutes Minutes { get; set; }
     }
     
@@ -45,10 +45,22 @@ namespace GovernancePortal.Service.ClientModels.Meetings
     {
         public Minutes Minutes { get; set; }
     }
+    public class AddPastAttendancePOST : MeetingDTO
+    {
+        public string MeetingId { get; set; }
+        public List<AttendingUser> Attendees { get; set; }
+    }
+
 
     public class MeetingListGET : MeetingDTO
     {
-        public string AttendanceId { get; set; }
+        public List<AttendingUser> Attendees { get; set; }
         public string MinutesId { get; set; }
+    }
+    public class MeetingGET : MeetingDTO
+    {
+        public List<AttendingUser> Attendees { get; set; }
+        public string MinutesId { get; set; }
+        public string MeetingPackId { get; set; }
     }
 }
