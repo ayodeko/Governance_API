@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Data;
+using GovernancePortal.EF;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
 using GovernancePortal.Service.ClientModels.TaskManagement;
@@ -21,10 +22,11 @@ namespace GovernancePortal.Service.Implementation
         private IUnitOfWork _unit;
         private ILogger _logger;
         
-        public MeetingService(IMeetingMaps meetingMaps, ILogger logger)
+        public MeetingService(IMeetingMaps meetingMaps, ILogger logger, IUnitOfWork unitOfWork)
         {
             _meetingMaps = meetingMaps;
             _logger = logger;
+            _unit = unitOfWork;
         }
         
         private Person GetLoggedUser()

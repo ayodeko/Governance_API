@@ -29,10 +29,16 @@ namespace GovernancePortal.Core.Meetings
         public int Duration { get; set; }
         public List<AttendingUser> Attendees { get; set; }
         public List<MeetingAgendaItem> Items { get; set; }
-        public List<string> GuestIds { get; set; }
+        public List<Guest> Guests { get; set; }
         public Minutes Minutes { get; set; }
         public MeetingAttendance Attendance { get; set; }
         public string MeetingPackId { get; set; }
+    }
+
+    public class Guest
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 
     public enum MeetingType

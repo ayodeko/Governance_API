@@ -17,7 +17,6 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
     {
         private readonly IMeetingService _meetingService;
         private readonly IExceptionHandler _exceptionHandler;
-        private readonly ILogger _logger;
 
         public MeetingsController(IMeetingService meetingService, IExceptionHandler exceptionHandler)
         {

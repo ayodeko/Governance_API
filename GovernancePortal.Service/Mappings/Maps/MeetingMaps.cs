@@ -12,7 +12,7 @@ namespace GovernancePortal.Service.Mappings.Maps
     {
         public MeetingAutoMapper()
         {
-            CreateMap<MeetingModel, CreateMeetingPOST>();
+            CreateMap<CreateMeetingPOST, MeetingModel>();
             //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
         }
     }

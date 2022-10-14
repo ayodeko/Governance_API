@@ -57,6 +57,8 @@ namespace GovernancePortal.Service.ClientModels.Meetings
         public List<AttendingUser> Attendees { get; set; }
         public string MinutesId { get; set; }
     }
+
+    public record MeetingListGet(List<AttendingUser> Attendees, string MinutesId);
     public class MeetingGET : MeetingDTO
     {
         public List<AttendingUser> Attendees { get; set; }
