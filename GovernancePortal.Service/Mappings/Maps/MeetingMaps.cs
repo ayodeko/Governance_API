@@ -12,7 +12,7 @@ namespace GovernancePortal.Service.Mappings.Maps
     {
         public MeetingAutoMapper()
         {
-            CreateMap<CreateMeetingPOST, MeetingModel>();
+            CreateMap<CreateMeetingPOST, Meeting>();
             //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
         }
     }
@@ -25,13 +25,13 @@ namespace GovernancePortal.Service.Mappings.Maps
             var mapperConfiguration = new MapperConfiguration(config => config.AddProfiles(profiles));
             _autoMapper = mapperConfiguration.CreateMapper();
         }
-        public MeetingModel InMap(CreateMeetingPOST source,  MeetingModel destination) => _autoMapper.Map(source, destination);
-        public MeetingModel InMap(UpdateMeetingPOST source,  MeetingModel destination) =>_autoMapper.Map(source, destination);
-        public MeetingModel InMap(AddPastMeetingPOST source,  MeetingModel destination) => _autoMapper.Map(source, destination);
-        public MeetingModel InMap(AddPastMinutesPOST source,  MeetingModel destination) => _autoMapper.Map(source, destination);
-        public MeetingModel InMap(AddPastAttendancePOST source, MeetingModel destination) => _autoMapper.Map(source, destination);
+        public Meeting InMap(CreateMeetingPOST source,  Meeting destination) => _autoMapper.Map(source, destination);
+        public Meeting InMap(UpdateMeetingPOST source,  Meeting destination) =>_autoMapper.Map(source, destination);
+        public Meeting InMap(AddPastMeetingPOST source,  Meeting destination) => _autoMapper.Map(source, destination);
+        public Meeting InMap(AddPastMinutesPOST source,  Meeting destination) => _autoMapper.Map(source, destination);
+        public Meeting InMap(AddPastAttendancePOST source, Meeting destination) => _autoMapper.Map(source, destination);
 
-        public List<MeetingListGET> OutMap(List<MeetingModel> source,  List<MeetingListGET> destination) =>  _autoMapper.Map(source, destination);
-        public MeetingGET OutMap(MeetingModel source,  MeetingGET destination) =>  _autoMapper.Map(source, destination);
+        public List<MeetingListGET> OutMap(List<Meeting> source,  List<MeetingListGET> destination) =>  _autoMapper.Map(source, destination);
+        public MeetingGET OutMap(Meeting source,  MeetingGET destination) =>  _autoMapper.Map(source, destination);
     }
 }

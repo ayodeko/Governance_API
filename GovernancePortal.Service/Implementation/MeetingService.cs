@@ -42,7 +42,7 @@ namespace GovernancePortal.Service.Implementation
         {
             var loggedInUser = GetLoggedUser();
             _logger.LogInformation("Inside Create New Meeting");
-            var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
+            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
             
@@ -100,7 +100,7 @@ namespace GovernancePortal.Service.Implementation
         public async Task<Response> AddPastMeeting(AddPastMeetingPOST meetingDto)
         {
             var loggedInUser = GetLoggedUser();
-            var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
+            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
             var response = new Response
@@ -117,7 +117,7 @@ namespace GovernancePortal.Service.Implementation
         {
             Person loggedInUser = GetLoggedUser();
             _logger.LogInformation("Inside AddPastMinutes");
-            var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
+            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
             
@@ -136,7 +136,7 @@ namespace GovernancePortal.Service.Implementation
         {
             var loggedUser = GetLoggedUser();
             _logger.LogInformation("Inside AddPastMinutes");
-            var meeting = _meetingMaps.InMap(meetingDto, new MeetingModel());
+            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedUser);
             _unit.SaveToDB();
             

@@ -11,6 +11,7 @@ namespace GovernancePortal.Core.Meetings
         }
         public string Id { get; set; }
         public string MeetingId { get; set; }
+        public string CompanyId { get; set; }
         public string GeneratedCode { get; set; }
         public List<AttendingUser> Attendees { get; set; }
     }
@@ -22,6 +23,8 @@ namespace GovernancePortal.Core.Meetings
             Id = Guid.NewGuid().ToString();
         }
         public string Id { get; set; }
+        public string MeetingId { get; set; }
+        public string MeetingAttendanceId { get; set; }
         public bool IsPresent { get; set; }
         public string Name { get; set; }
         public AttendeePosition AttendeePosition { get; set; }

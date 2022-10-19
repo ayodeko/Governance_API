@@ -4,9 +4,9 @@ using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Meetings
 {
-    public class MeetingModel : ICompanyModel
+    public class Meeting : ICompanyModel
     {
-        public MeetingModel()
+        public Meeting()
         {
             Id = Guid.NewGuid().ToString();
         }

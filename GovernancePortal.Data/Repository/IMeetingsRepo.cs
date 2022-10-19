@@ -2,7 +2,7 @@
 
 namespace GovernancePortal.Data.Repository
 {
-    public interface IMeetingsRepo : IGenericRepo<MeetingModel>
+    public interface IMeetingsRepo : IGenericRepo<Meeting>
     {
         
     }

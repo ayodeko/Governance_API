@@ -6,12 +6,12 @@ namespace GovernancePortal.Service.Mappings.IMaps
 {
     public interface IMeetingMaps
     {
-        MeetingModel InMap(CreateMeetingPOST source, MeetingModel destination);
-        MeetingModel InMap(UpdateMeetingPOST source, MeetingModel destination);
-        MeetingModel InMap(AddPastMeetingPOST source, MeetingModel destination);
-        MeetingModel InMap(AddPastMinutesPOST source, MeetingModel destination);
-        MeetingModel InMap(AddPastAttendancePOST source, MeetingModel destination);
-        List<MeetingListGET> OutMap(List<MeetingModel> source, List<MeetingListGET> destination);
-        MeetingGET OutMap(MeetingModel source,  MeetingGET destination);
+        Meeting InMap(CreateMeetingPOST source, Meeting destination);
+        Meeting InMap(UpdateMeetingPOST source, Meeting destination);
+        Meeting InMap(AddPastMeetingPOST source, Meeting destination);
+        Meeting InMap(AddPastMinutesPOST source, Meeting destination);
+        Meeting InMap(AddPastAttendancePOST source, Meeting destination);
+        List<MeetingListGET> OutMap(List<Meeting> source, List<MeetingListGET> destination);
+        MeetingGET OutMap(Meeting source,  MeetingGET destination);
     }
 }
