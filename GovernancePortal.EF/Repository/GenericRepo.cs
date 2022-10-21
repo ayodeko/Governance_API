@@ -26,9 +26,9 @@ namespace GovernancePortal.EF.Repository
             await _context.Set<TModel>().AddAsync(model);
         }
 
-        public Task<int> Count(string companyId)
+        public async Task<int> Count(string companyId)
         {
-            throw new NotImplementedException();
+            return await _context.Set<TModel>().Where(x => x.CompanyId.Equals(companyId)).CountAsync();
         }
 
         public Task<IEnumerable<TModel>> FindAll(string companyId)
@@ -36,9 +36,10 @@ namespace GovernancePortal.EF.Repository
             throw new NotImplementedException();
         }
 
-        public Task<TModel> FindById(string id, string companyId)
+        public async Task<TModel> FindById(string id, string companyId)
         {
-            throw new NotImplementedException();
+            return await _context.Set<TModel>()
+                .FirstOrDefaultAsync(x => x.Id.Equals(id) && x.CompanyId.Equals(companyId));
         }
 
         public Task<IEnumerable<TModel>> FindByIds(IEnumerable<string> Ids, string companyId)
@@ -51,9 +52,15 @@ namespace GovernancePortal.EF.Repository
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<TModel>> FindByPage(string companyId, int pageNumber, int pageSize)
+        public async Task<IEnumerable<TModel>> FindByPage(string companyId, int pageNumber, int pageSize)
         {
-            throw new NotImplementedException();
+            int skip = (pageNumber - 1) * pageSize;
+
+            var result = _context.Set<TModel>().Where(x => x.CompanyId.Equals(companyId))
+                .Skip(skip)
+                .Take(pageSize)
+                .AsEnumerable();
+            return result;
         }
 
         public void Remove(TModel model)

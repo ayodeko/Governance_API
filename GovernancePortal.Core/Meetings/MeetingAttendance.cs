@@ -23,9 +23,11 @@ namespace GovernancePortal.Core.Meetings
             Id = Guid.NewGuid().ToString();
         }
         public string Id { get; set; }
+        public string UserId { get; set; }
         public string MeetingId { get; set; }
         public string MeetingAttendanceId { get; set; }
         public bool IsPresent { get; set; }
+        public bool IsGuest { get; set; }
         public string Name { get; set; }
         public AttendeePosition AttendeePosition { get; set; }
     }

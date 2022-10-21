@@ -34,7 +34,7 @@ namespace GovernancePortal.Service.Implementation
             return new Person()
             {
                 Id = Guid.NewGuid().ToString(),
-                CompanyId = Guid.NewGuid().ToString(),
+                CompanyId = "09e7bf87-74b3-4cc8-b251-c4833d237c60",
                 Name = "Abebefe Idris",
             };
         }
@@ -62,7 +62,8 @@ namespace GovernancePortal.Service.Implementation
             var loggedInUser = GetLoggedUser();
             _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
             var allMeetings = await _unit.Meetings.FindByPage(loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize);
-            var meetingListGet = _meetingMaps.OutMap(allMeetings.ToList(), new List<MeetingListGET>());
+            var allMeetingsList = allMeetings.ToList();
+            var meetingListGet = _meetingMaps.OutMap(allMeetingsList);
             var totalRecords = await _unit.Meetings.Count(loggedInUser.CompanyId);
             return new Pagination<MeetingListGET>
             {
@@ -158,7 +159,7 @@ namespace GovernancePortal.Service.Implementation
         public async Task<Response> GetMeetingById(string meetingId)
         {
             var loggedInUser = GetLoggedUser();
-            var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+            var existingMeeting = await _unit.Meetings.FindById_Attendees_AgendaItems(meetingId, loggedInUser.CompanyId);
             if (existingMeeting == null || existingMeeting.IsDeleted)
                 throw new Exception($"Meeting with Id: {meetingId} not found");
             var meetingDto = _meetingMaps.OutMap(existingMeeting, new MeetingGET());

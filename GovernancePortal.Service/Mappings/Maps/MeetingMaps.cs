@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.TaskManagement;
@@ -13,6 +14,9 @@ namespace GovernancePortal.Service.Mappings.Maps
         public MeetingAutoMapper()
         {
             CreateMap<CreateMeetingPOST, Meeting>();
+            CreateMap<CreateMeetingAgendaItemDto, MeetingAgendaItem>();
+            CreateMap<Meeting,  MeetingListGET>();
+            CreateMap<Meeting,  MeetingGET>();
             //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
         }
     }
@@ -31,7 +35,8 @@ namespace GovernancePortal.Service.Mappings.Maps
         public Meeting InMap(AddPastMinutesPOST source,  Meeting destination) => _autoMapper.Map(source, destination);
         public Meeting InMap(AddPastAttendancePOST source, Meeting destination) => _autoMapper.Map(source, destination);
 
-        public List<MeetingListGET> OutMap(List<Meeting> source,  List<MeetingListGET> destination) =>  _autoMapper.Map(source, destination);
+        public List<MeetingListGET> OutMap(List<Meeting> source) => source.Select(x => _autoMapper.Map(x, new MeetingListGET())).ToList();
+
         public MeetingGET OutMap(Meeting source,  MeetingGET destination) =>  _autoMapper.Map(source, destination);
     }
 }

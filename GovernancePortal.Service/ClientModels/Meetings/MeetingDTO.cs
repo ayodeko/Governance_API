@@ -21,13 +21,21 @@ namespace GovernancePortal.Service.ClientModels.Meetings
     public class CreateMeetingPOST : MeetingDTO
     {
         public List<AttendingUser> Attendees { get; set; }
-        public List<MeetingAgendaItem> Items { get; set; }
+        public List<CreateMeetingAgendaItemDto> Items { get; set; }
+    }
+
+    public class CreateMeetingAgendaItemDto
+    {
+        public int Number { get; set; }
+        public string Title { get; set; }
+        public bool IsNumbered { get; set; }
+        public List<CreateMeetingAgendaItemDto> SubItems { get; set; }
     }
     
     public class UpdateMeetingPOST : MeetingDTO
     {
         public List<AttendingUser> Attendees { get; set; }
-        public List<MeetingAgendaItem> Items { get; set; }
+        public List<CreateMeetingAgendaItemDto> Items { get; set; }
     }
 
     public class UpdateMeetingGet : MeetingDTO
@@ -58,10 +66,10 @@ namespace GovernancePortal.Service.ClientModels.Meetings
         public string MinutesId { get; set; }
     }
 
-    public record MeetingListGet(List<AttendingUser> Attendees, string MinutesId);
     public class MeetingGET : MeetingDTO
     {
         public List<AttendingUser> Attendees { get; set; }
+        public List<MeetingAgendaItem> Items { get; set; }
         public string MinutesId { get; set; }
         public string MeetingPackId { get; set; }
     }

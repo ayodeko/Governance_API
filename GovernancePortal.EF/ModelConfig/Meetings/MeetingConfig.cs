@@ -20,6 +20,7 @@ public static class MeetingConfigSettings
     {
         builder.ApplyConfiguration(new MeetingPackItemConfig());
         builder.ApplyConfiguration(new MeetingAgendaItemConfig());
+        builder.ApplyConfiguration(new MeetingAttendanceConfig());
         return builder;
     }
 }
@@ -50,6 +51,17 @@ public class MeetingAgendaItemConfig : IEntityTypeConfiguration<MeetingAgendaIte
             .HasForeignKey(fk => fk.ParentId);
     }
 }
+
+public class MeetingAttendanceConfig : IEntityTypeConfiguration<MeetingAttendance>
+{
+    public void Configure(EntityTypeBuilder<MeetingAttendance> builder)
+    {
+        builder.HasMany(x => x.Attendees)
+            .WithOne()
+            .HasForeignKey(fk => fk.MeetingAttendanceId);
+    }
+}
+
 
 
 

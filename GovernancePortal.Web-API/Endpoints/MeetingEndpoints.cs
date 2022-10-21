@@ -29,7 +29,7 @@ public static class MeetingEndpoints
         app.MapPost("api/Meeting/AddPastAttendance",
             ([FromServices] IMeetingService meetingService, AddPastAttendancePOST addPastAttendancePost) =>
                 meetingService.AddPastAttendance(addPastAttendancePost));
-        app.MapPost("api/Meeting/{Id}",
+        app.MapGet("api/Meeting/{Id}",
             ([FromServices] IMeetingService meetingService, string Id) =>
                 meetingService.GetMeetingById(Id));
         
