@@ -17,6 +17,8 @@ namespace GovernancePortal.Service.Mappings.Maps
             CreateMap<CreateMeetingAgendaItemDto, MeetingAgendaItem>();
             CreateMap<Meeting,  MeetingListGET>();
             CreateMap<Meeting,  MeetingGET>();
+            CreateMap<AddPastMinutesPOST,  Meeting>();
+            CreateMap<MinutesCreatePOST,  Minutes>();
             //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
         }
     }
