@@ -57,7 +57,7 @@ namespace GovernancePortal.Service.Implementation
             return response;
         }
 
-        public async Task<Pagination<MeetingListGET>> GetAllMeetings(PageQuery pageQuery)
+        public async Task<Pagination<MeetingListGet>> GetAllMeetings(PageQuery pageQuery)
         {
             var loggedInUser = GetLoggedUser();
             _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
@@ -65,7 +65,7 @@ namespace GovernancePortal.Service.Implementation
             var allMeetingsList = allMeetings.ToList();
             var meetingListGet = _meetingMaps.OutMap(allMeetingsList);
             var totalRecords = await _unit.Meetings.Count(loggedInUser.CompanyId);
-            return new Pagination<MeetingListGET>
+            return new Pagination<MeetingListGet>
             {
                 Data = meetingListGet,
                 PageNumber = pageQuery.PageNumber,

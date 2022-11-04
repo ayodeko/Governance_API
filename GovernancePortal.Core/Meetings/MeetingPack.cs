@@ -19,7 +19,7 @@ namespace GovernancePortal.Core.Meetings
         public List<MeetingPackItem> MeetingPackItems { get; set; }
     }
     
-    public class MeetingPackItem
+    public class MeetingPackItem : BaseModel
     {
         public MeetingPackItem()
         {
@@ -29,7 +29,6 @@ namespace GovernancePortal.Core.Meetings
         public string MeetingPackId { get; set; }
         public string MeetingAgendaItemId { get; set; }
         public string MeetingId { get; set; }
-        public string CompanyId { get; set; }
         public string Description { get; set; }
         public string PresenterUserId { get; set; }
         public List<MeetingPackItemUser> CoCreators { get; set; }
@@ -52,10 +51,10 @@ namespace GovernancePortal.Core.Meetings
             Id = Guid.NewGuid().ToString();
         }
         public string Id { get; set; }
-        public string AttendingUserId { get; set; }
-        public AttendingUser AttendingUser { get; set; }
         public string CoCreatorId { get; set; }
         public string RestrictedUserId { get; set; }
         public string InterestTagUserId { get; set; }
+        public string AttendingUserId { get; set; }
+        public AttendingUser AttendingUser { get; set; }
     }
 }

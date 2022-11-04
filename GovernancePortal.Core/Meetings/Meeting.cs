@@ -30,6 +30,7 @@ namespace GovernancePortal.Core.Meetings
         public int Duration { get; set; }
         public List<AttendingUser> Attendees { get; set; }
         public List<MeetingAgendaItem> Items { get; set; }
+        public List<MeetingPackItem> Packs { get; set; }
         public Minutes Minutes { get; set; }
         public MeetingAttendance Attendance { get; set; }
         public string MeetingPackId { get; set; }
