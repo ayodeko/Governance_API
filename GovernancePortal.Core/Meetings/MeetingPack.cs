@@ -39,6 +39,13 @@ namespace GovernancePortal.Core.Meetings
         public ActionRequired ActionRequired { get; set; }
     }
 
+    public class Comments
+    {
+        public string MeetingAgendaItemId { get; set; }
+        public string Id { get; set; }
+        public string Comment { get; set; }
+    }
+
     public enum ActionRequired
     {
         Others

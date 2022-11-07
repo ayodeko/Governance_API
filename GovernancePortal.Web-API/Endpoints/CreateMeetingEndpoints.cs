@@ -447,8 +447,6 @@ class MeetingServices : IMeetingServices
         
         var meeting = _meetingMaps.InMap(updateMeetingPackPOST, existingMeeting);
         existingMeeting.Packs = meeting.Packs;
-        
-        await _unit.Meeting.Add(meeting, loggedInUser);
         _unit.SaveToDB();
         
         var response = new Response
