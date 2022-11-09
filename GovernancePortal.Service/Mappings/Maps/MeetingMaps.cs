@@ -15,7 +15,7 @@ namespace GovernancePortal.Service.Mappings.Maps
         {
             CreateMap<CreateMeetingPOST, Meeting>();
             CreateMap<CreateMeetingAgendaItemDto, MeetingAgendaItem>();
-            CreateMap<Meeting,  MeetingListGET>();
+            CreateMap<Meeting,  MeetingListGet>();
             CreateMap<Meeting,  MeetingGET>();
             CreateMap<AddPastMinutesPOST,  Meeting>();
             CreateMap<MinutesCreatePOST,  Minutes>();
@@ -37,7 +37,7 @@ namespace GovernancePortal.Service.Mappings.Maps
         public Meeting InMap(AddPastMinutesPOST source,  Meeting destination) => _autoMapper.Map(source, destination);
         public Meeting InMap(AddPastAttendancePOST source, Meeting destination) => _autoMapper.Map(source, destination);
 
-        public List<MeetingListGET> OutMap(List<Meeting> source) => source.Select(x => _autoMapper.Map(x, new MeetingListGET())).ToList();
+        public List<MeetingListGet> OutMap(List<Meeting> source) => source.Select(x => _autoMapper.Map(x, new MeetingListGet())).ToList();
 
         public MeetingGET OutMap(Meeting source,  MeetingGET destination) =>  _autoMapper.Map(source, destination);
     }

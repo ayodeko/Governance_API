@@ -59,7 +59,7 @@ namespace GovernancePortal.Service.ClientModels.Meetings
     }
 
 
-    public class MeetingListGET : MeetingDTO
+    public class MeetingListGet : MeetingDTO
     {
         public List<AttendingUser> Attendees { get; set; }
         public string MinutesId { get; set; }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Meetings
 {
-    public class MeetingAgendaItem
+    public class MeetingAgendaItem : BaseModel
     {
         public MeetingAgendaItem()
         {

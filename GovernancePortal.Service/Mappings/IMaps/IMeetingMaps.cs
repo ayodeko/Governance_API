@@ -11,7 +11,7 @@ namespace GovernancePortal.Service.Mappings.IMaps
         Meeting InMap(AddPastMeetingPOST source, Meeting destination);
         Meeting InMap(AddPastMinutesPOST source, Meeting destination);
         Meeting InMap(AddPastAttendancePOST source, Meeting destination);
-        List<MeetingListGET> OutMap(List<Meeting> source);
+        List<MeetingListGet> OutMap(List<Meeting> source);
         MeetingGET OutMap(Meeting source,  MeetingGET destination);
     }
 }

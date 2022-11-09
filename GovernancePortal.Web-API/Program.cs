@@ -16,6 +16,9 @@ builder.Services.AddDbContext<PortalContext>(opt =>
     opt.UseSqlServer(conn,
             x => x.MigrationsAssembly("GovernancePortal.EF"))
         .EnableSensitiveDataLogging());
+
+builder.RegisterCreateMeetingEndpointServices();
+
 builder.Services.AddScoped<IMeetingService, MeetingService>();
 builder.Services.AddScoped<IMeetingsRepo, MeetingRepo>();
 builder.Services.AddScoped<IMeetingMaps, MeetingMaps>();
@@ -31,7 +34,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-app.MapMeetingEndpoints();
+app.MapSectionedMeetingEndpoints();
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BodAdmin_Api_Governance_Portal v1"));
 

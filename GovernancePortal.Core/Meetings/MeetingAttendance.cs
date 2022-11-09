@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Meetings
 {
-    public class MeetingAttendance
+    public class MeetingAttendance : BaseModel
     {
         public MeetingAttendance()
         {
             Id = Guid.NewGuid().ToString();
         }
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string MeetingId { get; set; }
-        public string CompanyId { get; set; }
         public string GeneratedCode { get; set; }
         public List<AttendingUser> Attendees { get; set; }
     }
 
-    public class AttendingUser
+    public class AttendingUser : BaseModel
     {
         public AttendingUser()
         {
             Id = Guid.NewGuid().ToString();
         }
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string UserId { get; set; }
         public string MeetingId { get; set; }
         public string MeetingAttendanceId { get; set; }
