@@ -18,6 +18,7 @@ public class MeetingsAutoMapper : Profile
         CreateMap<Meeting, UpdateMeetingAttendingUserGET>();
         CreateMap<Meeting, UpdateMeetingAgendaItemGET>();
         CreateMap<MeetingAgendaItem, AgendaItemPOST>();
+        CreateMap<AttendingUser, AttendingUserPOST>();
         //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
     }
 }
