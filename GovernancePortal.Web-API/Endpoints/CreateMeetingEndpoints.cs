@@ -71,8 +71,8 @@ public static class CreateMeetingEndpoints
 
         #region  Retrieve Meeting Details, Meetings
         app.MapGet("api/Meeting/List",
-            ([FromServices] IMeetingService_depr meetingService, PageQuery pageQuery) =>
-                meetingService.GetAllMeetings(pageQuery));
+            ([FromServices] IMeetingService meetingService, PageQuery pageQuery) =>
+                meetingService.GetAllMeetingList(pageQuery));
         app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, PageQuery pageQuery) =>
             meetingService.GetUserMeetingList(pageQuery));
         app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, string searchMeetingsString) =>
@@ -90,10 +90,11 @@ public static class CreateMeetingEndpoints
     {
         builder.Services.AddScoped<IMeetingService, MeetingServices>();
         builder.Services.AddScoped<IMeetingMaps, MeetingMaps>();
+        builder.Services.AddScoped<ILogger, StubLogger>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         return builder;
     }
 
-    record CreateMeetingOnlyPOST();
 }
 
 
