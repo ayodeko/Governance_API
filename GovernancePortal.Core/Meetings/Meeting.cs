@@ -21,6 +21,8 @@ namespace GovernancePortal.Core.Meetings
         public string Description { get; set; }
         public string ChairPersonId { get; set; }
         public string SecretaryId { get; set; }
+        public bool IsAttendanceTaken { get; set; }
+        public bool IsMinutesPublished { get; set; }
         
         public MeetingFrequency Frequency { get; set; }
         public MeetingMedium Medium { get; set; }

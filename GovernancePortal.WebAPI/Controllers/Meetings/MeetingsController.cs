@@ -15,12 +15,12 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
     [ApiController]
     public class MeetingsController : ControllerBase
     {
-        private readonly IMeetingService _meetingService;
+        private readonly IMeetingService_depr _meetingServiceDepr;
         private readonly IExceptionHandler _exceptionHandler;
 
-        public MeetingsController(IMeetingService meetingService, IExceptionHandler exceptionHandler)
+        public MeetingsController(IMeetingService_depr meetingServiceDepr, IExceptionHandler exceptionHandler)
         {
-            _meetingService = meetingService;
+            _meetingServiceDepr = meetingServiceDepr;
             _exceptionHandler = exceptionHandler;
         }
         
@@ -38,7 +38,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                var response = await _meetingService.CreateMeeting(meeting);
+                var response = await _meetingServiceDepr.CreateMeeting(meeting);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -53,7 +53,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                var pagedIndex = await _meetingService.GetAllMeetings(pageQuery);
+                var pagedIndex = await _meetingServiceDepr.GetAllMeetings(pageQuery);
                 return Ok(pagedIndex);
             }
             catch (Exception ex)
@@ -67,7 +67,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                var response = await _meetingService.UpdateMeeting(meetingId, meeting);
+                var response = await _meetingServiceDepr.UpdateMeeting(meetingId, meeting);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -81,7 +81,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                var response = await _meetingService.AddPastMeeting(meeting);
+                var response = await _meetingServiceDepr.AddPastMeeting(meeting);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -95,7 +95,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                var response = await _meetingService.AddPastMinutes(meeting);
+                var response = await _meetingServiceDepr.AddPastMinutes(meeting);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                return await _meetingService.AddPastAttendance(meetingAttendance);
+                return await _meetingServiceDepr.AddPastAttendance(meetingAttendance);
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace GovernancePortal.WebAPI.Controllers.Meetings
         {
             try
             {
-                return await _meetingService.GetMeetingById(Id);
+                return await _meetingServiceDepr.GetMeetingById(Id);
             }
             catch (Exception ex)
             {
