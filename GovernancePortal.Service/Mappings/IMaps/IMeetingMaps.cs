@@ -2,16 +2,21 @@
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings;
 
-namespace GovernancePortal.Service.Mappings.IMaps
+namespace GovernancePortal.Service.Mappings.IMaps;
+
+public interface IMeetingMaps
 {
-    public interface IMeetingMaps
-    {
-        Meeting InMap(CreateMeetingPOST source, Meeting destination);
-        Meeting InMap(UpdateMeetingPOST source, Meeting destination);
-        Meeting InMap(AddPastMeetingPOST source, Meeting destination);
-        Meeting InMap(AddPastMinutesPOST source, Meeting destination);
-        Meeting InMap(AddPastAttendancePOST source, Meeting destination);
-        List<MeetingListGet> OutMap(List<Meeting> source);
-        MeetingGET OutMap(Meeting source,  MeetingGET destination);
-    }
+    Meeting InMap(MeetingPOST createMeetingPost, Meeting meeting);
+    Meeting InMap(UpdateMeetingAttendeesPOST updateMeetingAttendeesPost, Meeting meeting);
+    Meeting InMap(UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, Meeting meeting);
+    Meeting InMap(UpdateMeetingPackPOST updateMeetingPackPost, Meeting existingMeeting);
+    Meeting InMap(UpdateMeetingMinutesPOST updateMinutesPost, Meeting existingMeeting);
+    MeetingListGET OutMap(Meeting existingMeeting, MeetingListGET meetingList);
+    List<MeetingListGET> OutMap(List<Meeting> existingMeeting);
+
+    UpdateMeetingAttendingUserGET OutMap(Meeting existingMeeting,
+        UpdateMeetingAttendingUserGET updateMeetingAttendingUserGet);
+
+    UpdateMeetingAgendaItemGET OutMap(Meeting existingMeeting, UpdateMeetingAgendaItemGET updateMeetingAgendaItemGet);
+    UpdateMeetingGET OutMap(Meeting existingMeeting);
 }

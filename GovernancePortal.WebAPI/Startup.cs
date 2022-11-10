@@ -77,9 +77,9 @@ namespace GovernancePortal.WebAPI
             services.AddScoped<IExceptionHandler, ExceptionHandler>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITaskRepo, TaskRepo>();
-            services.AddScoped<IMeetingService, MeetingService>();
-            services.AddScoped<IMeetingsRepo, MeetingRepo>();
-            services.AddScoped<IMeetingMaps, MeetingMaps>();
+            services.AddScoped<IMeetingService_depr, MeetingServiceDeprDepr>();
+            services.AddScoped<IMeetingsRepo_depr, MeetingRepoDeprDepr>();
+            services.AddScoped<IMeetingMaps_depr, MeetingMaps_depr>();
 
             //services.AddHttpContextAccessor();
 

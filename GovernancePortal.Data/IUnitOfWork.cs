@@ -8,7 +8,7 @@ namespace GovernancePortal.Data
     public interface IUnitOfWork : IDisposable
     {
         ITaskRepo Tasks { get; }
-        IMeetingsRepo Meetings { get; }
+        IMeetingRepo Meetings { get; }
         int SaveToDB();
 
     }

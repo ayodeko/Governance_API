@@ -17,11 +17,11 @@ builder.Services.AddDbContext<PortalContext>(opt =>
             x => x.MigrationsAssembly("GovernancePortal.EF"))
         .EnableSensitiveDataLogging());
 
-builder.RegisterCreateMeetingEndpointServices();
+builder.RegisterMeetingServices();
 
-builder.Services.AddScoped<IMeetingService, MeetingService>();
-builder.Services.AddScoped<IMeetingsRepo, MeetingRepo>();
-builder.Services.AddScoped<IMeetingMaps, MeetingMaps>();
+builder.Services.AddScoped<IMeetingService_depr, MeetingServiceDeprDepr>();
+builder.Services.AddScoped<IMeetingsRepo_depr, MeetingRepoDeprDepr>();
+builder.Services.AddScoped<IMeetingMaps_depr, MeetingMaps_depr>();
 builder.Services.AddScoped<ILogger, StubLogger>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

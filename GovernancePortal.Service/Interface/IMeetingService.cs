@@ -1,22 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
-using GovernancePortal.Core.General;
-using GovernancePortal.Core.Meetings;
-using GovernancePortal.Core.TaskManagement;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
-using GovernancePortal.Service.ClientModels.TaskManagement;
 
-namespace GovernancePortal.Service.Interface
+namespace GovernancePortal.Service.Interface;
+
+public interface IMeetingService
 {
-    public interface IMeetingService
-    {
-        Task<Response> CreateMeeting(CreateMeetingPOST meetingDto);
-        Task<Pagination<MeetingListGet>> GetAllMeetings(PageQuery pageQuery);
-        Task<Response> UpdateMeeting(string meetingId, UpdateMeetingPOST meetingDto);
-        Task<Response> AddPastMeeting(AddPastMeetingPOST meetingDto);
-        Task<Response> AddPastMinutes(AddPastMinutesPOST meetingDto);
-        Task<Response> AddPastAttendance(AddPastAttendancePOST meetingDto);
-        Task<Response> GetMeetingById(string meetingId);
-    }
+    Task<Response> CreateMeeting(MeetingPOST createMeetingPOST);
+    Task<Response> UpdateAttendees(string meetingId, UpdateMeetingAttendeesPOST updateMeetingAttendeesPost);
+    Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
+    Task<Response> UpdateMeetingPack(string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST);
+    Task<Response> UpdateMinutes(string meetingId, UpdateMeetingMinutesPOST updateMinutesPOST);
+    
+    
+    Task<Response> GetMeetingUpdateData(string meetingId);
+    Task<Response> GetMeetingMinutesUpdateData(string meetingId);
+    Task<Response> GetMeetingAttendeesUpdateData(string meetingId);
+    Task<Response> GetMeetingAgendaItemsUpdateData(string meetingId);
+    Task<Response> GetMeetingPackUpdateData(string meetingId);
+    
+    
+    Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery);
+    Task<Pagination<MeetingListGET>> GetUserMeetingList(PageQuery pageQuery);
+    Task<Response> SearchMeetings(string meetingSearchString);
+    Task<Response> SearchMeetingsByDate(DateTime meetingDateTime);
 }

@@ -16,15 +16,15 @@ using Microsoft.Extensions.Logging;
 
 namespace GovernancePortal.Service.Implementation
 {
-    public class MeetingService : IMeetingService
+    public class MeetingServiceDeprDepr : IMeetingService_depr
     {
-        private IMeetingMaps _meetingMaps;
+        private IMeetingMaps_depr _meetingMapsDepr;
         private IUnitOfWork _unit;
         private ILogger _logger;
         
-        public MeetingService(IMeetingMaps meetingMaps, ILogger logger, IUnitOfWork unitOfWork)
+        public MeetingServiceDeprDepr(IMeetingMaps_depr meetingMapsDepr, ILogger logger, IUnitOfWork unitOfWork)
         {
-            _meetingMaps = meetingMaps;
+            _meetingMapsDepr = meetingMapsDepr;
             _logger = logger;
             _unit = unitOfWork;
         }
@@ -42,7 +42,7 @@ namespace GovernancePortal.Service.Implementation
         {
             var loggedInUser = GetLoggedUser();
             _logger.LogInformation("Inside Create New Meeting");
-            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
+            var meeting = _meetingMapsDepr.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
             
@@ -63,7 +63,7 @@ namespace GovernancePortal.Service.Implementation
             _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
             var allMeetings = await _unit.Meetings.FindByPage(loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize);
             var allMeetingsList = allMeetings.ToList();
-            var meetingListGet = _meetingMaps.OutMap(allMeetingsList);
+            var meetingListGet = _meetingMapsDepr.OutMap(allMeetingsList);
             var totalRecords = await _unit.Meetings.Count(loggedInUser.CompanyId);
             return new Pagination<MeetingListGet>
             {
@@ -77,6 +77,7 @@ namespace GovernancePortal.Service.Implementation
             };
         }
 
+        
         public async Task<Response> UpdateMeeting(string meetingId, UpdateMeetingPOST meetingDto)
         {
             var loggedInUser = GetLoggedUser();
@@ -84,7 +85,7 @@ namespace GovernancePortal.Service.Implementation
             var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
             if (existingMeeting == null || existingMeeting.IsDeleted)
                 throw new Exception($"Meeting with Id: {meetingId} not found");
-            existingMeeting = _meetingMaps.InMap(meetingDto, existingMeeting);
+            existingMeeting = _meetingMapsDepr.InMap(meetingDto, existingMeeting);
             _unit.SaveToDB();
             
             var response = new Response
@@ -101,7 +102,7 @@ namespace GovernancePortal.Service.Implementation
         public async Task<Response> AddPastMeeting(AddPastMeetingPOST meetingDto)
         {
             var loggedInUser = GetLoggedUser();
-            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
+            var meeting = _meetingMapsDepr.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
             var response = new Response
@@ -118,7 +119,7 @@ namespace GovernancePortal.Service.Implementation
         {
             Person loggedInUser = GetLoggedUser();
             _logger.LogInformation("Inside AddPastMinutes");
-            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
+            var meeting = _meetingMapsDepr.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedInUser);
             _unit.SaveToDB();
             
@@ -137,7 +138,7 @@ namespace GovernancePortal.Service.Implementation
         {
             var loggedUser = GetLoggedUser();
             _logger.LogInformation("Inside AddPastMinutes");
-            var meeting = _meetingMaps.InMap(meetingDto, new Meeting());
+            var meeting = _meetingMapsDepr.InMap(meetingDto, new Meeting());
             await _unit.Meetings.Add(meeting, loggedUser);
             _unit.SaveToDB();
             
@@ -155,25 +156,7 @@ namespace GovernancePortal.Service.Implementation
         
         
         
-        
-        public async Task<Response> GetMeetingById(string meetingId)
-        {
-            var loggedInUser = GetLoggedUser();
-            var existingMeeting = await _unit.Meetings.FindById_Attendees_AgendaItems(meetingId, loggedInUser.CompanyId);
-            if (existingMeeting == null || existingMeeting.IsDeleted)
-                throw new Exception($"Meeting with Id: {meetingId} not found");
-            var meetingDto = _meetingMaps.OutMap(existingMeeting, new MeetingGET());
-            var response = new Response
-            {
-                Data = meetingDto,
-                Message = $"Meeting with Id: {meetingId} retrieved successfully",
-                StatusCode = HttpStatusCode.Created.ToString(),
-                IsSuccessful = true
-            };
-            return response;
-        }
 
-        
 
         async Task SendGeneratedCode(string generatedCode)
         {

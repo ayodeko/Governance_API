@@ -19,7 +19,7 @@ namespace GovernancePortal.EF
         }
 
         public ITaskRepo Tasks { get; set; }
-        public IMeetingsRepo Meetings { get; }
+        public IMeetingRepo Meetings { get; }
 
         public int SaveToDB()
         {
