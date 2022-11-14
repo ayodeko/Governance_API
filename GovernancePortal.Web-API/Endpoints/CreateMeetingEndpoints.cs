@@ -67,6 +67,10 @@ public static class CreateMeetingEndpoints
                 string meetingId) =>
             meetingService.GetMeetingPackUpdateData(meetingId));
         
+        app.MapGet("api/Meeting/{meetingId}/MeetingNotice/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId) =>
+            meetingService.GetMeetingNoticeUpdateData(meetingId));
+        
         #endregion
 
         #region  Retrieve Meeting Details, Meetings

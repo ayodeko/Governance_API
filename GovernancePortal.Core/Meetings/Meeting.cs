@@ -19,6 +19,7 @@ namespace GovernancePortal.Core.Meetings
         public DateTime? DateModified { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string Venue { get; set; }
         public string ChairPersonId { get; set; }
         public string SecretaryId { get; set; }
         public bool IsAttendanceTaken { get; set; }
@@ -35,6 +36,7 @@ namespace GovernancePortal.Core.Meetings
         public List<MeetingPackItem> Packs { get; set; }
         public Minutes Minutes { get; set; }
         public MeetingAttendance Attendance { get; set; }
+        public MeetingNotice Notice { get; set; }
         public string MeetingPackId { get; set; }
     }
 

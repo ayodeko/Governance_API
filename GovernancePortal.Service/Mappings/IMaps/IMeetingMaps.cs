@@ -18,5 +18,7 @@ public interface IMeetingMaps
         UpdateMeetingAttendingUserGET updateMeetingAttendingUserGet);
 
     UpdateMeetingAgendaItemGET OutMap(Meeting existingMeeting, UpdateMeetingAgendaItemGET updateMeetingAgendaItemGet);
+    List<UpdateMeetingPackItemGET> OutMap(Meeting existingMeeting, List<UpdateMeetingPackItemGET> updateMeetingAgendaItemGet);
     UpdateMeetingGET OutMap(Meeting existingMeeting);
+    UpdateMeetingNoticeGET OutMap(MeetingNotice existingMeetingNotice, UpdateMeetingNoticeGET updateMeetingAttendingUserGet);
 }

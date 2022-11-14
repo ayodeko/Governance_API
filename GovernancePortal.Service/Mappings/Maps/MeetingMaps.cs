@@ -37,8 +37,21 @@ public class MeetingMaps : IMeetingMaps
     public MeetingListGET OutMap(Meeting existingMeeting, MeetingListGET updateMeetingAttendingUserGet) => _autoMapper.Map(existingMeeting, new MeetingListGET());
     public List<MeetingListGET> OutMap(List<Meeting> source) => source.Select(x => _autoMapper.Map(x, new MeetingListGET())).ToList();
 
+    public List<UpdateMeetingPackItemGET> OutMap(Meeting existingMeeting,
+        List<UpdateMeetingPackItemGET> updateMeetingAgendaItemGet) =>
+        existingMeeting.Packs.Select(x =>
+        {
+            var res = _autoMapper.Map(x, new UpdateMeetingPackItemGET());
+            res.Title = existingMeeting.Items.FirstOrDefault(y => y.Id == res.MeetingAgendaItemId)?.Title;
+            return res;
+        }).ToList();
+
     public UpdateMeetingGET OutMap(Meeting existingMeeting) => _autoMapper.Map(existingMeeting, new UpdateMeetingGET());
-    
+
+    public UpdateMeetingNoticeGET OutMap(MeetingNotice existingMeetingNotice,
+        UpdateMeetingNoticeGET updateMeetingNoticeGET) =>
+        _autoMapper.Map(existingMeetingNotice, updateMeetingNoticeGET);
+
     #region Attending User Maps
 
     public UpdateMeetingAttendingUserGET OutMap(Meeting existingMeeting, UpdateMeetingAttendingUserGET updateMeetingAttendingUserGet) => _autoMapper.Map(existingMeeting, updateMeetingAttendingUserGet);

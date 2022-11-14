@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -56,7 +57,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Attendees for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var meeting = _meetingMapses.InMap(updateMeetingAttendeesPost, existingMeeting);
         existingMeeting.Attendees = meeting.Attendees;
         _unit.SaveToDB();
@@ -77,7 +78,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Agenda Items for {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var meeting = _meetingMapses.InMap(updateMeetingAgendaItemPOST, existingMeeting);
         existingMeeting.Items = meeting.Items;
         _unit.SaveToDB();
@@ -97,8 +98,8 @@ public class MeetingServices : IMeetingService
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Meeting Pack for {meetingId}");
-        var existingMeeting = await _unit.Meetings.GetMeeting_MeetingPack(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_MeetingPack(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         
         var meeting = _meetingMapses.InMap(updateMeetingPackPOST, existingMeeting);
         existingMeeting.Packs = meeting.Packs;
@@ -119,8 +120,8 @@ public class MeetingServices : IMeetingService
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Minutes for {meetingId}");
-        var existingMeeting = await _unit.Meetings.GetMeeting_MeetingPack(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_MeetingPack(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         
         var meeting = _meetingMapses.InMap(updateMinutesPOST, existingMeeting);
         existingMeeting.Packs = meeting.Packs;
@@ -144,7 +145,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get meetings for meetingId: {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_AllDependencies(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting);
         var response = new Response
         {
@@ -167,7 +168,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get Meeting_Attendees update data for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting, new UpdateMeetingAttendingUserGET());
         var response = new Response
         {
@@ -185,7 +186,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get Meeting_AgendaItems update data for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting, new UpdateMeetingAgendaItemGET());
         var response = new Response
         {
@@ -202,9 +203,19 @@ public class MeetingServices : IMeetingService
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get Meeting Pack update data for meeting {meetingId}");
-        var existingMeeting = await _unit.Meetings.GetMeeting_MeetingPack(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting == null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        var outMeeting = _meetingMapses.OutMap(existingMeeting, new UpdateMeetingAttendingUserGET());
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_MeetingPack(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        List<UpdateMeetingPackItemGET> outMeeting = default;
+        if (existingMeeting.Packs is null || !existingMeeting.Packs.Any())
+        {
+            var newMeetingPackItems = await GenerateNewMeetingPack(meetingId, loggedInUser.CompanyId);
+            outMeeting = newMeetingPackItems.ToList();
+        }
+        else
+        {
+            outMeeting = _meetingMapses.OutMap(existingMeeting, new List<UpdateMeetingPackItemGET>());
+        }
+
         var response = new Response
         {
             Data = outMeeting,
@@ -215,6 +226,65 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation("Get Meeting Pack Update Data successful: {response}", response);
         return response;
     }
+
+    async Task<IEnumerable<UpdateMeetingPackItemGET>> GenerateNewMeetingPack(string meetingId, string companyId)
+    {
+        var existingAgendaItemsMeeting = await _unit.Meetings.GetMeeting_AgendaItems(meetingId, companyId);
+        if (existingAgendaItemsMeeting?.Items is null || !existingAgendaItemsMeeting.Items.Any())
+        {
+            throw new NotFoundException("Agenda Items are not found");
+        }
+        return existingAgendaItemsMeeting.Items.Select(x => new UpdateMeetingPackItemGET
+        {
+            MeetingAgendaItemId = x.Id,
+            Title = x.Title
+        });
+        
+    }
+
+    public async Task<Response> GetMeetingNoticeUpdateData(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Attendees_Notice(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        UpdateMeetingNoticeGET outMeetingNotice = default;
+        if (existingMeeting.Notice is null || existingMeeting.Notice.IsDeleted)
+        {
+            outMeetingNotice = GenerateNewMeetingNoticeData(existingMeeting);
+        }
+        else
+        {
+            outMeetingNotice = _meetingMapses.OutMap(existingMeeting.Notice, new UpdateMeetingNoticeGET());
+        }
+        var response = new Response
+        {
+            Data = outMeetingNotice,
+            Message = "Successful",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Get Meeting Notice Update Data successful: {response}", response);
+        return response;
+    }
+
+    public UpdateMeetingNoticeGET GenerateNewMeetingNoticeData(Meeting existingMeeting) => new UpdateMeetingNoticeGET
+        {
+            Attendees = existingMeeting.Attendees.Select(x => new AttendingUserPOST
+            {
+                Name = x.Name,
+                UserId = x.UserId,
+                Id = x.Id,
+                AttendeePosition = x.AttendeePosition,
+                IsPresent = x.IsPresent
+            } ).ToList(),
+            AgendaItems = existingMeeting.Items.Select(y => new BaseAgendaItemGET()
+            {
+                AgendaItemId = y.Id,
+                Title = y.Title
+            }).ToList(),
+            Venue = existingMeeting.Venue,
+            MeetingDate = existingMeeting.DateTime
+        };
 
     public async Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery)
     {
@@ -242,7 +312,7 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation($"Inside get Meeting Pack update data for user {loggedInUser.Id}");
         var existingMeetings = _unit.Meetings.GetMeetingListByUserId(loggedInUser.Id, loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
         var existingMeetingList = existingMeetings.ToList();
-        if (existingMeetings == null || !existingMeetingList.Any()) throw new NotFoundException($"No Meeting with user Id: {loggedInUser.Id} was found");
+        if (existingMeetings is null || !existingMeetingList.Any()) throw new NotFoundException($"No Meeting with user Id: {loggedInUser.Id} was found");
         var outMeetingList = existingMeetingList.Select(x => _meetingMapses.OutMap(x, new MeetingListGET()));
         var response = new Pagination<MeetingListGET>
         {

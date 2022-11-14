@@ -36,13 +36,24 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
     }
     public async Task<Meeting> GetMeeting_AgendaItems(string meetingId, string companyId)
     {
-        return (await _context.Set<Meeting>()
+        return await _context.Set<Meeting>()
             .Include(x => x.Items)
-            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
     }
-    public async Task<Meeting> GetMeeting_MeetingPack(string meetingId, string companyId)
+
+    public async Task<Meeting> GetMeeting_AgendaItems_Attendees_Notice(string meetingId, string companyId)
+    {
+        return await _context.Set<Meeting>()
+            .Include(x => x.Items)
+            .Include(y => y.Attendees)
+            .Include(z => z.Notice)
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
+    }
+
+    public async Task<Meeting> GetMeeting_AgendaItems_MeetingPack(string meetingId, string companyId)
     {
         return (await _context.Set<Meeting>()
+            .Include(x => x.Items)
             .Include(x => x.Packs)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }

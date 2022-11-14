@@ -19,6 +19,7 @@ public interface IMeetingService
     Task<Response> GetMeetingAttendeesUpdateData(string meetingId);
     Task<Response> GetMeetingAgendaItemsUpdateData(string meetingId);
     Task<Response> GetMeetingPackUpdateData(string meetingId);
+    Task<Response> GetMeetingNoticeUpdateData(string meetingId);
     
     
     Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery);
