@@ -4,6 +4,7 @@ using GovernancePortal.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GovernancePortal.EF.Migrations
 {
     [DbContext(typeof(PortalContext))]
-    partial class PortalContextModelSnapshot : ModelSnapshot
+    [Migration("20221115142540_add-meeting-notice")]
+    partial class addmeetingnotice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,6 +302,64 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("MeetingAttendances");
                 });
 
+            modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingNotice", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AgendaText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mandate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MeetingId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("NoticeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NoticeText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salutation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SendNoticeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Signatory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SignatureId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeetingId")
+                        .IsUnique()
+                        .HasFilter("[MeetingId] IS NOT NULL");
+
+                    b.HasIndex("SignatureId");
+
+                    b.ToTable("MeetingNotice");
+                });
+
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPack", b =>
                 {
                     b.Property<string>("Id")
@@ -441,64 +501,6 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("Minutes");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.Meetings.NoticeMeeting", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AgendaText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CompanyId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Mandate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MeetingId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("NoticeDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("NoticeText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Salutation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("SendNoticeDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Signatory")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SignatureId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MeetingId")
-                        .IsUnique()
-                        .HasFilter("[MeetingId] IS NOT NULL");
-
-                    b.HasIndex("SignatureId");
-
-                    b.ToTable("Notices");
-                });
-
             modelBuilder.Entity("GovernancePortal.Core.Meetings.AttendingUser", b =>
                 {
                     b.HasOne("GovernancePortal.Core.Meetings.MeetingAttendance", null)
@@ -526,6 +528,19 @@ namespace GovernancePortal.EF.Migrations
                     b.HasOne("GovernancePortal.Core.Meetings.Meeting", null)
                         .WithOne("Attendance")
                         .HasForeignKey("GovernancePortal.Core.Meetings.MeetingAttendance", "MeetingId");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingNotice", b =>
+                {
+                    b.HasOne("GovernancePortal.Core.Meetings.Meeting", null)
+                        .WithOne("Notice")
+                        .HasForeignKey("GovernancePortal.Core.Meetings.MeetingNotice", "MeetingId");
+
+                    b.HasOne("GovernancePortal.Core.General.Attachment", "Signature")
+                        .WithMany()
+                        .HasForeignKey("SignatureId");
+
+                    b.Navigation("Signature");
                 });
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPackItem", b =>
@@ -577,19 +592,6 @@ namespace GovernancePortal.EF.Migrations
                         .HasForeignKey("GovernancePortal.Core.Meetings.Minutes", "MeetingId");
 
                     b.Navigation("Attachment");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.Meetings.NoticeMeeting", b =>
-                {
-                    b.HasOne("GovernancePortal.Core.Meetings.Meeting", null)
-                        .WithOne("Notice")
-                        .HasForeignKey("GovernancePortal.Core.Meetings.NoticeMeeting", "MeetingId");
-
-                    b.HasOne("GovernancePortal.Core.General.Attachment", "Signature")
-                        .WithMany()
-                        .HasForeignKey("SignatureId");
-
-                    b.Navigation("Signature");
                 });
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.Meeting", b =>

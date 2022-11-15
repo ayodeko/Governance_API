@@ -35,7 +35,7 @@ namespace GovernancePortal.Core.Meetings
         public List<MeetingPackItemUser> RestrictedUsers { get; set; }
         public List<MeetingPackItemUser> InterestTagUsers { get; set; }
         public Attachment Attachment { get; set; }
-        public DateTime Duration { get; set; }
+        public int Duration { get; set; }
         public ActionRequired ActionRequired { get; set; }
     }
 

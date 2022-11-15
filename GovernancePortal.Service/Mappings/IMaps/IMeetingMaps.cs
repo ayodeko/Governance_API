@@ -6,17 +6,21 @@ namespace GovernancePortal.Service.Mappings.IMaps;
 
 public interface IMeetingMaps
 {
-    Meeting InMap(MeetingPOST createMeetingPost, Meeting meeting);
-    Meeting InMap(UpdateMeetingAttendeesPOST updateMeetingAttendeesPost, Meeting meeting);
+    Meeting InMap(CreateMeetingPOST createMeetingPost, Meeting meeting);
+    Meeting InMap(UpdateAttendingUsersPOST updateAttendingUsersPost, Meeting meeting);
     Meeting InMap(UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, Meeting meeting);
     Meeting InMap(UpdateMeetingPackPOST updateMeetingPackPost, Meeting existingMeeting);
     Meeting InMap(UpdateMeetingMinutesPOST updateMinutesPost, Meeting existingMeeting);
     MeetingListGET OutMap(Meeting existingMeeting, MeetingListGET meetingList);
     List<MeetingListGET> OutMap(List<Meeting> existingMeeting);
+    List<AttendingUser> InMap(List<AttendingUserPOST> updateMeetingAttendeesPost, Meeting meeting);
 
-    UpdateMeetingAttendingUserGET OutMap(Meeting existingMeeting,
-        UpdateMeetingAttendingUserGET updateMeetingAttendingUserGet);
+    UpdateAttendingUsersPOST OutMap(Meeting existingMeeting,
+        UpdateAttendingUsersPOST updateAttendingUsersPost);
 
-    UpdateMeetingAgendaItemGET OutMap(Meeting existingMeeting, UpdateMeetingAgendaItemGET updateMeetingAgendaItemGet);
+    UpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost);
+    List<UpdateMeetingPackItemPOST> OutMap(Meeting existingMeeting, List<UpdateMeetingPackItemPOST> updateMeetingAgendaItemPOST);
     UpdateMeetingGET OutMap(Meeting existingMeeting);
+    UpdateMeetingNoticePOST OutMap(NoticeMeeting existingNoticeMeeting, UpdateMeetingNoticePOST updateMeetingAttendingUserPost);
+    Meeting InMap(UpdateMeetingNoticePOST updateMeetingAgendaItemPost, Meeting existingMeeting);
 }

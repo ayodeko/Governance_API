@@ -36,13 +36,31 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
     }
     public async Task<Meeting> GetMeeting_AgendaItems(string meetingId, string companyId)
     {
-        return (await _context.Set<Meeting>()
+        /*return new Meeting()
+        {
+            Items = _context.Set<MeetingAgendaItem>().Include(x => x.SubItems)
+                .Where(x => x.MeetingId == meetingId).ToList()
+        };*/
+        return await _context.Set<Meeting>()
             .Include(x => x.Items)
-            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
+            .ThenInclude(x => x.SubItems)
+            .ThenInclude(x => x.SubItems)
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
     }
-    public async Task<Meeting> GetMeeting_MeetingPack(string meetingId, string companyId)
+
+    public async Task<Meeting> GetMeeting_AgendaItems_Attendees_Notice(string meetingId, string companyId)
+    {
+        return await _context.Set<Meeting>()
+            .Include(x => x.Items)
+            .Include(y => y.Attendees)
+            .Include(z => z.Notice)
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
+    }
+
+    public async Task<Meeting> GetMeeting_AgendaItems_MeetingPack(string meetingId, string companyId)
     {
         return (await _context.Set<Meeting>()
+            .Include(x => x.Items)
             .Include(x => x.Packs)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
@@ -53,7 +71,7 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
-            .Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Exists(c => c.UserId == userId)));
+            .Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(c => c.UserId == userId)));
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;
