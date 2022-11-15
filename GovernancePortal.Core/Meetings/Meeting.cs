@@ -10,6 +10,12 @@ namespace GovernancePortal.Core.Meetings
         public Meeting()
         {
             Id = Guid.NewGuid().ToString();
+            Attendees = new List<AttendingUser>();
+            Items = new List<MeetingAgendaItem>();
+            Packs = new List<MeetingPackItem>();
+            Notice = new NoticeMeeting();
+            Minutes = new Minutes();
+            Attendance = new MeetingAttendance();
         }
         public string Id { get; set; }
         public string CompanyId { get; set; }
@@ -24,7 +30,8 @@ namespace GovernancePortal.Core.Meetings
         public string SecretaryId { get; set; }
         public bool IsAttendanceTaken { get; set; }
         public bool IsMinutesPublished { get; set; }
-        
+        public bool IsMeetingPackDownloadable { get; set; }
+
         public MeetingFrequency Frequency { get; set; }
         public MeetingMedium Medium { get; set; }
         public MeetingType Type { get; set; }
@@ -36,7 +43,7 @@ namespace GovernancePortal.Core.Meetings
         public List<MeetingPackItem> Packs { get; set; }
         public Minutes Minutes { get; set; }
         public MeetingAttendance Attendance { get; set; }
-        public MeetingNotice Notice { get; set; }
+        public NoticeMeeting Notice { get; set; }
         public string MeetingPackId { get; set; }
     }
 
@@ -49,7 +56,7 @@ namespace GovernancePortal.Core.Meetings
 
     public enum MeetingFrequency
     {
-        Daily, Weekly, Monthly
+        Once, Daily, Weekly, Monthly
     }
 
     public enum MeetingMedium

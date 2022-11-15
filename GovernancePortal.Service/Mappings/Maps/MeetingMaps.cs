@@ -15,10 +15,13 @@ public class MeetingsAutoMapper : Profile
         CreateMap<MeetingPOST, Meeting>();
         CreateMap<Meeting, UpdateMeetingGET>();
         CreateMap<Meeting, MeetingListGET>();
-        CreateMap<Meeting, UpdateMeetingAttendingUserGET>();
-        CreateMap<Meeting, UpdateMeetingAgendaItemGET>();
+        CreateMap<Meeting, UpdateAttendingUsersPOST>();
+        CreateMap<Meeting, UpdateMeetingAgendaItemPOST>()
+            .ForMember(x => x.MeetingId,
+                options => options.MapFrom(x => x.Id));
         CreateMap<MeetingAgendaItem, AgendaItemPOST>();
         CreateMap<AttendingUser, AttendingUserPOST>();
+        CreateMap<NoticeMeeting, UpdateMeetingNoticePOST>();
         //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
     }
 }
@@ -32,35 +35,59 @@ public class MeetingMaps : IMeetingMaps
         var mapperConfiguration = new MapperConfiguration(config => config.AddProfiles(profiles));
         _autoMapper = mapperConfiguration.CreateMapper();
     }
-    public Meeting InMap(MeetingPOST source,  Meeting destination) => _autoMapper.Map(source, destination);
+    public Meeting InMap(CreateMeetingPOST source,  Meeting destination) => new Meeting
+    {
+        Title = source.Title,
+        Description = source.Description,
+        Duration = source.Duration,
+        DateTime = source.DateTime,
+        Type = source.Type,
+        Frequency = source.Frequency,
+        Medium = source.Medium,
+        
+    };
 
     public MeetingListGET OutMap(Meeting existingMeeting, MeetingListGET updateMeetingAttendingUserGet) => _autoMapper.Map(existingMeeting, new MeetingListGET());
     public List<MeetingListGET> OutMap(List<Meeting> source) => source.Select(x => _autoMapper.Map(x, new MeetingListGET())).ToList();
 
-    public List<UpdateMeetingPackItemGET> OutMap(Meeting existingMeeting,
-        List<UpdateMeetingPackItemGET> updateMeetingAgendaItemGet) =>
+    public List<UpdateMeetingPackItemPOST> OutMap(Meeting existingMeeting,
+        List<UpdateMeetingPackItemPOST> updateMeetingAgendaItemPOST) =>
         existingMeeting.Packs.Select(x =>
         {
-            var res = _autoMapper.Map(x, new UpdateMeetingPackItemGET());
+            var res = _autoMapper.Map(x, new UpdateMeetingPackItemPOST());
             res.Title = existingMeeting.Items.FirstOrDefault(y => y.Id == res.MeetingAgendaItemId)?.Title;
             return res;
         }).ToList();
 
     public UpdateMeetingGET OutMap(Meeting existingMeeting) => _autoMapper.Map(existingMeeting, new UpdateMeetingGET());
 
-    public UpdateMeetingNoticeGET OutMap(MeetingNotice existingMeetingNotice,
-        UpdateMeetingNoticeGET updateMeetingNoticeGET) =>
-        _autoMapper.Map(existingMeetingNotice, updateMeetingNoticeGET);
+    public UpdateMeetingNoticePOST OutMap(NoticeMeeting existingNoticeMeeting,
+        UpdateMeetingNoticePOST updateMeetingNoticePost) =>
+        _autoMapper.Map(existingNoticeMeeting, updateMeetingNoticePost);
+
+    public Meeting InMap(UpdateMeetingNoticePOST noticePost, Meeting existingMeeting)
+    {
+       //var not = existingMeeting.Notice ?? new NoticeMeeting();
+       existingMeeting.Notice.MeetingId = existingMeeting.Id;
+       existingMeeting.Notice.Mandate = noticePost.Mandate;
+       existingMeeting.Notice.AgendaText = noticePost.AgendaText;
+       existingMeeting.Notice.Salutation = noticePost.Salutation;
+       existingMeeting.Notice.NoticeDate = noticePost.NoticeDate;
+       existingMeeting.Notice.NoticeText = noticePost.NoticeText;
+       existingMeeting.Notice.Signature = noticePost.Signature;
+       existingMeeting.Notice.Signatory = noticePost.Signatory;
+       return existingMeeting;
+    }
 
     #region Attending User Maps
 
-    public UpdateMeetingAttendingUserGET OutMap(Meeting existingMeeting, UpdateMeetingAttendingUserGET updateMeetingAttendingUserGet) => _autoMapper.Map(existingMeeting, updateMeetingAttendingUserGet);
+    public UpdateAttendingUsersPOST OutMap(Meeting existingMeeting, UpdateAttendingUsersPOST updateAttendingUsersPost) => _autoMapper.Map(existingMeeting, updateAttendingUsersPost);
 
-    public UpdateMeetingAgendaItemGET OutMap(Meeting existingMeeting,
-        UpdateMeetingAgendaItemGET updateMeetingAgendaItemGet) =>
-        _autoMapper.Map(existingMeeting, updateMeetingAgendaItemGet);
+    public UpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting,
+        UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost) =>
+        _autoMapper.Map(existingMeeting, updateMeetingAgendaItemPost);
 
-    public Meeting InMap(UpdateMeetingAttendeesPOST updateMeetingAttendeesPost, Meeting meeting)
+    public Meeting InMap(UpdateAttendingUsersPOST updateMeetingAttendeesPost, Meeting meeting)
     {
         meeting.Attendees = InMap(updateMeetingAttendeesPost.Attendees, meeting);
         return meeting;
@@ -115,7 +142,7 @@ public class MeetingMaps : IMeetingMaps
     {
         var agendaItem =  new MeetingAgendaItem
         {
-            MeetingId = meeting.Id,
+            //MeetingId = meeting.Id,
             CompanyId = meeting.CompanyId,
             Title = updateMeetingAgendaItemPost.Title,
             Number = updateMeetingAgendaItemPost.Number,
@@ -151,7 +178,7 @@ public class MeetingMaps : IMeetingMaps
         var meetingPackItem = new MeetingPackItem()
         {
             MeetingId = existingMeeting.Id,
-            MeetingAgendaItemId = updateMeetingPackPost.AgendaItemId,
+            MeetingAgendaItemId = updateMeetingPackPost.MeetingAgendaItemId,
             PresenterUserId = updateMeetingPackPost.PresenterUserId,
             Description = updateMeetingPackPost.Description,
             Duration = updateMeetingPackPost.Duration,

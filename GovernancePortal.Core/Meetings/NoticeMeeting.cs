@@ -3,9 +3,13 @@ using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Meetings;
 
-public class MeetingNotice : BaseModel
+public class NoticeMeeting : BaseModel
 {
-    public string Id { get; set; }
+    public NoticeMeeting()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
+    public new string Id { get; set; }
     public string MeetingId { get; set; }
     public string Salutation { get; set; }
     public string NoticeText { get; set; }

@@ -27,12 +27,16 @@ public static class CreateMeetingEndpoints
         #region Create, Update Meeting
         
         app.MapPost("api/Meeting/Create",
-            ([FromServices] IMeetingService meetingService, MeetingPOST createMeetingPost) =>
+            ([FromServices] IMeetingService meetingService, CreateMeetingPOST createMeetingPost) =>
                 meetingService.CreateMeeting(createMeetingPost));
         
+        app.MapPost("api/Meeting/{meetingId}/AddAttendees", ([FromServices] IMeetingService meetingService,
+                string meetingId, AddAttendeesPOST updateMeetingAttendeesPost) =>
+            meetingService.AddAttendees(meetingId, updateMeetingAttendeesPost));
+        
         app.MapPost("api/Meeting/{meetingId}/Attendees/Update", ([FromServices] IMeetingService meetingService,
-                string meetingId, UpdateMeetingAttendeesPOST updateMeetingAttendeesPost) =>
-            meetingService.UpdateAttendees(meetingId, updateMeetingAttendeesPost));
+                string meetingId, UpdateAttendingUsersPOST updateMeetingAttendeesPost) =>
+            meetingService.UpdateAttendingUsers(meetingId, updateMeetingAttendeesPost));
         
         app.MapPost("api/Meeting/{meetingId}/AgendaItems/Update", ([FromServices] IMeetingService meetingService,
                string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST) =>
@@ -45,7 +49,13 @@ public static class CreateMeetingEndpoints
         app.MapPost("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
             meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST));
+        
+        app.MapPost("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId, UpdateMeetingNoticePOST updateMeetingMinutesPOST) =>
+            meetingService.UpdateNotice(meetingId, updateMeetingMinutesPOST));
         #endregion
+        
+        
         
         #region Get Update Data for meeting
         app.MapGet("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
@@ -67,7 +77,7 @@ public static class CreateMeetingEndpoints
                 string meetingId) =>
             meetingService.GetMeetingPackUpdateData(meetingId));
         
-        app.MapGet("api/Meeting/{meetingId}/MeetingNotice/Update", ([FromServices] IMeetingService meetingService,
+        app.MapGet("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingNoticeUpdateData(meetingId));
         
