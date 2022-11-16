@@ -107,8 +107,9 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Agenda Items for {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems(meetingId, loggedInUser.CompanyId);
+        var meetingAgendaItems = _unit.Meetings.GetAgendaItems_With_MeetingHolder(meetingId, loggedInUser.CompanyId).ToList();
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        var meeting = _meetingMapses.InMap(updateMeetingAgendaItemPOST, existingMeeting);
+        var meeting = _meetingMapses.InMap(updateMeetingAgendaItemPOST, meetingAgendaItems, existingMeeting);
         existingMeeting.Items = meeting.Items;
         _unit.SaveToDB();
         
@@ -309,7 +310,11 @@ public class MeetingServices : IMeetingService
         }
         else
         {
+            var relations = GenerateNewMeetingNoticeData(existingMeeting);
             outMeetingNotice = _meetingMapses.OutMap(existingMeeting.Notice, new UpdateMeetingNoticePOST());
+            outMeetingNotice.Attendees = relations.Attendees;
+            outMeetingNotice.AgendaItems = relations.AgendaItems;
+            outMeetingNotice.MeetingDate = existingMeeting.DateTime;
         }
         var response = new Response
         {

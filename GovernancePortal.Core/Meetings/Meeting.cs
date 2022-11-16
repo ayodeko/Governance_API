@@ -13,8 +13,8 @@ namespace GovernancePortal.Core.Meetings
             Attendees = new List<AttendingUser>();
             Items = new List<MeetingAgendaItem>();
             Packs = new List<MeetingPackItem>();
-            Notice = new NoticeMeeting();
-            Minutes = new Minutes();
+            //Notice = new NoticeMeeting();
+            //Minutes = new Minutes();
             Attendance = new MeetingAttendance();
         }
         public string Id { get; set; }

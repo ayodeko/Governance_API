@@ -8,7 +8,7 @@ public interface IMeetingMaps
 {
     Meeting InMap(CreateMeetingPOST createMeetingPost, Meeting meeting);
     Meeting InMap(UpdateAttendingUsersPOST updateAttendingUsersPost, Meeting meeting);
-    Meeting InMap(UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, Meeting meeting);
+    Meeting InMap(UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting);
     Meeting InMap(UpdateMeetingPackPOST updateMeetingPackPost, Meeting existingMeeting);
     Meeting InMap(UpdateMeetingMinutesPOST updateMinutesPost, Meeting existingMeeting);
     MeetingListGET OutMap(Meeting existingMeeting, MeetingListGET meetingList);

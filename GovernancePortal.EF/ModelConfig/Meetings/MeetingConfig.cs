@@ -21,6 +21,7 @@ public static class MeetingConfigSettings
         builder.ApplyConfiguration(new MeetingPackItemConfig());
         builder.ApplyConfiguration(new MeetingAgendaItemConfig());
         builder.ApplyConfiguration(new MeetingAttendanceConfig());
+        builder.ApplyConfiguration(new MeetingAttendingUserConfig());
         return builder;
     }
 }
@@ -59,6 +60,14 @@ public class MeetingAttendanceConfig : IEntityTypeConfiguration<MeetingAttendanc
         builder.HasMany(x => x.Attendees)
             .WithOne()
             .HasForeignKey(fk => fk.MeetingAttendanceId);
+    }
+}
+
+public class MeetingAttendingUserConfig : IEntityTypeConfiguration<AttendingUser>
+{ 
+    public void Configure(EntityTypeBuilder<AttendingUser> builder)
+    {
+        builder.HasKey(x => new { x.MeetingId, x.UserId });
     }
 }
 

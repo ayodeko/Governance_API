@@ -18,4 +18,5 @@ public interface IMeetingRepo : IGenericRepo<Meeting>
         out int totalRecords);
     IEnumerable<Meeting> FindBySearchString(string searchString, string companyId);
     IEnumerable<Meeting> FindByDate(DateTime dateTime, string companyId);
+    IEnumerable<MeetingAgendaItem> GetAgendaItems_With_MeetingHolder(string meetingId, string companyId);
 }

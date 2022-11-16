@@ -45,7 +45,18 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .Include(x => x.Items)
             .ThenInclude(x => x.SubItems)
             .ThenInclude(x => x.SubItems)
+            .ThenInclude(x => x.SubItems)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
+    }
+    
+    
+    public IEnumerable<MeetingAgendaItem> GetAgendaItems_With_MeetingHolder(string meetingId, string companyId)
+    {
+        return  _context.Set<MeetingAgendaItem>()
+            .Include(x => x.SubItems)
+            .ThenInclude(x => x.SubItems)
+            .ThenInclude(x => x.SubItems)
+            .Where(x => x.MeetIdHolder.Equals(meetingId) && x.CompanyId.Equals(companyId));
     }
 
     public async Task<Meeting> GetMeeting_AgendaItems_Attendees_Notice(string meetingId, string companyId)
@@ -89,4 +100,5 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             Include(x => x.Attendees).
             Where(x => x.CompanyId == companyId && x.DateTime == dateTime);
     }
+
 }

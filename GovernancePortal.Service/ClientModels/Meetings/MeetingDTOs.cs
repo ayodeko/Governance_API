@@ -49,7 +49,6 @@ public class d
 }
 public class UpdateMeetingAgendaItemPOST
 {
-    public string MeetingId { get; set; }
     public List<AgendaItemPOST> Items { get; set; }
 }
 public class UpdateMeetingMinutesPOST
@@ -65,7 +64,6 @@ public class BaseAgendaItemGET
 public class UpdateMeetingNoticePOST
 {
     public string Id { get; set; }
-    public string MeetingId { get; set; }
     public List<AttendingUserPOST> Attendees { get; set; }
     public List<BaseAgendaItemGET> AgendaItems { get; set; }
     public string Salutation { get; set; }
@@ -152,7 +150,6 @@ public class UpdateMeetingGET
 
 public class UpdateAttendingUsersPOST
 {
-    public string MeetingId { get; set; }
     public List<AttendingUserPOST> Attendees { get; set; }
 }
 public class AttendingUserPOST
@@ -181,7 +178,7 @@ public class AddAttendeesListPOST
 public class AgendaItemPOST
 {
     public new string Id { get; set; }
-    public string MeetingId { get; set; }
+    public new string ParentId { get; set; }
     public int Number { get; set; }
     public string Title { get; set; }
     public List<AgendaItemPOST> SubItems { get; set; }
