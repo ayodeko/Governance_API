@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using GovernancePortal.Core.Meetings;
@@ -14,12 +15,15 @@ public class MeetingsAutoMapper : Profile
     {
         CreateMap<MeetingPOST, Meeting>();
         CreateMap<Meeting, UpdateMeetingGET>();
+        CreateMap<Meeting, MeetingGET>();
         CreateMap<Meeting, MeetingListGET>();
         CreateMap<Meeting, UpdateAttendingUsersPOST>();
         CreateMap<Meeting, UpdateMeetingAgendaItemPOST>();
         CreateMap<MeetingAgendaItem, AgendaItemPOST>();
         CreateMap<AttendingUser, AttendingUserPOST>();
         CreateMap<NoticeMeeting, UpdateMeetingNoticePOST>();
+        CreateMap<MeetingPackItem, UpdateMeetingPackItemPOST>();
+        CreateMap<MeetingPackItemUser, MeetingPackUserPOST>();
         //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
     }
 }
@@ -53,9 +57,11 @@ public class MeetingMaps : IMeetingMaps
         existingMeeting.Packs.Select(x =>
         {
             var res = _autoMapper.Map(x, new UpdateMeetingPackItemPOST());
-            res.Title = existingMeeting.Items.FirstOrDefault(y => y.Id == res.MeetingAgendaItemId)?.Title;
+            res.Title = existingMeeting.Items?.FirstOrDefault(y => y.Id == res.MeetingAgendaItemId)?.Title;
             return res;
         }).ToList();
+
+    public MeetingGET OutMap(Meeting existingMeeting, MeetingGET meetingGet) => _autoMapper.Map(existingMeeting, meetingGet);
 
     public UpdateMeetingGET OutMap(Meeting existingMeeting) => _autoMapper.Map(existingMeeting, new UpdateMeetingGET());
 
@@ -181,31 +187,53 @@ public class MeetingMaps : IMeetingMaps
         return meetingPackItems;
     }
 
-    private MeetingPackItem InMap(UpdateMeetingPackItemPOST updateMeetingPackPost, Meeting existingMeeting)
+    private MeetingPackItem InMap(UpdateMeetingPackItemPOST packPost, Meeting existingMeeting)
     {
-        var meetingPackItem = new MeetingPackItem()
-        {
-            MeetingId = existingMeeting.Id,
-            MeetingAgendaItemId = updateMeetingPackPost.MeetingAgendaItemId,
-            PresenterUserId = updateMeetingPackPost.PresenterUserId,
-            Description = updateMeetingPackPost.Description,
-            Duration = updateMeetingPackPost.Duration,
-            CoCreators = updateMeetingPackPost.CoCreators.Select(x => new MeetingPackItemUser
+        var retrievedPack = existingMeeting.Packs?.FirstOrDefault(x => x.Id == packPost.Id );
+        var meetingPackItem = retrievedPack ?? new MeetingPackItem();
+        meetingPackItem.MeetingId = existingMeeting.Id;
+        meetingPackItem.MeetingAgendaItemId = packPost.MeetingAgendaItemId;
+        meetingPackItem.PresenterUserId = packPost.PresenterUserId;
+        meetingPackItem.Description = packPost.Description;
+        meetingPackItem.Duration = packPost.Duration;
+        meetingPackItem.CoCreators = packPost.CoCreators
+            ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
             {
-                AttendingUserId = x
-            }).ToList(),
-            RestrictedUsers = updateMeetingPackPost.RestrictedUsers.Select(x => new MeetingPackItemUser
+                var retrievedUser = retrievedPack?.CoCreators?.FirstOrDefault(y =>
+                    y.CoCreatorId == meetingPackItem.Id && y.UserId == x.UserId);
+                var packUser = retrievedUser ?? new MeetingPackItemUser();
+                packUser.UserId = x.UserId;
+                packUser.AgendaItemId = packPost.MeetingAgendaItemId;
+                packUser.CoCreatorId = meetingPackItem.Id;
+                return packUser;
+
+            }).ToList();
+        meetingPackItem.RestrictedUsers = packPost.RestrictedUsers
+            ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
             {
-                AttendingUserId = x
-            }).ToList(),
-            InterestTagUsers = updateMeetingPackPost.InterestTagUsers.Select(x => new MeetingPackItemUser
+                var retrievedUser = retrievedPack?.RestrictedUsers?.FirstOrDefault(y =>
+                    y.RestrictedUserId == meetingPackItem.Id && y.UserId == x.UserId);
+                var packUser = retrievedUser ?? new MeetingPackItemUser();
+                packUser.UserId = x.UserId;
+                packUser.AgendaItemId = packPost.MeetingAgendaItemId;
+                packUser.RestrictedUserId = meetingPackItem.Id;
+                return packUser;
+
+            }).ToList();
+        meetingPackItem.InterestTagUsers = packPost.InterestTagUsers
+            ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
             {
-                AttendingUserId = x
-            }).ToList(),
-        };
+                var retrievedUser = retrievedPack?.InterestTagUsers?.FirstOrDefault(y =>
+                    y.InterestTagUserId == meetingPackItem.Id && y.UserId == x.UserId);
+                var packUser = retrievedUser ?? new MeetingPackItemUser();
+                packUser.UserId = x.UserId;
+                packUser.AgendaItemId = packPost.MeetingAgendaItemId;
+                packUser.InterestTagUserId = meetingPackItem.Id;
+                return packUser;
+            }).ToList();
         return meetingPackItem;
     }
-
+    
     #endregion
 
     #region Minutes Maps

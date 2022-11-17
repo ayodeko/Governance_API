@@ -95,6 +95,13 @@ public static class CreateMeetingEndpoints
             meetingService.SearchMeetingsByDate(dateTime));
 
         #endregion
+
+        #region Get Meeting Relations
+
+        app.MapGet("api/Meeting/{meetingId}/MeetingPack", ([FromServices] IMeetingService meetingService,
+                string meetingId) =>
+            meetingService.GetMeetingPack(meetingId));
+        #endregion
         
         
         return app;

@@ -383,6 +383,9 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AgendaItemId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AttendingUserId")
                         .HasColumnType("nvarchar(max)");
 
@@ -400,6 +403,9 @@ namespace GovernancePortal.EF.Migrations
 
                     b.Property<string>("RestrictedUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

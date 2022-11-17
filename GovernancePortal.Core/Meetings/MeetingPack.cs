@@ -25,7 +25,7 @@ namespace GovernancePortal.Core.Meetings
         {
             Id = Guid.NewGuid().ToString();
         }
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string MeetingPackId { get; set; }
         public string MeetingAgendaItemId { get; set; }
         public string MeetingId { get; set; }
@@ -58,6 +58,8 @@ namespace GovernancePortal.Core.Meetings
             Id = Guid.NewGuid().ToString();
         }
         public string Id { get; set; }
+        public string UserId { get; set; }
+        public string AgendaItemId { get; set; }
         public string CoCreatorId { get; set; }
         public string RestrictedUserId { get; set; }
         public string InterestTagUserId { get; set; }

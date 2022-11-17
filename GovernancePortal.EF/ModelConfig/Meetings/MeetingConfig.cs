@@ -22,6 +22,7 @@ public static class MeetingConfigSettings
         builder.ApplyConfiguration(new MeetingAgendaItemConfig());
         builder.ApplyConfiguration(new MeetingAttendanceConfig());
         builder.ApplyConfiguration(new MeetingAttendingUserConfig());
+        builder.ApplyConfiguration(new MeetingPackItemUserConfig());
         return builder;
     }
 }
@@ -68,6 +69,14 @@ public class MeetingAttendingUserConfig : IEntityTypeConfiguration<AttendingUser
     public void Configure(EntityTypeBuilder<AttendingUser> builder)
     {
         builder.HasKey(x => new { x.MeetingId, x.UserId });
+    }
+}
+
+public class MeetingPackItemUserConfig : IEntityTypeConfiguration<MeetingPackItemUser>
+{ 
+    public void Configure(EntityTypeBuilder<MeetingPackItemUser> builder)
+    {
+        
     }
 }
 

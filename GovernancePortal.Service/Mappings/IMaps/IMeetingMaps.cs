@@ -20,6 +20,7 @@ public interface IMeetingMaps
 
     UpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost);
     List<UpdateMeetingPackItemPOST> OutMap(Meeting existingMeeting, List<UpdateMeetingPackItemPOST> updateMeetingAgendaItemPOST);
+    MeetingGET OutMap(Meeting existingMeeting, MeetingGET updateMeetingAttendingUserPost);
     UpdateMeetingGET OutMap(Meeting existingMeeting);
     UpdateMeetingNoticePOST OutMap(NoticeMeeting existingNoticeMeeting, UpdateMeetingNoticePOST updateMeetingAttendingUserPost);
     Meeting InMap(UpdateMeetingNoticePOST updateMeetingAgendaItemPost, Meeting existingMeeting);

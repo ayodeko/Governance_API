@@ -31,22 +31,24 @@ public class s
 
 public class UpdateMeetingPackItemPOST
 {
+    public string Id { get; set; }
     public string MeetingAgendaItemId { get; set; }
     public string Title { get; set; }
     public string MeetingId { get; set; }
     public string Description { get; set; }
     public string PresenterUserId { get; set; }
-    public List<string> CoCreators { get; set; }
-    public List<string> RestrictedUsers { get; set; }
-    public List<string> InterestTagUsers { get; set; }
+    public List<MeetingPackUserPOST> CoCreators { get; set; }
+    public List<MeetingPackUserPOST> RestrictedUsers { get; set; }
+    public List<MeetingPackUserPOST> InterestTagUsers { get; set; }
     public int Duration { get; set; }
 }
 
-public class d
+public class MeetingPackUserPOST
 {
-    public string MeetingId { get; set; }
-    public List<AgendaItemPOST> Items { get; set; }
+    public string Id { get; set; }
+    public string UserId { get; set; }
 }
+
 public class UpdateMeetingAgendaItemPOST
 {
     public List<AgendaItemPOST> Items { get; set; }
@@ -126,6 +128,7 @@ public class MeetingPOST : MeetingBaseDto
 public class MeetingGET : MeetingBaseDto
 {
     public List<AttendingUserPOST> Attendees { get; set; }
+    public List<UpdateMeetingPackItemPOST> Packs { get; set; }
     public List<AgendaItemPOST> Items { get; set; }
     
 }
