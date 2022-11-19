@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Data.Repository;
@@ -20,6 +21,13 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         return (await _context.Set<Meeting>()
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
+
+    public async Task<AttendingUser> GetAttendingUsers(string meetingId, string companyId, CancellationToken token)
+    {
+        return (await _context.Set<AttendingUser>()
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId), token))!;
+    }
+
     public async Task<Meeting> GetMeeting_AllDependencies(string meetingId, string companyId)
     {
         return (await _context.Set<Meeting>()
@@ -32,6 +40,7 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
     {
         return (await _context.Set<Meeting>()
             .Include(x => x.Attendees)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
     public async Task<Meeting> GetMeeting_AgendaItems(string meetingId, string companyId)

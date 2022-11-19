@@ -13,8 +13,8 @@ namespace GovernancePortal.Core.Meetings
             Attendees = new List<AttendingUser>();
             Items = new List<MeetingAgendaItem>();
             Packs = new List<MeetingPackItem>();
-            //Notice = new NoticeMeeting();
-            //Minutes = new Minutes();
+            Notice = new NoticeMeeting();
+            Minutes = new Minutes();
             Attendance = new MeetingAttendance();
         }
         public string Id { get; set; }
@@ -45,6 +45,7 @@ namespace GovernancePortal.Core.Meetings
         public MeetingAttendance Attendance { get; set; }
         public NoticeMeeting Notice { get; set; }
         public string MeetingPackId { get; set; }
+        public string AttendanceGeneratedCode { get; set; }
     }
 
     public enum MeetingType

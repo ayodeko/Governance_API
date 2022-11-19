@@ -151,6 +151,9 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AttendanceGeneratedCode")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ChairPersonId")
                         .HasColumnType("nvarchar(max)");
 

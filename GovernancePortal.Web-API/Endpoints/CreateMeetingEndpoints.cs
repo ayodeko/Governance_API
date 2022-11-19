@@ -102,14 +102,83 @@ public static class CreateMeetingEndpoints
                 string meetingId) =>
             meetingService.GetMeetingPack(meetingId));
         #endregion
+
+
+
+
+
+
+        #region Attendance
+
+        app.MapPost("api/Meeting/{meetingId}/Attendance/GenerateCode", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, CancellationToken token) =>
+            meetingService.GenerateAttendanceCode(meetingId, token));
+        
+        app.MapGet("api/Meeting/{meetingId}/Attendance/RetrieveGeneratedCode", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, CancellationToken token) =>
+            meetingService.RetrieveGeneratedAttendanceCode(meetingId, token));
+        
+        app.MapPost("api/Meeting/{meetingId}/Attendance/SendCodeToAll", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, CancellationToken token) =>
+            meetingService.SendAttendanceCodeToAll(meetingId, token));
+        
+        app.MapPost("api/Meeting/{meetingId}/Attendance/SendCodeToUser/{userId}", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, string userId, CancellationToken token) =>
+            meetingService.SendAttendanceCodeToUser(meetingId, userId, token)); 
+        
+        app.MapPost("api/Meeting/{meetingId}/Attendance/RemindAll", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, CancellationToken token) =>
+            meetingService.NotifyAllToMarkAttendance(meetingId, token));
+        
+        app.MapPost("api/Meeting/{meetingId}/Attendance/RemindUser/{userId}", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, string userId, CancellationToken token) =>
+            meetingService.NotifyUserToMarkAttendance(meetingId, userId, token));
+        
+        app.MapPost("api/Meeting/{meetingId}/Attendance/MarkAttendance/{userId}", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, string userId, string attendanceCode, CancellationToken token) =>
+            meetingService.MarkAttendance(meetingId, userId, attendanceCode, token));
+        
+        app.MapGet("api/Meeting/{meetingId}/Attendance/RetrieveAttendanceDetails", ([FromServices] IAttendanceServices meetingService,
+                string meetingId, string userId, string attendanceCode, CancellationToken token) =>
+            meetingService.GetAttendanceDetails(meetingId, token));
+
+        #endregion
+        
+        
+        
+        
+        
+        
         
         
         return app;
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     public static WebApplicationBuilder RegisterMeetingServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<IMeetingService, MeetingServices>();
+        builder.Services.AddScoped<IAttendanceServices, AttendanceService>();
+        builder.Services.AddScoped<IBusinessLogic, BusinessLogicService>();
         builder.Services.AddScoped<IMeetingMaps, MeetingMaps>();
         builder.Services.AddScoped<ILogger, StubLogger>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
