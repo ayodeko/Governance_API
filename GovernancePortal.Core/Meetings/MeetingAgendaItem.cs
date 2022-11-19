@@ -9,10 +9,10 @@ namespace GovernancePortal.Core.Meetings
         public MeetingAgendaItem()
         {
             Id = Guid.NewGuid().ToString();
-            AgendaItemId = Id;
         }
         public string Id { get; set; }
         public string MeetingId { get; set; }
+        public string MeetIdHolder { get; set; }
         public string AgendaItemId { get; set; }
         public string ParentId { get; set; }
         public int Number { get; set; }

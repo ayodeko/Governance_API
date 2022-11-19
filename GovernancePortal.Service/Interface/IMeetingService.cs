@@ -28,4 +28,5 @@ public interface IMeetingService
     Task<Response> SearchMeetings(string meetingSearchString);
     Task<Response> SearchMeetingsByDate(DateTime meetingDateTime);
     Task<Response> AddAttendees(string meetingId, AddAttendeesPOST updateMeetingAttendeesPost);
+    Task<Response> GetMeetingPack(string meetingId);
 }

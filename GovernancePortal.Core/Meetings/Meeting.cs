@@ -45,6 +45,7 @@ namespace GovernancePortal.Core.Meetings
         public MeetingAttendance Attendance { get; set; }
         public NoticeMeeting Notice { get; set; }
         public string MeetingPackId { get; set; }
+        public string AttendanceGeneratedCode { get; set; }
     }
 
     public enum MeetingType
