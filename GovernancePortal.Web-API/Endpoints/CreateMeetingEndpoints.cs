@@ -139,7 +139,7 @@ public static class CreateMeetingEndpoints
             meetingService.MarkAttendance(meetingId, userId, attendanceCode, token));
         
         app.MapGet("api/Meeting/{meetingId}/Attendance/RetrieveAttendanceDetails", ([FromServices] IAttendanceServices meetingService,
-                string meetingId, string userId, string attendanceCode, CancellationToken token) =>
+                string meetingId, CancellationToken token) =>
             meetingService.GetAttendanceDetails(meetingId, token));
 
         #endregion
