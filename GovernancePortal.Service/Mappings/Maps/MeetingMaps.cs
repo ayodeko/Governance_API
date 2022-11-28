@@ -19,7 +19,10 @@ public class MeetingsAutoMapper : Profile
         CreateMap<Meeting, MeetingListGET>();
         CreateMap<Meeting, UpdateAttendingUsersPOST>();
         CreateMap<Meeting, UpdateMeetingAgendaItemPOST>();
+        CreateMap<Meeting, FullUpdateMeetingAgendaItemPOST>();
         CreateMap<MeetingAgendaItem, AgendaItemPOST>();
+        CreateMap<MeetingAgendaItem, FullAgendaItemPOST>();
+        CreateMap<MeetingAgendaItem, SubAgendaItemPOST>();
         CreateMap<AttendingUser, AttendingUserPOST>();
         CreateMap<NoticeMeeting, UpdateMeetingNoticePOST>();
         CreateMap<MeetingPackItem, UpdateMeetingPackItemPOST>();
@@ -90,6 +93,9 @@ public class MeetingMaps : IMeetingMaps
 
     public UpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting,
         UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost) =>
+        _autoMapper.Map(existingMeeting, updateMeetingAgendaItemPost);
+    public FullUpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting,
+        FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost) =>
         _autoMapper.Map(existingMeeting, updateMeetingAgendaItemPost);
 
     public Meeting InMap(UpdateAttendingUsersPOST updateMeetingAttendeesPost, Meeting meeting)
@@ -166,6 +172,114 @@ public class MeetingMaps : IMeetingMaps
 
 
     #endregion
+
+    #region Full Agenda Items Maps
+
+    public Meeting InMap(FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting)
+    {
+        var editedMeeting = meeting;
+        //editedMeeting.Items = agendaItems;
+        meeting.Items = InMap(updateMeetingAgendaItemPost.Items, agendaItems, editedMeeting);
+        return meeting;
+    }
+    
+    public List<MeetingAgendaItem> InMap(List<FullAgendaItemPOST> updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting)
+    {
+        if (updateMeetingAgendaItemPost == null || !updateMeetingAgendaItemPost.Any()) return null;
+        var newAgendaItemsList = new List<MeetingAgendaItem>();
+        foreach (var agendaItemPost in updateMeetingAgendaItemPost)
+        {
+            var agendaItem = InMap(agendaItemPost,agendaItems, meeting);
+            newAgendaItemsList.Add(agendaItem);
+        }
+        return newAgendaItemsList;
+    }
+    public List<MeetingAgendaItem> InMap(List<SubAgendaItemPOST> updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting)
+    {
+        if (updateMeetingAgendaItemPost == null || !updateMeetingAgendaItemPost.Any()) return null;
+        var newAgendaItemsList = new List<MeetingAgendaItem>();
+        foreach (var agendaItemPost in updateMeetingAgendaItemPost)
+        {
+            var agendaItem = InMapSubItems(agendaItemPost,agendaItems, meeting);
+            newAgendaItemsList.Add(agendaItem);
+        }
+        return newAgendaItemsList;
+    }
+    
+    public MeetingAgendaItem InMap(FullAgendaItemPOST agendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting)
+    {
+        var retrievedItem = agendaItems?.FirstOrDefault(x => x.Id == agendaItemPost.Id );
+
+        var agendaItem = retrievedItem ?? new MeetingAgendaItem();
+        agendaItem.MeetIdHolder = meeting?.Id;
+        agendaItem.CompanyId = meeting?.CompanyId;
+        agendaItem.Title = agendaItemPost.Title;
+        agendaItem.Number = agendaItemPost.Number;
+        agendaItem.PresenterUserId = agendaItemPost.PresenterUserId;
+        agendaItem.Description = agendaItemPost.Description;
+        agendaItem.Duration = agendaItemPost.Duration;
+        agendaItem.CoCreators = agendaItemPost.CoCreators
+            ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
+            {
+                var retrievedUser = agendaItem?.CoCreators?.FirstOrDefault(y =>
+                    y.CoCreatorId == agendaItem.Id && y.UserId == x.UserId);
+                var packUser = retrievedUser ?? new MeetingPackItemUser();
+                packUser.UserId = x.UserId;
+                packUser.AgendaItemId = agendaItem.Id;
+                packUser.CoCreatorId = agendaItem.Id;
+                packUser.MeetingIdHolder = meeting?.Id;
+                packUser.CompanyId = meeting?.CompanyId;
+                return packUser;
+
+            }).ToList();
+        agendaItem.RestrictedUsers = agendaItemPost.RestrictedUsers
+            ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
+            {
+                var retrievedUser = agendaItem?.RestrictedUsers?.FirstOrDefault(y =>
+                    y.RestrictedUserId == agendaItem.Id && y.UserId == x.UserId);
+                var packUser = retrievedUser ?? new MeetingPackItemUser();
+                packUser.UserId = x.UserId;
+                packUser.AgendaItemId = agendaItem.Id;
+                packUser.RestrictedUserId = agendaItem.Id;
+                packUser.MeetingIdHolder = meeting?.Id;
+                packUser.CompanyId = meeting?.CompanyId;
+                return packUser;
+
+            }).ToList();
+        agendaItem.InterestTagUsers = agendaItemPost.InterestTagUsers
+            ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
+            {
+                var retrievedUser = agendaItem?.InterestTagUsers?.FirstOrDefault(y =>
+                    y.InterestTagUserId == agendaItem.Id && y.UserId == x.UserId);
+                var packUser = retrievedUser ?? new MeetingPackItemUser();
+                packUser.UserId = x.UserId;
+                packUser.AgendaItemId = agendaItem.Id;
+                packUser.InterestTagUserId = agendaItem.Id;
+                packUser.MeetingIdHolder = meeting?.Id;
+                packUser.CompanyId = meeting?.CompanyId;
+                return packUser;
+            }).ToList();
+        agendaItem.SubItems = InMap(agendaItemPost.SubItems, agendaItems, meeting);
+        return agendaItem;
+    }
+    
+    public MeetingAgendaItem InMapSubItems(SubAgendaItemPOST agendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting)
+    {
+        var retrievedItem = agendaItems?.FirstOrDefault(x => x.Id == agendaItemPost.Id );
+
+        var agendaItem = retrievedItem ?? new MeetingAgendaItem();
+        agendaItem.MeetIdHolder = meeting?.Id;
+        agendaItem.CompanyId = meeting?.CompanyId;
+        agendaItem.Title = agendaItemPost.Title;
+        agendaItem.Number = agendaItemPost.Number;
+        agendaItem.PresenterUserId = agendaItemPost.PresenterUserId;
+        agendaItem.Description = agendaItemPost.Description;
+        agendaItem.Duration = agendaItemPost.Duration;
+        agendaItem.SubItems = InMap(agendaItemPost.SubItems, agendaItems, meeting);
+        return agendaItem;
+    }
+
+    #endregion
     
     #region Meeting Pack Maps
 
@@ -195,7 +309,7 @@ public class MeetingMaps : IMeetingMaps
         meetingPackItem.MeetingAgendaItemId = packPost.MeetingAgendaItemId;
         meetingPackItem.PresenterUserId = packPost.PresenterUserId;
         meetingPackItem.Description = packPost.Description;
-        meetingPackItem.Duration = packPost.Duration;
+       /* meetingPackItem.Duration = packPost.Duration;
         meetingPackItem.CoCreators = packPost.CoCreators
             ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
             {
@@ -230,7 +344,7 @@ public class MeetingMaps : IMeetingMaps
                 packUser.AgendaItemId = packPost.MeetingAgendaItemId;
                 packUser.InterestTagUserId = meetingPackItem.Id;
                 return packUser;
-            }).ToList();
+            }).ToList();*/
         return meetingPackItem;
     }
     

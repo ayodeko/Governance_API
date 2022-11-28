@@ -13,7 +13,7 @@ public interface IAttendanceServices
     Task<Response> SendAttendanceCodeToUser(string meetingId, string userId, CancellationToken token);
     Task<Response> NotifyAllToMarkAttendance(string meetingId, CancellationToken token);
     Task<Response> NotifyUserToMarkAttendance(string meetingId, string userId, CancellationToken token);
-    Task<Response> MarkAttendance(string meetingId, string userId, string attendanceCode, CancellationToken token);
+    Task<Response> MarkAttendance(string meetingId, string userId, string inputtedAttendanceCode, CancellationToken token);
     Task<Response> GetAttendanceDetails(string meetingId, CancellationToken token);
 }
 

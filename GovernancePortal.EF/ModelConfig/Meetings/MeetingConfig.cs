@@ -31,7 +31,7 @@ public class MeetingPackItemConfig : IEntityTypeConfiguration<MeetingPackItem>
 {
     public void Configure(EntityTypeBuilder<MeetingPackItem> builder)
     {
-        builder.HasMany(x => x.CoCreators)
+        /*builder.HasMany(x => x.CoCreators)
             .WithOne()
             .HasForeignKey(fk => fk.CoCreatorId);
         builder.HasMany(x => x.RestrictedUsers)
@@ -40,7 +40,7 @@ public class MeetingPackItemConfig : IEntityTypeConfiguration<MeetingPackItem>
         
         builder.HasMany(x => x.InterestTagUsers)
             .WithOne()
-            .HasForeignKey(fk => fk.InterestTagUserId);
+            .HasForeignKey(fk => fk.InterestTagUserId);*/
     }
 }
 
@@ -51,6 +51,16 @@ public class MeetingAgendaItemConfig : IEntityTypeConfiguration<MeetingAgendaIte
         builder.HasMany(x => x.SubItems)
             .WithOne()
             .HasForeignKey(fk => fk.ParentId);
+        builder.HasMany(x => x.CoCreators)
+            .WithOne()
+            .HasForeignKey(fk => fk.CoCreatorId);
+        builder.HasMany(x => x.RestrictedUsers)
+            .WithOne()
+            .HasForeignKey(fk => fk.RestrictedUserId);
+        
+        builder.HasMany(x => x.InterestTagUsers)
+            .WithOne()
+            .HasForeignKey(fk => fk.InterestTagUserId);
     }
 }
 

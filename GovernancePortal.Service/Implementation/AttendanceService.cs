@@ -150,7 +150,7 @@ public class AttendanceService : IAttendanceServices
         return response;
     }
 
-    public async Task<Response> MarkAttendance(string meetingId, string userId, string attendanceCode, CancellationToken token)
+    public async Task<Response> MarkAttendance(string meetingId, string userId, string inputtedAttendanceCode, CancellationToken token)
     {
         var user = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, user.CompanyId);
@@ -159,7 +159,8 @@ public class AttendanceService : IAttendanceServices
             throw new NotFoundException($"User with Id: {userId} not found as an attendee of meeting: {meetingId}");
         var code = meeting.AttendanceGeneratedCode;
         var successful = false;
-        if (code == attendanceCode.ToUpper())
+        var message = $"Could not mark attendee {userId} as present";
+        if (code == inputtedAttendanceCode.ToUpper())
         {
             attendingUser.IsPresent = true;
             successful = true;
@@ -167,12 +168,13 @@ public class AttendanceService : IAttendanceServices
         }
         else
         {
-            _logger.LogInformation($"Could not mark attendance for userId {userId}, {code} is not {attendanceCode} ");
+            message = $"Inputted code {inputtedAttendanceCode} is not correct";
+            _logger.LogInformation($"Could not mark attendance for userId {userId}, expected code {code} is not same as input code: {inputtedAttendanceCode} ");
         }
         var response = new Response
         {
             Data = attendingUser.IsPresent,
-            Message = !successful ? $"Could not mark attendee {userId} as present" : $"Attendee {userId} marked successfully" ,
+            Message = !successful ? message : $"Attendee {userId} marked successfully" ,
             StatusCode = HttpStatusCode.OK.ToString(),
             IsSuccessful = successful
         };

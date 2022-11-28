@@ -10,6 +10,7 @@ public interface IMeetingService
     Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST);
     Task<Response> UpdateAttendingUsers(string meetingId, UpdateAttendingUsersPOST updateAttendingUsersPost);
     Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
+    Task<Response> FullUpdateAgendaItems(string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
     Task<Response> UpdateMeetingPack(string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST);
     Task<Response> UpdateMinutes(string meetingId, UpdateMeetingMinutesPOST updateMinutesPOST);
     Task<Response> UpdateNotice(string meetingId, UpdateMeetingNoticePOST updateMinutesPOST);
@@ -19,6 +20,7 @@ public interface IMeetingService
     Task<Response> GetMeetingMinutesUpdateData(string meetingId);
     Task<Response> GetMeetingAttendeesUpdateData(string meetingId);
     Task<Response> GetMeetingAgendaItemsUpdateData(string meetingId);
+    Task<Response> GetMeetingAgendaItemsFullUpdateData(string meetingId);
     Task<Response> GetMeetingPackUpdateData(string meetingId);
     Task<Response> GetMeetingNoticeUpdateData(string meetingId);
     

@@ -127,6 +127,29 @@ public class MeetingServices : IMeetingService
         return response;
     }
 
+
+    public async Task<Response> FullUpdateAgendaItems(string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST)
+    {
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside update Agenda Items for {meetingId}");
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems(meetingId, loggedInUser.CompanyId);
+        var meetingAgendaItems = _unit.Meetings.GetAgendaItems_With_MeetingHolder(meetingId, loggedInUser.CompanyId).ToList();
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var meeting = _meetingMapses.InMap(updateMeetingAgendaItemPOST, meetingAgendaItems, existingMeeting);
+        existingMeeting.Items = meeting.Items;
+        _unit.SaveToDB();
+        
+        var response = new Response
+        {
+            Data = existingMeeting,
+            Message = "Meeting updated successfully",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("UpdateAgendaItems successful: {response}", response);
+        return response;
+    }
+
     public async Task<Response> UpdateMeetingPack(string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST)
     {
         var loggedInUser = GetLoggedUser();
@@ -241,6 +264,23 @@ public class MeetingServices : IMeetingService
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting, new UpdateMeetingAgendaItemPOST());
+        var response = new Response
+        {
+            Data = outMeeting,
+            Message = "Successful",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Get Meeting Agenda Items Update Data successful: {response}", response);
+        return response;
+    }
+    public async Task<Response> GetMeetingAgendaItemsFullUpdateData(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside get Meeting_AgendaItems update data for meeting {meetingId}");
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Relationships(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var outMeeting = _meetingMapses.OutMap(existingMeeting, new FullUpdateMeetingAgendaItemPOST());
         var response = new Response
         {
             Data = outMeeting,

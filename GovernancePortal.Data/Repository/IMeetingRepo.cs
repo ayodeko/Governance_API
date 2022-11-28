@@ -14,6 +14,7 @@ public interface IMeetingRepo : IGenericRepo<Meeting>
     Task<Meeting> GetMeeting_AllDependencies(string meetingId, string companyId);
     Task<Meeting> GetMeeting_Attendees(string meetingId, string companyId);
     Task<Meeting> GetMeeting_AgendaItems(string meetingId, string companyId);
+    Task<Meeting> GetMeeting_AgendaItems_Relationships(string meetingId, string companyId);
     Task<Meeting> GetMeeting_AgendaItems_Attendees_Notice(string meetingId, string companyId);
     Task<Meeting> GetMeeting_AgendaItems_MeetingPack(string meetingId, string companyId);
     Task<Meeting> GetMeeting_MeetingPack(string meetingId, string companyId);
