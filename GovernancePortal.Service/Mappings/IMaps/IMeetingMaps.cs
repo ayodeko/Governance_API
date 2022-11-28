@@ -9,6 +9,7 @@ public interface IMeetingMaps
     Meeting InMap(CreateMeetingPOST createMeetingPost, Meeting meeting);
     Meeting InMap(UpdateAttendingUsersPOST updateAttendingUsersPost, Meeting meeting);
     Meeting InMap(UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting);
+    Meeting InMap(FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting);
     Meeting InMap(UpdateMeetingPackPOST updateMeetingPackPost, Meeting existingMeeting);
     Meeting InMap(UpdateMeetingMinutesPOST updateMinutesPost, Meeting existingMeeting);
     MeetingListGET OutMap(Meeting existingMeeting, MeetingListGET meetingList);
@@ -19,6 +20,7 @@ public interface IMeetingMaps
         UpdateAttendingUsersPOST updateAttendingUsersPost);
 
     UpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost);
+    FullUpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost);
     List<UpdateMeetingPackItemPOST> OutMap(Meeting existingMeeting, List<UpdateMeetingPackItemPOST> updateMeetingAgendaItemPOST);
     MeetingGET OutMap(Meeting existingMeeting, MeetingGET updateMeetingAttendingUserPost);
     UpdateMeetingGET OutMap(Meeting existingMeeting);

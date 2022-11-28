@@ -57,6 +57,26 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .ThenInclude(x => x.SubItems)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
     }
+    public async Task<Meeting> GetMeeting_AgendaItems_Relationships(string meetingId, string companyId)
+    {
+        /*return new Meeting()
+        {
+            Items = _context.Set<MeetingAgendaItem>().Include(x => x.SubItems)
+                .Where(x => x.MeetingId == meetingId).ToList()
+        };*/
+        return await _context.Set<Meeting>()
+            .Include(x => x.Items)
+            .ThenInclude(x => x.SubItems)
+            .ThenInclude(x => x.SubItems)
+            .ThenInclude(x => x.SubItems)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.CoCreators)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.RestrictedUsers)
+            .Include(x => x.Items)
+            .ThenInclude(x => x.InterestTagUsers)
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
+    }
     
     
     public IEnumerable<MeetingAgendaItem> GetAgendaItems_With_MeetingHolder(string meetingId, string companyId)
@@ -82,11 +102,11 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         return (await _context.Set<Meeting>()
             .Include(x => x.Items)
             .Include(x => x.Packs)
-            .ThenInclude(x => x.CoCreators)
+            /*.ThenInclude(x => x.CoCreators)
             .Include(x => x.Packs)
             .ThenInclude(x => x.RestrictedUsers)
             .Include(x => x.Packs)
-            .ThenInclude(x => x.InterestTagUsers)
+            .ThenInclude(x => x.InterestTagUsers)*/
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
 
@@ -94,14 +114,13 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
     {
         return (await _context.Set<Meeting>()
             .Include(x => x.Packs)
-            .ThenInclude(x => x.CoCreators)
+            /*.ThenInclude(x => x.CoCreators)
             .Include(x => x.Packs)
             .ThenInclude(x => x.RestrictedUsers)
             .Include(x => x.Packs)
-            .ThenInclude(x => x.InterestTagUsers)
+            .ThenInclude(x => x.InterestTagUsers)*/
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
-
     public async Task<Meeting> GetMeeting_AgendaItems_Attendees_MeetingPack(string meetingId, string companyId)
     {
         return (await _context.Set<Meeting>()

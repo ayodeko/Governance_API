@@ -4,6 +4,7 @@ using GovernancePortal.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GovernancePortal.EF.Migrations
 {
     [DbContext(typeof(PortalContext))]
-    partial class PortalContextModelSnapshot : ModelSnapshot
+    [Migration("20221124104845_add-new-properties-to-agendaItems")]
+    partial class addnewpropertiestoagendaItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -598,11 +600,23 @@ namespace GovernancePortal.EF.Migrations
                         .WithMany("CoCreators")
                         .HasForeignKey("CoCreatorId");
 
+                    b.HasOne("GovernancePortal.Core.Meetings.MeetingPackItem", null)
+                        .WithMany("CoCreators")
+                        .HasForeignKey("CoCreatorId");
+
                     b.HasOne("GovernancePortal.Core.Meetings.MeetingAgendaItem", null)
                         .WithMany("InterestTagUsers")
                         .HasForeignKey("InterestTagUserId");
 
+                    b.HasOne("GovernancePortal.Core.Meetings.MeetingPackItem", null)
+                        .WithMany("InterestTagUsers")
+                        .HasForeignKey("InterestTagUserId");
+
                     b.HasOne("GovernancePortal.Core.Meetings.MeetingAgendaItem", null)
+                        .WithMany("RestrictedUsers")
+                        .HasForeignKey("RestrictedUserId");
+
+                    b.HasOne("GovernancePortal.Core.Meetings.MeetingPackItem", null)
                         .WithMany("RestrictedUsers")
                         .HasForeignKey("RestrictedUserId");
 
@@ -673,6 +687,15 @@ namespace GovernancePortal.EF.Migrations
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPack", b =>
                 {
                     b.Navigation("MeetingPackItems");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPackItem", b =>
+                {
+                    b.Navigation("CoCreators");
+
+                    b.Navigation("InterestTagUsers");
+
+                    b.Navigation("RestrictedUsers");
                 });
 #pragma warning restore 612, 618
         }

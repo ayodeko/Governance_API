@@ -53,6 +53,12 @@ public class UpdateMeetingAgendaItemPOST
 {
     public List<AgendaItemPOST> Items { get; set; }
 }
+
+public class FullUpdateMeetingAgendaItemPOST
+{
+    public List<FullAgendaItemPOST> Items { get; set; }
+}
+
 public class UpdateMeetingMinutesPOST
 {
 }
@@ -128,8 +134,7 @@ public class MeetingPOST : MeetingBaseDto
 public class MeetingGET : MeetingBaseDto
 {
     public List<AttendingUserPOST> Attendees { get; set; }
-    public List<UpdateMeetingPackItemPOST> Packs { get; set; }
-    public List<AgendaItemPOST> Items { get; set; }
+    public List<FullAgendaItemPOST> Items { get; set; }
     
 }
 
@@ -186,8 +191,33 @@ public class AgendaItemPOST
     public string Title { get; set; }
     public List<AgendaItemPOST> SubItems { get; set; }
 }
+public class FullAgendaItemPOST
+{
+    public new string Id { get; set; }
+    public new string ParentId { get; set; }
+    public int Number { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public string PresenterUserId { get; set; }
+    public int Duration { get; set; }
+    public ActionRequired ActionRequired { get; set; }
+    public Attachment Attachment { get; set; }
+    
+    
+    public List<MeetingPackUserPOST> CoCreators { get; set; }
+    public List<MeetingPackUserPOST> RestrictedUsers { get; set; }
+    public List<MeetingPackUserPOST> InterestTagUsers { get; set; }
+    public List<SubAgendaItemPOST> SubItems { get; set; }
+}
 public class SubAgendaItemPOST
 {
-    public string MeetingId { get; set; }
+    public new string Id { get; set; }
+    public new string ParentId { get; set; }
+    public int Number { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public string PresenterUserId { get; set; }
+    public int Duration { get; set; }
+    public ActionRequired ActionRequired { get; set; }
     public List<SubAgendaItemPOST> SubItems { get; set; }
 }

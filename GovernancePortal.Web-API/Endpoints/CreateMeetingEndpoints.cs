@@ -42,6 +42,10 @@ public static class CreateMeetingEndpoints
                string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST) =>
             meetingService.UpdateAgendaItems(meetingId, updateMeetingAgendaItemPOST));
         
+        app.MapPost("api/Meeting/{meetingId}/AgendaItems/FullUpdate", ([FromServices] IMeetingService meetingService,
+               string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST) =>
+            meetingService.FullUpdateAgendaItems(meetingId, updateMeetingAgendaItemPOST));
+        
         app.MapPost("api/Meeting/{meetingId}/MeetingPack/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST) =>
             meetingService.UpdateMeetingPack(meetingId, updateMeetingPackPOST));
@@ -72,6 +76,10 @@ public static class CreateMeetingEndpoints
         app.MapGet("api/Meeting/{meetingId}/AgendaItems/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingAgendaItemsUpdateData(meetingId));
+        
+        app.MapGet("api/Meeting/{meetingId}/AgendaItems/FullUpdate", ([FromServices] IMeetingService meetingService,
+                string meetingId) =>
+            meetingService.GetMeetingAgendaItemsFullUpdateData(meetingId));
         
         app.MapGet("api/Meeting/{meetingId}/MeetingPack/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
