@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GovernancePortal.Core.Utilities;
 using GovernancePortal.EF;
 using GovernancePortal.Service.ClientModels.General;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,16 +26,21 @@ public static class ServiceConfigurations
                         .AllowAnyMethod();
                 });
         });
-        
-        services.Configure<UploadConfig>(options =>
-        {
-            options.AccessKey = Configuration["ExternalProviders:AwsS3:AccessKey"];
-            options.AccessSecret = Configuration["ExternalProviders:AwsS3:AccessSecret"];
-            options.BucketName = Configuration["ExternalProviders:AwsS3:Bucket"];
-        });
-        
+
+        //services.Configure<UploadConfig>(options =>
+        //{
+        //    options.AccessKey = Configuration["ExternalProviders:AwsS3:AccessKey"];
+        //    options.AccessSecret = Configuration["ExternalProviders:AwsS3:AccessSecret"];
+        //    options.BucketName = Configuration["ExternalProviders:AwsS3:Bucket"];
+        //});
+
+        //services.AddDbContext<PortalContext>(opt =>
+        //   opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+        //           x => x.MigrationsAssembly("GovernancePortal.EF"))
+        //       .EnableSensitiveDataLogging());
+
         services.AddDbContext<PortalContext>(opt =>
-            opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+            opt.UseSqlServer(EnvironmentVariables.ConnectionString,
                     x => x.MigrationsAssembly("GovernancePortal.EF"))
                 .EnableSensitiveDataLogging());
         
