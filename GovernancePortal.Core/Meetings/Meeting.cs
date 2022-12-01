@@ -10,6 +10,7 @@ namespace GovernancePortal.Core.Meetings
         public Meeting()
         {
             Id = Guid.NewGuid().ToString();
+            Minutes = new List<Minutes>();
         }
         public string Id { get; set; }
         public string CompanyId { get; set; }
@@ -33,7 +34,7 @@ namespace GovernancePortal.Core.Meetings
         public List<AttendingUser> Attendees { get; set; }
         public List<MeetingAgendaItem> Items { get; set; }
         public List<MeetingPackItem> Packs { get; set; }
-        public Minutes Minutes { get; set; }
+        public List<Minutes> Minutes { get; set; }
         public MeetingAttendance Attendance { get; set; }
         public string MeetingPackId { get; set; }
     }

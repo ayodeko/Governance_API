@@ -20,7 +20,11 @@ public class MeetingServices : IMeetingService
 {
     Person GetLoggedUser()
     {
-        return new Person();
+        return new Person
+        {
+            Id = "CompanyId1",
+            CompanyId = "Company1UserAdmin1"
+        };
     }
 
     private ILogger _logger;
