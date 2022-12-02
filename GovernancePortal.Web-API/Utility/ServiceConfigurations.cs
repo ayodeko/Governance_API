@@ -90,6 +90,7 @@ public static class ServiceConfigurations
     {
         app.UseSwagger();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BodAdmin_Api_Governance_Portal v1"));
+        app.UseCors("*");
 
     }
 }
