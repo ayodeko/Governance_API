@@ -1,9 +1,12 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Data;
+using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.Interface;
 using GovernancePortal.Service.Mappings.IMaps;
@@ -33,7 +36,7 @@ public class ResolutionServices : IResolutionServices
             UserType = UserType.StandaloneUser
         };
     }
-    public async Task<Response> CreateVoting(CreateVotingPOST createVotingPOST)
+    public async Task<Response> CreateVotingAsync(CreateVotingPOST createVotingPOST, CancellationToken cancellationToken)
     {
         var person = GetLoggedInUser();
         var voting = _votingMaps.InMap(createVotingPOST, new Voting());
@@ -50,10 +53,10 @@ public class ResolutionServices : IResolutionServices
         return response;
     }
 
-    public async Task<Response> ChangeIsAnonymous(string resolutionId, bool isAnonymous)
+    public async Task<Response> ChangeIsAnonymousAsync(string resolutionId, bool isAnonymous)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = await _unit.Votings.GetVoting(resolutionId, person.CompanyId);
+        var retrievedVoting = await _unit.Votings.GetVotingAsync(resolutionId, person.CompanyId);
         retrievedVoting.IsAnonymous = isAnonymous;
         var response = new Response()
         {
@@ -66,9 +69,28 @@ public class ResolutionServices : IResolutionServices
         return response;
     }
 
-    public Task<Response> Vote(string resolutionId, string userId, VotePOST votePost)
+    public async Task<Response> VoteAsync(string resolutionId, string userId, VotePOST votePost)
     {
-        throw new System.NotImplementedException();
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Votings.GetVoting_VotersAsync(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+        var voter = retrievedVoting?.Voters?.FirstOrDefault(x => x.UserId == userId);
+        if (voter == null || voter.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Voter with UserID: {userId} not found");
+        voter.Stance = votePost.Stance;
+        voter.StanceReason = votePost.StanceReason;
+        _unit.SaveToDB();
+
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Voting successful",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
     }
 
     public Task<Response> GetVotingDetails(string resolutionId)

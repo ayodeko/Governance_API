@@ -1,13 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Service.ClientModels.General;
 
 namespace GovernancePortal.Service.Interface;
 
 public interface IResolutionServices
 {
-    Task<Response> CreateVoting(CreateVotingPOST createVotingPOST);
-    Task<Response> ChangeIsAnonymous(string resolutionId, bool isAnonymous);
-    Task<Response> Vote(string resolutionId, string userId, VotePOST votePost);
+    Task<Response> CreateVotingAsync(CreateVotingPOST createVotingPOST, CancellationToken cancellationToken);
+    Task<Response> ChangeIsAnonymousAsync(string resolutionId, bool isAnonymous);
+    Task<Response> VoteAsync(string resolutionId, string userId, VotePOST votePost);
     Task<Response> GetVotingDetails(string resolutionId);
     Task<Response> GetVotingList(PageQuery pageQuery);
     
@@ -25,7 +27,8 @@ public class CreateVotingPOST
 }
 public class VotePOST
 {
-    
+    public  VotingStance Stance { get; set; }
+    public string StanceReason { get; set; }
 }
 public class PollVotePOST
 {

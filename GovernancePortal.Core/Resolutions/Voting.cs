@@ -17,7 +17,7 @@ public class Voting : BaseModel, ICompanyModel
     public List<VotingUser> Voters { get; set; }
 }
 
-public class VotingUser
+public class VotingUser : BaseModel
 {
     public VotingUser()
     {

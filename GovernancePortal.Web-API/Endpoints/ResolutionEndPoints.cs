@@ -10,16 +10,16 @@ public static class ResolutionEndPoints
     {
 
         app.MapPost("api/Resolution/CreateVoting",
-            ([FromServices] IResolutionServices resolutionServices, CreateVotingPOST createVotingPost) =>
-                resolutionServices.CreateVoting(createVotingPost));
+            ([FromServices] IResolutionServices resolutionServices, CreateVotingPOST createVotingPost, CancellationToken cancellationToken) =>
+                resolutionServices.CreateVotingAsync(createVotingPost, cancellationToken));
 
         app.MapPost("api/Resolution/{resolutionId}/ChangeIsAnonymous",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, bool isAnonymous) =>
-                resolutionServices.ChangeIsAnonymous(resolutionId, isAnonymous));
+                resolutionServices.ChangeIsAnonymousAsync(resolutionId, isAnonymous));
         
         app.MapPost("api/Resolution/{resolutionId}/Vote/{userId}",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, string userId, VotePOST votePost) =>
-                resolutionServices.Vote(resolutionId, userId, votePost));
+                resolutionServices.VoteAsync(resolutionId, userId, votePost));
         
         app.MapGet("api/Resolution/{resolutionId}/GetVotingDetails",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>

@@ -12,12 +12,12 @@ public class VotingRepo : GenericRepo<Voting>, IVotingRepo
     {
     }
 
-    public Task<Voting> GetVoting(string resolutionId, string companyId)
+    public Task<Voting> GetVotingAsync(string resolutionId, string companyId)
     {
         throw new System.NotImplementedException();
     }
 
-    public Task<Voting> GetVoting_Attendees(string resolutionId, string companyId)
+    public Task<Voting> GetVoting_VotersAsync(string resolutionId, string companyId)
     {
         throw new System.NotImplementedException();
     }
