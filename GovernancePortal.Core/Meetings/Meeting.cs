@@ -13,13 +13,13 @@ namespace GovernancePortal.Core.Meetings
             Attendees = new List<AttendingUser>();
             Items = new List<MeetingAgendaItem>();
             Packs = new List<MeetingPackItem>();
-            Notice = new NoticeMeeting();
             Minutes = new Minutes();
             Attendance = new MeetingAttendance();
         }
         public string Id { get; set; }
         public string CompanyId { get; set; }
         public bool IsDeleted { get; set; }
+        public ModelStatus ModelStatus { get; set; }
         public string CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateModified { get; set; }

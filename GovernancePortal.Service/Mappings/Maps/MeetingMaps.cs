@@ -118,17 +118,14 @@ public class MeetingMaps : IMeetingMaps
 
     public AttendingUser InMap(AttendingUserPOST updateMeetingAttendeesPost, Meeting meeting)
     {
-        AttendingUser result =  new()
-        {
-            UserId = updateMeetingAttendeesPost.UserId,
-            Name = updateMeetingAttendeesPost.Name,
-            AttendeePosition = updateMeetingAttendeesPost.AttendeePosition,
-            IsGuest = updateMeetingAttendeesPost.IsGuest,
-            IsPresent = updateMeetingAttendeesPost.IsPresent,
-            MeetingId = meeting.Id,
-            CompanyId = meeting.CompanyId,
-        };
-        result.Id = updateMeetingAttendeesPost.Id ?? result.Id;
+        var res = meeting.Attendees.FirstOrDefault(x => x.Id == updateMeetingAttendeesPost.Id);
+        var result = res ?? new AttendingUser();
+        result.UserId = updateMeetingAttendeesPost.UserId;
+        result.Name = updateMeetingAttendeesPost.Name;
+        result.AttendeePosition = updateMeetingAttendeesPost.AttendeePosition;
+        result.IsGuest = updateMeetingAttendeesPost.IsGuest;
+        result.MeetingId = meeting.Id;
+        result.CompanyId = meeting.CompanyId;
         return result;
     }
 
