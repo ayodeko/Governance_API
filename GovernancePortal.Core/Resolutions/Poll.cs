@@ -16,6 +16,7 @@ public class Poll : BaseModel, ICompanyModel
 public class PollItem
 {
     public string Id { get; set; }
+    public string PollId { get; set; }
     public string Title { get; set; }
 }
 
