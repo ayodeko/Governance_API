@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GovernancePortal.Core.General
 {
-    public class Attachment : ICompanyModel
+    public class Attachment : BaseModel, ICompanyModel
     {
         public Attachment()
         {

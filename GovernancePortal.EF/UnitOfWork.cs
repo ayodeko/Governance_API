@@ -18,11 +18,13 @@ namespace GovernancePortal.EF
             Tasks = new TaskRepo(_context);
             Meetings = new MeetingRepo(_context);
             Votings = new VotingRepo(_context);
+            Polls = new PollRepo(_context);
         }
 
         public ITaskRepo Tasks { get; set; }
         public IMeetingRepo Meetings { get; }
         public IVotingRepo Votings { get; }
+        public IPollRepo Polls { get; }
 
         public int SaveToDB()
         {

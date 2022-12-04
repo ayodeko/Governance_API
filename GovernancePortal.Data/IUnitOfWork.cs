@@ -10,6 +10,7 @@ namespace GovernancePortal.Data
         ITaskRepo Tasks { get; }
         IMeetingRepo Meetings { get; }
         IVotingRepo Votings { get; }
+        IPollRepo Polls { get; }
         int SaveToDB();
 
     }

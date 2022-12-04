@@ -22,7 +22,7 @@ public class VotingRepo : GenericRepo<Voting>, IVotingRepo
         throw new System.NotImplementedException();
     }
 
-    public IEnumerable<Voting> GetVotingList(string companyId, int pageNumber, int pageSize, out int totalRecords)
+    public IEnumerable<Voting> GetVoting_VotersList(string companyId, int pageNumber, int pageSize, out int totalRecords)
     {
         throw new System.NotImplementedException();
     }

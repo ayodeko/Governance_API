@@ -8,7 +8,7 @@ public interface IVotingRepo : IGenericRepo<Voting>
 {
     Task<Voting> GetVotingAsync(string resolutionId, string companyId);
     Task<Voting> GetVoting_VotersAsync(string resolutionId, string companyId);
-    IEnumerable<Voting> GetVotingList(string companyId, int pageNumber, int pageSize,
+    IEnumerable<Voting> GetVoting_VotersList(string companyId, int pageNumber, int pageSize,
         out int totalRecords);
     IEnumerable<Voting> SearchVotingByTitleList(string title, string companyId, int pageNumber, int pageSize,
         out int totalRecords);

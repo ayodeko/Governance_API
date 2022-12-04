@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Resolutions;
 
-public class Poll
+public class Poll : BaseModel, ICompanyModel
 {
     public string Id { get; set; }
     public string Title { get; set; }
@@ -21,7 +22,7 @@ public class PollItem
 public class PollUser
 {
     public string Id { get; set; }
-    public string UserUd { get; set; }
+    public string UserId { get; set; }
     public string PollId { get; set; }
     public List<PollItemVote> PollVotes { get; set; }
 }
