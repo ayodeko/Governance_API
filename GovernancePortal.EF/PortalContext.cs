@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GovernancePortal.Core.Meetings;
+using GovernancePortal.Core.Resolutions;
 using GovernancePortal.EF.ModelConfig.Meetings;
 
 namespace GovernancePortal.EF
@@ -31,5 +32,7 @@ namespace GovernancePortal.EF
         public DbSet<Minutes> Minutes { get; set; }
         public DbSet<NoticeMeeting> Notices { get; set; }
         public DbSet<MeetingPackItemUser> MeetingPackItemUsers { get; set; }
+        public DbSet<Voting> Votings { get; set; }
+        public DbSet<Poll> Polls { get; set; }
     }
 }
