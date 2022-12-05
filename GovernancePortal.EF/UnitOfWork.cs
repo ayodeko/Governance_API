@@ -4,6 +4,7 @@ using GovernancePortal.EF.Repository;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GovernancePortal.Core.Resolutions;
 
 namespace GovernancePortal.EF
 {
@@ -16,10 +17,14 @@ namespace GovernancePortal.EF
             _context = context;
             Tasks = new TaskRepo(_context);
             Meetings = new MeetingRepo(_context);
+            Votings = new VotingRepo(_context);
+            Polls = new PollRepo(_context);
         }
 
         public ITaskRepo Tasks { get; set; }
         public IMeetingRepo Meetings { get; }
+        public IVotingRepo Votings { get; }
+        public IPollRepo Polls { get; }
 
         public int SaveToDB()
         {

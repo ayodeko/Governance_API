@@ -13,5 +13,12 @@ namespace GovernancePortal.Core.General
 		public string Id { get; set; }
 		public string Name { get; set; }
 		public string CompanyId { get; set; }
-	}
+		public UserType UserType { get; set; }
+    }
+
+    public enum UserType
+    {
+	    EnterpriseUser,
+	    StandaloneUser
+    }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GovernancePortal.Core.TaskManagement
 {
-    public class TaskModel : ICompanyModel
+    public class TaskModel : BaseModel, ICompanyModel
 	{
 		public TaskModel()
 		{

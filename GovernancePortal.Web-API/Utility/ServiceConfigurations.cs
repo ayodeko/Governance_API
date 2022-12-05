@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GovernancePortal.Core.Utilities;
 using GovernancePortal.EF;
 using GovernancePortal.Service.ClientModels.General;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,27 +15,30 @@ public static class ServiceConfigurations
     
     public static void ConfigureGovernancePortalServices(this IServiceCollection services, IConfiguration Configuration)
     {
-        string allowSpecificOrigins = "_allowSpecificOrigins";
-        services.AddCors(options =>
-        {
-            options.AddPolicy(allowSpecificOrigins,
-                builder =>
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-        });
-        
-        services.Configure<UploadConfig>(options =>
-        {
-            options.AccessKey = Configuration["ExternalProviders:AwsS3:AccessKey"];
-            options.AccessSecret = Configuration["ExternalProviders:AwsS3:AccessSecret"];
-            options.BucketName = Configuration["ExternalProviders:AwsS3:Bucket"];
-        });
-        
+        services.AddCors(options => options.AddPolicy("*",
+                  builder =>
+                  {
+                      builder.SetIsOriginAllowedToAllowWildcardSubdomains()
+                             .WithOrigins("*")
+                             .AllowAnyMethod()
+                             .AllowAnyHeader()
+                             .Build();
+                  }));
+
+        //services.Configure<UploadConfig>(options =>
+        //{
+        //    options.AccessKey = Configuration["ExternalProviders:AwsS3:AccessKey"];
+        //    options.AccessSecret = Configuration["ExternalProviders:AwsS3:AccessSecret"];
+        //    options.BucketName = Configuration["ExternalProviders:AwsS3:Bucket"];
+        //});
+
+        //services.AddDbContext<PortalContext>(opt =>
+        //   opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+        //           x => x.MigrationsAssembly("GovernancePortal.EF"))
+        //       .EnableSensitiveDataLogging());
+
         services.AddDbContext<PortalContext>(opt =>
-            opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+            opt.UseSqlServer(EnvironmentVariables.ConnectionString,
                     x => x.MigrationsAssembly("GovernancePortal.EF"))
                 .EnableSensitiveDataLogging());
         

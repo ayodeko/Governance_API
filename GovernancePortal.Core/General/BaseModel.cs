@@ -9,6 +9,7 @@ namespace GovernancePortal.Core.General
         public string Id { get; set; }
         public string CompanyId { get; set; }
         public bool IsDeleted { get; set; }
+        public ModelStatus ModelStatus { get; set; }
         public string CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateModified { get; set; }
@@ -19,7 +20,13 @@ namespace GovernancePortal.Core.General
         public string CompanyId { get; set; }
         public bool IsDeleted { get; set; }
         public string CreatedBy { get; set; }
+        public ModelStatus ModelStatus { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateModified { get; set; }
+    }
+
+    public enum ModelStatus
+    {
+        Deleted
     }
 }

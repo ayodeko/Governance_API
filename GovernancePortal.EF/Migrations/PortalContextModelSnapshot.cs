@@ -66,6 +66,9 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("OtherDetails")
                         .HasColumnType("nvarchar(max)");
 
@@ -100,7 +103,10 @@ namespace GovernancePortal.EF.Migrations
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.AttendingUser", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("MeetingId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AttendeePosition")
@@ -118,6 +124,9 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -130,20 +139,15 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("MeetingAttendanceId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("MeetingId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("MeetingId", "UserId");
 
                     b.HasIndex("MeetingAttendanceId");
-
-                    b.HasIndex("MeetingId");
 
                     b.ToTable("AttendingUsers");
                 });
@@ -152,6 +156,9 @@ namespace GovernancePortal.EF.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AttendanceGeneratedCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ChairPersonId")
                         .HasColumnType("nvarchar(max)");
@@ -186,6 +193,9 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsMeetingPackDownloadable")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsMinutesPublished")
                         .HasColumnType("bit");
 
@@ -194,6 +204,9 @@ namespace GovernancePortal.EF.Migrations
 
                     b.Property<string>("MeetingPackId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("SecretaryId")
                         .HasColumnType("nvarchar(max)");
@@ -207,6 +220,9 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<string>("Venue")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Meetings");
@@ -217,8 +233,14 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("ActionRequired")
+                        .HasColumnType("int");
+
                     b.Property<string>("AgendaItemId")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AttachmentId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CompanyId")
                         .HasColumnType("nvarchar(max)");
@@ -232,14 +254,26 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsNumbered")
                         .HasColumnType("bit");
 
+                    b.Property<string>("MeetIdHolder")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MeetingId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
 
                     b.Property<int>("Number")
                         .HasColumnType("int");
@@ -247,10 +281,15 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("ParentId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("PresenterUserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AttachmentId");
 
                     b.HasIndex("MeetingId");
 
@@ -284,6 +323,9 @@ namespace GovernancePortal.EF.Migrations
 
                     b.Property<string>("MeetingId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -342,8 +384,8 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Duration")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -356,6 +398,9 @@ namespace GovernancePortal.EF.Migrations
 
                     b.Property<string>("MeetingPackId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
 
                     b.Property<string>("PresenterUserId")
                         .HasColumnType("nvarchar(max)");
@@ -376,27 +421,45 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AgendaItemId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("AttendingUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AttendingUserMeetingId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AttendingUserUserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CoCreatorId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("InterestTagUserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MeetingIdHolder")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RestrictedUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("AttendingUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CoCreatorId");
 
                     b.HasIndex("InterestTagUserId");
 
                     b.HasIndex("RestrictedUserId");
+
+                    b.HasIndex("AttendingUserMeetingId", "AttendingUserUserId");
 
                     b.ToTable("MeetingPackItemUsers");
                 });
@@ -435,6 +498,67 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("Minutes");
                 });
 
+            modelBuilder.Entity("GovernancePortal.Core.Meetings.NoticeMeeting", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AgendaText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mandate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MeetingId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("NoticeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NoticeText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salutation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("SendNoticeDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Signatory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SignatureId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeetingId")
+                        .IsUnique()
+                        .HasFilter("[MeetingId] IS NOT NULL");
+
+                    b.HasIndex("SignatureId");
+
+                    b.ToTable("Notices");
+                });
+
             modelBuilder.Entity("GovernancePortal.Core.Meetings.AttendingUser", b =>
                 {
                     b.HasOne("GovernancePortal.Core.Meetings.MeetingAttendance", null)
@@ -443,11 +567,17 @@ namespace GovernancePortal.EF.Migrations
 
                     b.HasOne("GovernancePortal.Core.Meetings.Meeting", null)
                         .WithMany("Attendees")
-                        .HasForeignKey("MeetingId");
+                        .HasForeignKey("MeetingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingAgendaItem", b =>
                 {
+                    b.HasOne("GovernancePortal.Core.General.Attachment", "Attachment")
+                        .WithMany()
+                        .HasForeignKey("AttachmentId");
+
                     b.HasOne("GovernancePortal.Core.Meetings.Meeting", null)
                         .WithMany("Items")
                         .HasForeignKey("MeetingId");
@@ -455,6 +585,8 @@ namespace GovernancePortal.EF.Migrations
                     b.HasOne("GovernancePortal.Core.Meetings.MeetingAgendaItem", null)
                         .WithMany("SubItems")
                         .HasForeignKey("ParentId");
+
+                    b.Navigation("Attachment");
                 });
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingAttendance", b =>
@@ -483,21 +615,21 @@ namespace GovernancePortal.EF.Migrations
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPackItemUser", b =>
                 {
-                    b.HasOne("GovernancePortal.Core.Meetings.AttendingUser", "AttendingUser")
-                        .WithMany()
-                        .HasForeignKey("AttendingUserId");
-
-                    b.HasOne("GovernancePortal.Core.Meetings.MeetingPackItem", null)
+                    b.HasOne("GovernancePortal.Core.Meetings.MeetingAgendaItem", null)
                         .WithMany("CoCreators")
                         .HasForeignKey("CoCreatorId");
 
-                    b.HasOne("GovernancePortal.Core.Meetings.MeetingPackItem", null)
+                    b.HasOne("GovernancePortal.Core.Meetings.MeetingAgendaItem", null)
                         .WithMany("InterestTagUsers")
                         .HasForeignKey("InterestTagUserId");
 
-                    b.HasOne("GovernancePortal.Core.Meetings.MeetingPackItem", null)
+                    b.HasOne("GovernancePortal.Core.Meetings.MeetingAgendaItem", null)
                         .WithMany("RestrictedUsers")
                         .HasForeignKey("RestrictedUserId");
+
+                    b.HasOne("GovernancePortal.Core.Meetings.AttendingUser", "AttendingUser")
+                        .WithMany()
+                        .HasForeignKey("AttendingUserMeetingId", "AttendingUserUserId");
 
                     b.Navigation("AttendingUser");
                 });
@@ -515,6 +647,19 @@ namespace GovernancePortal.EF.Migrations
                     b.Navigation("Attachment");
                 });
 
+            modelBuilder.Entity("GovernancePortal.Core.Meetings.NoticeMeeting", b =>
+                {
+                    b.HasOne("GovernancePortal.Core.Meetings.Meeting", null)
+                        .WithOne("Notice")
+                        .HasForeignKey("GovernancePortal.Core.Meetings.NoticeMeeting", "MeetingId");
+
+                    b.HasOne("GovernancePortal.Core.General.Attachment", "Signature")
+                        .WithMany()
+                        .HasForeignKey("SignatureId");
+
+                    b.Navigation("Signature");
+                });
+
             modelBuilder.Entity("GovernancePortal.Core.Meetings.Meeting", b =>
                 {
                     b.Navigation("Attendance");
@@ -525,11 +670,19 @@ namespace GovernancePortal.EF.Migrations
 
                     b.Navigation("Minutes");
 
+                    b.Navigation("Notice");
+
                     b.Navigation("Packs");
                 });
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingAgendaItem", b =>
                 {
+                    b.Navigation("CoCreators");
+
+                    b.Navigation("InterestTagUsers");
+
+                    b.Navigation("RestrictedUsers");
+
                     b.Navigation("SubItems");
                 });
 
@@ -541,15 +694,6 @@ namespace GovernancePortal.EF.Migrations
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPack", b =>
                 {
                     b.Navigation("MeetingPackItems");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPackItem", b =>
-                {
-                    b.Navigation("CoCreators");
-
-                    b.Navigation("InterestTagUsers");
-
-                    b.Navigation("RestrictedUsers");
                 });
 #pragma warning restore 612, 618
         }

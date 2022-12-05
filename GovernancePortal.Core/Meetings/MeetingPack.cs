@@ -25,17 +25,14 @@ namespace GovernancePortal.Core.Meetings
         {
             Id = Guid.NewGuid().ToString();
         }
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string MeetingPackId { get; set; }
         public string MeetingAgendaItemId { get; set; }
         public string MeetingId { get; set; }
         public string Description { get; set; }
         public string PresenterUserId { get; set; }
-        public List<MeetingPackItemUser> CoCreators { get; set; }
-        public List<MeetingPackItemUser> RestrictedUsers { get; set; }
-        public List<MeetingPackItemUser> InterestTagUsers { get; set; }
         public Attachment Attachment { get; set; }
-        public DateTime Duration { get; set; }
+        public int Duration { get; set; }
         public ActionRequired ActionRequired { get; set; }
     }
 
@@ -58,6 +55,10 @@ namespace GovernancePortal.Core.Meetings
             Id = Guid.NewGuid().ToString();
         }
         public string Id { get; set; }
+        public string CompanyId { get; set; }
+        public string MeetingIdHolder { get; set; }
+        public string UserId { get; set; }
+        public string AgendaItemId { get; set; }
         public string CoCreatorId { get; set; }
         public string RestrictedUserId { get; set; }
         public string InterestTagUserId { get; set; }
