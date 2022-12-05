@@ -15,17 +15,15 @@ public static class ServiceConfigurations
     
     public static void ConfigureGovernancePortalServices(this IServiceCollection services, IConfiguration Configuration)
     {
-        string allowSpecificOrigins = "_allowSpecificOrigins";
-        services.AddCors(options =>
-        {
-            options.AddPolicy(allowSpecificOrigins,
-                builder =>
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-        });
+        services.AddCors(options => options.AddPolicy("*",
+                  builder =>
+                  {
+                      builder.SetIsOriginAllowedToAllowWildcardSubdomains()
+                             .WithOrigins("*")
+                             .AllowAnyMethod()
+                             .AllowAnyHeader()
+                             .Build();
+                  }));
 
         //services.Configure<UploadConfig>(options =>
         //{
@@ -90,7 +88,6 @@ public static class ServiceConfigurations
     {
         app.UseSwagger();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BodAdmin_Api_Governance_Portal v1"));
-        app.UseCors("*");
 
     }
 }

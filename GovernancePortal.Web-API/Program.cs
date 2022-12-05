@@ -15,5 +15,6 @@ var app = builder.Build();
 
 app.MapSectionedMeetingEndpoints();
 app.UseGovernancePortalServices();
+app.UseCors("*");
 app.UseGovernancePortalExceptionHandler();
 app.Run();
