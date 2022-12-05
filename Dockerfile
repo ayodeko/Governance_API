@@ -12,7 +12,6 @@ WORKDIR "/."
 COPY . .
 
 RUN dotnet build "GovernancePortal.Web-API/GovernancePortal.Web-API.csproj" -c Release -o /app/build
-#RUN dotnet build "GovernancePortal.Web-API/GovernancePortal.Web-API.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "GovernancePortal.Web-API/GovernancePortal.Web-API.csproj" -c Release -o /app/publish
