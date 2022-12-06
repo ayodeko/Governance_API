@@ -44,6 +44,8 @@ public class MeetingMaps : IMeetingMaps
     {
         Title = source.Title,
         Description = source.Description,
+        Venue = source.Venue,
+        Link = source.Link,
         Duration = source.Duration,
         DateTime = source.DateTime,
         Type = source.Type,
