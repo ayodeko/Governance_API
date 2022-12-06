@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Resolutions;
@@ -7,6 +8,7 @@ public class Voting : BaseModel, ICompanyModel
 {
     public Voting()
     {
+        Id = Guid.NewGuid().ToString();
         Voters = new List<VotingUser>();
     }
     public string Id { get; set; }
@@ -21,6 +23,7 @@ public class VotingUser : BaseModel
 {
     public VotingUser()
     {
+        Id = Guid.NewGuid().ToString();
         Stance = VotingStance.Abstain;
     }
     public string Id { get; set; }

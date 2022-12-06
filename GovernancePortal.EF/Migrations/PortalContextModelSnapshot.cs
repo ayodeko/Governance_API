@@ -559,6 +559,179 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("Notices");
                 });
 
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.Poll", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaximumSelection")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isUnlimitedSelection")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Polls");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollItem", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PollId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollId");
+
+                    b.ToTable("PollItem");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollItemVote", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PollItemId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PollUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollUserId");
+
+                    b.ToTable("PollItemVote");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PollId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollId");
+
+                    b.ToTable("PollUser");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.Voting", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVotingEnded")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Votings");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.VotingUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CompanyId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ModelStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Stance")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StanceReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VotingId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VotingId");
+
+                    b.ToTable("VotingUser");
+                });
+
             modelBuilder.Entity("GovernancePortal.Core.Meetings.AttendingUser", b =>
                 {
                     b.HasOne("GovernancePortal.Core.Meetings.MeetingAttendance", null)
@@ -660,6 +833,34 @@ namespace GovernancePortal.EF.Migrations
                     b.Navigation("Signature");
                 });
 
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollItem", b =>
+                {
+                    b.HasOne("GovernancePortal.Core.Resolutions.Poll", null)
+                        .WithMany("PollItems")
+                        .HasForeignKey("PollId");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollItemVote", b =>
+                {
+                    b.HasOne("GovernancePortal.Core.Resolutions.PollUser", null)
+                        .WithMany("PollVotes")
+                        .HasForeignKey("PollUserId");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollUser", b =>
+                {
+                    b.HasOne("GovernancePortal.Core.Resolutions.Poll", null)
+                        .WithMany("PollUsers")
+                        .HasForeignKey("PollId");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.VotingUser", b =>
+                {
+                    b.HasOne("GovernancePortal.Core.Resolutions.Voting", null)
+                        .WithMany("Voters")
+                        .HasForeignKey("VotingId");
+                });
+
             modelBuilder.Entity("GovernancePortal.Core.Meetings.Meeting", b =>
                 {
                     b.Navigation("Attendance");
@@ -694,6 +895,23 @@ namespace GovernancePortal.EF.Migrations
             modelBuilder.Entity("GovernancePortal.Core.Meetings.MeetingPack", b =>
                 {
                     b.Navigation("MeetingPackItems");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.Poll", b =>
+                {
+                    b.Navigation("PollItems");
+
+                    b.Navigation("PollUsers");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollUser", b =>
+                {
+                    b.Navigation("PollVotes");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.Resolutions.Voting", b =>
+                {
+                    b.Navigation("Voters");
                 });
 #pragma warning restore 612, 618
         }
