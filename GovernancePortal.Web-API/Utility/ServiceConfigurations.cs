@@ -26,7 +26,6 @@ public static class ServiceConfigurations
                 });
         });
         
-        services.AddHttpContextAccessor();
         services.Configure<UploadConfig>(options =>
         {
             options.AccessKey = Configuration["ExternalProviders:AwsS3:AccessKey"];
