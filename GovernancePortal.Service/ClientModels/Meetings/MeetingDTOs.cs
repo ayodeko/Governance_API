@@ -117,6 +117,8 @@ public class CreateMeetingPOST
 {
     public string Title { get; set; }
     public string Description { get; set; }
+    public string Venue { get; set; }
+    public string Link { get; set; }
         
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }

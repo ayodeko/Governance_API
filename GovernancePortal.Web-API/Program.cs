@@ -14,6 +14,8 @@ builder.Services.ConfigureGovernancePortalServices(builder.Configuration);
 var app = builder.Build();
 
 app.MapSectionedMeetingEndpoints();
+app.MapResolutionEndpoints();
+
 app.UseGovernancePortalServices();
 app.UseCors("*");
 app.UseGovernancePortalExceptionHandler();

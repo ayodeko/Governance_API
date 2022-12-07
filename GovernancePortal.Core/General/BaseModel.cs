@@ -27,6 +27,7 @@ namespace GovernancePortal.Core.General
 
     public enum ModelStatus
     {
+        Default,
         Deleted
     }
 }

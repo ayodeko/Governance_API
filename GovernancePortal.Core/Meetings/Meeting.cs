@@ -26,6 +26,7 @@ namespace GovernancePortal.Core.Meetings
         public string Title { get; set; }
         public string Description { get; set; }
         public string Venue { get; set; }
+        public string Link { get; set; }
         public string ChairPersonId { get; set; }
         public string SecretaryId { get; set; }
         public bool IsAttendanceTaken { get; set; }
