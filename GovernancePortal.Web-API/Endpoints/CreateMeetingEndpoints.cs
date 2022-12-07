@@ -167,6 +167,9 @@ public static class CreateMeetingEndpoints
         builder.Services.AddScoped<IMeetingMaps, MeetingMaps>();
         builder.Services.AddScoped<ILogger, StubLogger>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        builder.Services.AddScoped<IResolutionServices, ResolutionServices>();
+        builder.Services.AddScoped<IResolutionMaps, ResolutionMaps>();
         return builder;
     }
 

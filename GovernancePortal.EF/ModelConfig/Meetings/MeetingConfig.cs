@@ -86,7 +86,6 @@ public class MeetingPackItemUserConfig : IEntityTypeConfiguration<MeetingPackIte
 { 
     public void Configure(EntityTypeBuilder<MeetingPackItemUser> builder)
     {
-        
     }
 }
 

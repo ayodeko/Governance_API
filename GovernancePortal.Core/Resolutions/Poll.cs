@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Resolutions;
 
 public class Poll : BaseModel, ICompanyModel
 {
+    public Poll()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
     public string Id { get; set; }
     public string Title { get; set; }
     public bool isUnlimitedSelection { get; set; }
@@ -15,6 +20,10 @@ public class Poll : BaseModel, ICompanyModel
 
 public class PollItem
 {
+    public PollItem()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
     public string Id { get; set; }
     public string PollId { get; set; }
     public string Title { get; set; }
@@ -22,6 +31,10 @@ public class PollItem
 
 public class PollUser
 {
+    public PollUser()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
     public string Id { get; set; }
     public string UserId { get; set; }
     public string PollId { get; set; }
@@ -30,6 +43,10 @@ public class PollUser
 
 public class PollItemVote
 {
+    public PollItemVote()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
     public string Id { get; set; }
     public string PollItemId { get; set; }
     public string PollUserId { get; set; }

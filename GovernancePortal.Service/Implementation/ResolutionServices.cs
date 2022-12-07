@@ -56,8 +56,9 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> ChangeIsAnonymousAsync(string resolutionId, bool isAnonymous)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = await _unit.Votings.GetVotingAsync(resolutionId, person.CompanyId);
+        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
         retrievedVoting.IsAnonymous = isAnonymous;
+        _unit.SaveToDB();
         var response = new Response()
         {
             Data = retrievedVoting,

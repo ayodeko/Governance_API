@@ -1,34 +1,34 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - development
 
 pool:
-  vmImage: 'windows-latest'
+    vmimage: 'ubuntu-latest'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  IMAGE_REGISTRY_CONNECTION: 'BodAdminSuiteContainers'
+  IMAGE_REGISTRY: 'BodAdminSuiteContainers'
+  IMAGE_REPOSITORY: 'governanceportal.azurecr.io'
+  TAG: 'latest'
 
-steps:
-- task: NuGetToolInstaller@1
+stages:
+- stage: BuildDockerImage
+  jobs:
+  - job: BuildPushImage
+    steps:
+    - task: Docker@2
+      inputs:
+        containerRegistry: '$(IMAGE_REGISTRY_CONNECTION)'
+        repository: '$(IMAGE_REPOSITORY)'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(TAG)'
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+- stage: DeployDev
+  jobs:
+  - job: DeployDev
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+        azureSubscription: 'Azure subscription 1(e150a27b-e96f-452a-ad3d-35a48a9da39d)'
+        appName: 'governanceportaltest'
+        containers: 'bodadminsuitecontainers.azurecr.io/governanceportal.azurecr.io:$(TAG)'
