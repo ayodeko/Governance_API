@@ -3,9 +3,9 @@ using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Core.Meetings
 {
-    public class Minutes
+    public class Minute
     {
-        public Minutes()
+        public Minute()
         {
             Id = Guid.NewGuid().ToString();
         }
@@ -15,7 +15,7 @@ namespace GovernancePortal.Core.Meetings
         public MeetingAgendaItem AgendaItem { get; set; }
         public string AgendaItemId { get; set; }
         public string MinuteText { get; set; }
-        public string SignerUserId { get; set; }
+        public bool IsApproved { get; set; }
         public Attachment Attachment { get; set; }
     }
 }

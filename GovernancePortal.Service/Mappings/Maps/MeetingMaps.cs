@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Amazon.Runtime;
 using AutoMapper;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings;
+using GovernancePortal.Service.ClientModels.Meetings.Minute;
 using GovernancePortal.Service.Mappings.IMaps;
 
 namespace GovernancePortal.Service.Mappings.Maps;
-
 
 public class MeetingsAutoMapper : Profile
 {
@@ -40,6 +41,9 @@ public class MeetingMaps : IMeetingMaps
         var mapperConfiguration = new MapperConfiguration(config => config.AddProfiles(profiles));
         _autoMapper = mapperConfiguration.CreateMapper();
     }
+
+    #region meeting
+    
     public Meeting InMap(CreateMeetingPOST source,  Meeting destination) => new Meeting
     {
         Title = source.Title,
@@ -86,7 +90,8 @@ public class MeetingMaps : IMeetingMaps
        existingMeeting.Notice = not;
        return existingMeeting;
     }
-
+    #endregion
+   
     #region Attending User Maps
 
     public UpdateAttendingUsersPOST OutMap(Meeting existingMeeting, UpdateAttendingUsersPOST updateAttendingUsersPost) => _autoMapper.Map(existingMeeting, updateAttendingUsersPost);
@@ -156,6 +161,8 @@ public class MeetingMaps : IMeetingMaps
 
     public MeetingAgendaItem InMap(AgendaItemPOST agendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting)
     {
+
+        //why is this here?
         var retrievedItem = agendaItems?.FirstOrDefault(x => x.Id == agendaItemPost.Id );
 
         var agendaItem = retrievedItem ?? new MeetingAgendaItem();
@@ -352,6 +359,35 @@ public class MeetingMaps : IMeetingMaps
     public Meeting InMap(UpdateMeetingMinutesPOST updateMinutesPost, Meeting existingMeeting)
     {
         return existingMeeting;
+    }
+
+    public Meeting InMap(List<AddMinutePOST> source, Meeting existingMeeting)
+    {
+        existingMeeting.Minutes = InMap(source, existingMeeting, new List<Minute>());
+        return existingMeeting;
+    }
+    public List<Minute> InMap(List<AddMinutePOST> source,Meeting existingMeeting, List<Minute> destination = null)
+    {
+        var returnModel = new List<Minute>();
+        
+        foreach(var item in source)
+        {
+            returnModel.Add(InMap(item, existingMeeting, new Minute()));
+        }
+        return returnModel;
+    }
+
+    public Minute InMap(AddMinutePOST source, Meeting existingMeeting, Minute destination = null)
+    {
+        if (destination is null)
+            destination = new Minute();
+
+        destination.MinuteText = source.MinuteText;
+        destination.MeetingId = existingMeeting.Id;
+        destination.CompanyId = existingMeeting.CompanyId;
+        destination.AgendaItemId = source.AgendaItemId;
+        return destination;
+
     }
 
     #endregion

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
+using GovernancePortal.Service.ClientModels.Meetings.Minute;
 
 namespace GovernancePortal.Service.Interface;
 
@@ -31,4 +33,9 @@ public interface IMeetingService
     Task<Response> SearchMeetingsByDate(DateTime meetingDateTime);
     Task<Response> AddAttendees(string meetingId, AddAttendeesPOST updateMeetingAttendeesPost);
     Task<Response> GetMeetingPack(string meetingId);
+
+    //minute
+    Task<Response> AddMinutes(string meetingId, List<AddMinutePOST> data);
+    Task<Response> UploadMinutes(string meetingId, UploadMinutePOST data);
+
 }

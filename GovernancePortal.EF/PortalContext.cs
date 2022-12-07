@@ -28,7 +28,7 @@ namespace GovernancePortal.EF
         public DbSet<MeetingAgendaItem> MeetingAgendaItems { get; set; }
         public DbSet<MeetingAttendance> MeetingAttendances { get; set; }
         public DbSet<AttendingUser> AttendingUsers { get; set; }
-        public DbSet<Minutes> Minutes { get; set; }
+        public DbSet<Minute> Minutes { get; set; }
         public DbSet<NoticeMeeting> Notices { get; set; }
         public DbSet<MeetingPackItemUser> MeetingPackItemUsers { get; set; }
     }
