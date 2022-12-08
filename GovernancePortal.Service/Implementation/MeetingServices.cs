@@ -446,14 +446,15 @@ public class MeetingServices : IMeetingService
             MeetingDate = existingMeeting.DateTime
         };
 
-    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery)
+    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
-        var allMeetings = await _unit.Meetings.FindByPage(loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize);
+        var type = Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : MeetingType.Board;
+        var allMeetings = _unit.Meetings.GetMeetingListByMeetingType(type, loggedInUser.CompanyId,
+            pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
         var allMeetingsList = allMeetings.ToList();
         var meetingListGet = _meetingMapses.OutMap(allMeetingsList);
-        var totalRecords = await _unit.Meetings.Count(loggedInUser.CompanyId);
         return new Pagination<MeetingListGET>
         {
             Data = meetingListGet.AsEnumerable(),
