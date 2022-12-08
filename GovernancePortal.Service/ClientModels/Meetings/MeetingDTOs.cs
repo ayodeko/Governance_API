@@ -161,6 +161,22 @@ public class UpdateMeetingGET
     public DateTime DateTime { get; set; }
 }
 
+public class UpdateMeetingPOST
+{
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public bool IsMeetingPackDownloadable { get; set; }
+    public string Venue { get; set; }
+    public string Link { get; set; }
+    public string SecretaryUserId { get; set; }
+    public string ChairPersonUserId { get; set; }
+    public MeetingFrequency Frequency { get; set; }
+    public MeetingMedium Medium { get; set; }
+    public MeetingType Type { get; set; }
+    public int Duration { get; set; }
+    public DateTime DateTime { get; set; }
+}
+
 public class UpdateAttendingUsersPOST
 {
     public string ChairPersonUserId { get; set; }

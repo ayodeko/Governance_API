@@ -29,6 +29,10 @@ public static class CreateMeetingEndpoints
         app.MapPost("api/Meeting/Create",
             ([FromServices] IMeetingService meetingService, CreateMeetingPOST createMeetingPost) =>
                 meetingService.CreateMeeting(createMeetingPost));
+                
+        app.MapPost("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId, UpdateMeetingPOST updateMeetingPost) =>
+            meetingService.UpdateMeetingDetails(meetingId, updateMeetingPost));
         
         app.MapPost("api/Meeting/{meetingId}/AddAttendees", ([FromServices] IMeetingService meetingService,
                 string meetingId, AddAttendeesPOST updateMeetingAttendeesPost) =>

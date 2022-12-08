@@ -60,6 +60,27 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation("Create new meeting successful: {response}", response);
         return response;
     }
+    public async Task<Response> UpdateMeetingDetails(string meetingId, UpdateMeetingPOST updateMeetingPost)
+    {
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside update meeting for Id {meetingId}");
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        
+        
+        existingMeeting = _meetingMapses.InMap(updateMeetingPost, existingMeeting);
+        _unit.SaveToDB();
+        
+        var response = new Response
+        {
+            Data = existingMeeting,
+            Message = "Meeting updated successfully",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("UpdateAttendees successful: {response}", response);
+        return response;
+    }
     public async Task<Response> AddAttendees(string meetingId, AddAttendeesPOST addAttendeesPost)
     {
         var loggedInUser = GetLoggedUser();

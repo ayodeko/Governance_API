@@ -7,6 +7,7 @@ namespace GovernancePortal.Service.Mappings.IMaps;
 public interface IMeetingMaps
 {
     Meeting InMap(CreateMeetingPOST createMeetingPost, Meeting meeting);
+    Meeting InMap(UpdateMeetingPOST createMeetingPost, Meeting meeting);
     Meeting InMap(UpdateAttendingUsersPOST updateAttendingUsersPost, Meeting meeting);
     Meeting InMap(UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting);
     Meeting InMap(FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting);
