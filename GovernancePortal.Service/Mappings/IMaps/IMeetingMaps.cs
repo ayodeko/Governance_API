@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings;
+using GovernancePortal.Service.ClientModels.Meetings.Minute;
 
 namespace GovernancePortal.Service.Mappings.IMaps;
 
@@ -26,4 +27,7 @@ public interface IMeetingMaps
     UpdateMeetingGET OutMap(Meeting existingMeeting);
     UpdateMeetingNoticePOST OutMap(NoticeMeeting existingNoticeMeeting, UpdateMeetingNoticePOST updateMeetingAttendingUserPost);
     Meeting InMap(UpdateMeetingNoticePOST updateMeetingAgendaItemPost, Meeting existingMeeting);
+
+    //minute
+    Meeting InMap(List<AddMinutePOST> source, Meeting destination);
 }

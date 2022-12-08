@@ -10,6 +10,7 @@ using GovernancePortal.EF.Repository;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
+using GovernancePortal.Service.ClientModels.Meetings.Minute;
 using GovernancePortal.Service.Implementation;
 using GovernancePortal.Service.Interface;
 using GovernancePortal.Service.Mappings.IMaps;
@@ -50,24 +51,16 @@ public static class CreateMeetingEndpoints
                 string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST) =>
             meetingService.UpdateMeetingPack(meetingId, updateMeetingPackPOST));
         
-        app.MapPost("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
-                string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
-            meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST));
-        
         app.MapPost("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingNoticePOST updateMeetingMinutesPOST) =>
             meetingService.UpdateNotice(meetingId, updateMeetingMinutesPOST));
         #endregion
         
-        
-        
         #region Get Update Data for meeting
         app.MapGet("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingUpdateData(meetingId));
-        app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
-                string meetingId) =>
-            meetingService.GetMeetingMinutesUpdateData(meetingId));
+        
         
         app.MapGet("api/Meeting/{meetingId}/Attendees/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
@@ -111,10 +104,21 @@ public static class CreateMeetingEndpoints
             meetingService.GetMeetingPack(meetingId));
         #endregion
 
+        #region Minute
+        app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId) =>
+            meetingService.GetMeetingMinutesUpdateData(meetingId));
+        app.MapPost("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
+              string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
+          meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST));
+        app.MapPost("api/Meeting/{meetingId}/AddMinutes", ([FromServices] IMeetingService meetingService,
+                string meetingId, List<AddMinutePOST> data) =>
+            meetingService.AddMinutes(meetingId, data));
+        app.MapPost("api/Meeting/{meetingId}/UploadMinutes", ([FromServices] IMeetingService meetingService,
+               string meetingId, UploadMinutePOST data) =>
+           meetingService.UploadMinutes(meetingId, data));
 
-
-
-
+        #endregion
 
         #region Attendance
 
@@ -151,36 +155,9 @@ public static class CreateMeetingEndpoints
             meetingService.GetAttendanceDetails(meetingId, token));
 
         #endregion
-        
-        
-        
-        
-        
-        
-        
-        
+
         return app;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     public static WebApplicationBuilder RegisterMeetingServices(this WebApplicationBuilder builder)
     {

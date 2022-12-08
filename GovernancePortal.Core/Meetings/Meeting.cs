@@ -13,8 +13,8 @@ namespace GovernancePortal.Core.Meetings
             Attendees = new List<AttendingUser>();
             Items = new List<MeetingAgendaItem>();
             Packs = new List<MeetingPackItem>();
-            Minutes = new Minutes();
             Attendance = new MeetingAttendance();
+            Minutes = new List<Minute>();
         }
         public string Id { get; set; }
         public string CompanyId { get; set; }
@@ -42,7 +42,7 @@ namespace GovernancePortal.Core.Meetings
         public List<AttendingUser> Attendees { get; set; }
         public List<MeetingAgendaItem> Items { get; set; }
         public List<MeetingPackItem> Packs { get; set; }
-        public Minutes Minutes { get; set; }
+        public List<Minute> Minutes { get; set; }
         public MeetingAttendance Attendance { get; set; }
         public NoticeMeeting Notice { get; set; }
         public string MeetingPackId { get; set; }
