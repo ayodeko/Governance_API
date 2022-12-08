@@ -102,6 +102,8 @@ public class MeetingMaps : IMeetingMaps
 
     public Meeting InMap(UpdateAttendingUsersPOST updateMeetingAttendeesPost, Meeting meeting)
     {
+        meeting.SecretaryUserId = updateMeetingAttendeesPost.SecretaryUserId;
+        meeting.ChairPersonUserId = updateMeetingAttendeesPost.ChairPersonUserId;
         meeting.Attendees = InMap(updateMeetingAttendeesPost.Attendees, meeting);
         return meeting;
     }

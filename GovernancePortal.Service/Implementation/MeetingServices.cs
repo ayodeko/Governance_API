@@ -45,6 +45,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside Create New Meeting");
         var meeting = _meetingMapses.InMap(createMeetingPOST, new Meeting());
+        meeting.ModelStatus = ModelStatus.Draft;
         await _unit.Meetings.Add(meeting, loggedInUser);
         var outMeeting = _meetingMapses.OutMap(meeting);
         _unit.SaveToDB();
@@ -90,6 +91,9 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation($"Inside update Attendees for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var duplicateUserId = CheckDuplicateAttendees(updateAttendingUsersPost.Attendees);
+        if (!string.IsNullOrEmpty(duplicateUserId))
+            throw new Exception($"User Id {duplicateUserId} appears multiple times in list");
         var meeting = _meetingMapses.InMap(updateAttendingUsersPost, existingMeeting);
         existingMeeting.Attendees = meeting.Attendees;
         _unit.SaveToDB();
@@ -103,6 +107,13 @@ public class MeetingServices : IMeetingService
         };
         _logger.LogInformation("UpdateAttendees successful: {response}", response);
         return response;
+    }
+    
+    string CheckDuplicateAttendees(List<AttendingUserPOST> attendeePostList)
+    {
+        var attendeeGroup = attendeePostList.GroupBy(x => x.UserId);
+        var culprit = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
+        return culprit?.Key;
     }
 
     public async Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST)

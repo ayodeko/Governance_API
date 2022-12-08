@@ -160,6 +160,8 @@ public class UpdateMeetingGET
 
 public class UpdateAttendingUsersPOST
 {
+    public string ChairPersonUserId { get; set; }
+    public string SecretaryUserId { get; set; }
     public List<AttendingUserPOST> Attendees { get; set; }
 }
 public class AttendingUserPOST
