@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GovernancePortal.Core.Meetings;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings.Minute;
@@ -10,6 +11,7 @@ namespace GovernancePortal.Service.Interface;
 public interface IMeetingService
 {
     Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST);
+    Task<Response> UpdateMeetingDetails(string meetingId, UpdateMeetingPOST createMeetingPOST);
     Task<Response> UpdateAttendingUsers(string meetingId, UpdateAttendingUsersPOST updateAttendingUsersPost);
     Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
     Task<Response> FullUpdateAgendaItems(string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
@@ -27,7 +29,7 @@ public interface IMeetingService
     Task<Response> GetMeetingNoticeUpdateData(string meetingId);
     
     
-    Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery);
+    Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery);
     Task<Pagination<MeetingListGET>> GetUserMeetingList(PageQuery pageQuery);
     Task<Response> SearchMeetings(string meetingSearchString);
     Task<Response> SearchMeetingsByDate(DateTime meetingDateTime);

@@ -30,6 +30,10 @@ public static class CreateMeetingEndpoints
         app.MapPost("api/Meeting/Create",
             ([FromServices] IMeetingService meetingService, CreateMeetingPOST createMeetingPost) =>
                 meetingService.CreateMeeting(createMeetingPost));
+                
+        app.MapPost("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId, UpdateMeetingPOST updateMeetingPost) =>
+            meetingService.UpdateMeetingDetails(meetingId, updateMeetingPost));
         
         app.MapPost("api/Meeting/{meetingId}/AddAttendees", ([FromServices] IMeetingService meetingService,
                 string meetingId, AddAttendeesPOST updateMeetingAttendeesPost) =>
@@ -86,8 +90,8 @@ public static class CreateMeetingEndpoints
 
         #region  Retrieve Meeting Details, Meetings
         app.MapGet("api/Meeting/List",
-            ([FromServices] IMeetingService meetingService, PageQuery pageQuery) =>
-                meetingService.GetAllMeetingList(pageQuery));
+            ([FromServices] IMeetingService meetingService, int meetingType, PageQuery pageQuery) =>
+                meetingService.GetAllMeetingList(meetingType, pageQuery));
         app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, PageQuery pageQuery) =>
             meetingService.GetUserMeetingList(pageQuery));
         app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, string searchMeetingsString) =>

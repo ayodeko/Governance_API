@@ -27,8 +27,8 @@ namespace GovernancePortal.Core.Meetings
         public string Description { get; set; }
         public string Venue { get; set; }
         public string Link { get; set; }
-        public string ChairPersonId { get; set; }
-        public string SecretaryId { get; set; }
+        public string ChairPersonUserId { get; set; }
+        public string SecretaryUserId { get; set; }
         public bool IsAttendanceTaken { get; set; }
         public bool IsMinutesPublished { get; set; }
         public bool IsMeetingPackDownloadable { get; set; }
@@ -51,23 +51,23 @@ namespace GovernancePortal.Core.Meetings
 
     public enum MeetingType
     {
-        Board,
-        Management,
-        Others
+        Board = 0,
+        Management = 1,
+        Others = 2
     }
 
     public enum MeetingFrequency
     {
-        Once, Daily, Weekly, Monthly
+        Once = 0, Daily = 1, Weekly = 2, Monthly = 3
     }
 
     public enum MeetingMedium
     {
-        Physical, Virtual, Hybrid
+        Physical = 0, Virtual = 1, Hybrid = 2
     }
     public enum MeetingStatus
     {
-        Edited, NoticeSent
+        Edited = 0, NoticeSent = 1
     }
     
 }

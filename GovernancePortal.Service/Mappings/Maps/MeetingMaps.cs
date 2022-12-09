@@ -107,10 +107,26 @@ public class MeetingMaps : IMeetingMaps
 
     public Meeting InMap(UpdateAttendingUsersPOST updateMeetingAttendeesPost, Meeting meeting)
     {
+        meeting.SecretaryUserId = updateMeetingAttendeesPost.SecretaryUserId;
+        meeting.ChairPersonUserId = updateMeetingAttendeesPost.ChairPersonUserId;
         meeting.Attendees = InMap(updateMeetingAttendeesPost.Attendees, meeting);
         return meeting;
     }
 
+    public Meeting InMap(UpdateMeetingPOST updateMeetingPost, Meeting meeting)
+    {
+        meeting.Title = updateMeetingPost.Title;
+        meeting.Description = updateMeetingPost.Description;
+        meeting.Duration = updateMeetingPost.Duration;
+        meeting.Frequency = updateMeetingPost.Frequency;
+        meeting.Link = updateMeetingPost.Link;
+        meeting.Venue = updateMeetingPost.Venue;
+        meeting.DateTime = updateMeetingPost.DateTime;
+        meeting.SecretaryUserId = updateMeetingPost.SecretaryUserId;
+        meeting.ChairPersonUserId = updateMeetingPost.ChairPersonUserId;
+        meeting.IsMeetingPackDownloadable = updateMeetingPost.IsMeetingPackDownloadable;
+        return meeting;
+    }
     public List<AttendingUser> InMap(List<AttendingUserPOST> updateMeetingAttendeesPost, Meeting meeting)
     {
         var attendingUsers = new List<AttendingUser>();

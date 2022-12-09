@@ -4,6 +4,7 @@ using GovernancePortal.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,16 +12,17 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GovernancePortal.EF.Migrations
 {
     [DbContext(typeof(PortalContext))]
-    partial class PortalContextModelSnapshot : ModelSnapshot
+    [Migration("20221208105441_rename_properties_in_meeting-table")]
+    partial class rename_properties_in_meetingtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, (int)1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1, 1);
 
             modelBuilder.Entity("GovernancePortal.Core.General.Attachment", b =>
                 {
@@ -131,9 +133,6 @@ namespace GovernancePortal.EF.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsGuest")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsMinuteApproved")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsPresent")
@@ -470,13 +469,13 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("MeetingPackItemUsers");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.Meetings.Minute", b =>
+            modelBuilder.Entity("GovernancePortal.Core.Meetings.Minutes", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AgendaItemId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AttachmentId")
                         .HasColumnType("nvarchar(450)");
@@ -484,22 +483,22 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("CompanyId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsApproved")
-                        .HasColumnType("bit");
-
                     b.Property<string>("MeetingId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("MinuteText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("SignerUserId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("AgendaItemId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AttachmentId");
 
-                    b.HasIndex("MeetingId");
+                    b.HasIndex("MeetingId")
+                        .IsUnique()
+                        .HasFilter("[MeetingId] IS NOT NULL");
 
                     b.ToTable("Minutes");
                 });
@@ -813,21 +812,15 @@ namespace GovernancePortal.EF.Migrations
                     b.Navigation("AttendingUser");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.Meetings.Minute", b =>
+            modelBuilder.Entity("GovernancePortal.Core.Meetings.Minutes", b =>
                 {
-                    b.HasOne("GovernancePortal.Core.Meetings.MeetingAgendaItem", "AgendaItem")
-                        .WithMany()
-                        .HasForeignKey("AgendaItemId");
-
                     b.HasOne("GovernancePortal.Core.General.Attachment", "Attachment")
                         .WithMany()
                         .HasForeignKey("AttachmentId");
 
                     b.HasOne("GovernancePortal.Core.Meetings.Meeting", null)
-                        .WithMany("Minutes")
-                        .HasForeignKey("MeetingId");
-
-                    b.Navigation("AgendaItem");
+                        .WithOne("Minutes")
+                        .HasForeignKey("GovernancePortal.Core.Meetings.Minutes", "MeetingId");
 
                     b.Navigation("Attachment");
                 });

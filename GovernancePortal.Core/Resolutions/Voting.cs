@@ -35,7 +35,7 @@ public class VotingUser : BaseModel
 
 public enum VotingStance
 {
-    Abstain,
-    For,
-    Against
+    Abstain = 0,
+    For = 1,
+    Against = 2
 }

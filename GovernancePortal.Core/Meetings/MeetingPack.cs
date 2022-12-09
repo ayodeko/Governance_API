@@ -45,7 +45,7 @@ namespace GovernancePortal.Core.Meetings
 
     public enum ActionRequired
     {
-        Others
+        Others = 0
     }
 
     public class MeetingPackItemUser
