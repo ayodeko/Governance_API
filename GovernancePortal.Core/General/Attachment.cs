@@ -25,6 +25,7 @@ namespace GovernancePortal.Core.General
 
 
         //class properties
+        public string Title { get; set; }
         public string Highlight { get; set; }
         public string Source { get; set; }
         public bool HasExpiryDate { get; set; }

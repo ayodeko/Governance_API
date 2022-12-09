@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using GovernancePortal.Core.Meetings;
@@ -127,6 +128,12 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .Include(x => x.Items)
             .Include(x => x.Packs)
             .Include(x => x.Attendees)
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
+    }
+    public async Task<Meeting> GetMeeting_Minutes(string meetingId, string companyId)
+    {
+        return (await _context.Set<Meeting>()
+            .Include(x => x.Minutes)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
 

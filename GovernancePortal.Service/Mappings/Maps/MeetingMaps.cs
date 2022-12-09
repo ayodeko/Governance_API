@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.Runtime;
 using AutoMapper;
+using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
+using GovernancePortal.Service.ClientModels.Exceptions;
+using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings.Minute;
 using GovernancePortal.Service.Mappings.IMaps;
@@ -363,23 +366,23 @@ public class MeetingMaps : IMeetingMaps
         return existingMeeting;
     }
 
-    public Meeting InMap(List<AddMinutePOST> source, Meeting existingMeeting)
+    public Meeting InMap(AddMinutePOST source, Meeting existingMeeting)
     {
         existingMeeting.Minutes = InMap(source, existingMeeting, new List<Minute>());
         return existingMeeting;
     }
-    public List<Minute> InMap(List<AddMinutePOST> source,Meeting existingMeeting, List<Minute> destination = null)
+    public List<Minute> InMap(AddMinutePOST source,Meeting existingMeeting, List<Minute> destination = null)
     {
         var returnModel = new List<Minute>();
         
-        foreach(var item in source)
+        foreach(var item in source.items)
         {
             returnModel.Add(InMap(item, existingMeeting, new Minute()));
         }
         return returnModel;
     }
 
-    public Minute InMap(AddMinutePOST source, Meeting existingMeeting, Minute destination = null)
+    public Minute InMap(AddMinuteDTO source, Meeting existingMeeting, Minute destination = null)
     {
         if (destination is null)
             destination = new Minute();
@@ -389,8 +392,54 @@ public class MeetingMaps : IMeetingMaps
         destination.CompanyId = existingMeeting.CompanyId;
         destination.AgendaItemId = source.AgendaItemId;
         return destination;
-
+    }
+    public Meeting InMap(UploadMinutePOST source, Meeting destination)
+    {
+        var minute = InMap(source, destination, new Minute());
+        destination.Minutes.Add(minute);
+        return destination; 
     }
 
+    public Minute InMap(UploadMinutePOST source, Meeting existingMeeting, Minute destination = null)
+    {
+        if (destination is null)
+            destination = new Minute();
+
+        destination.MeetingId = existingMeeting.Id;
+        destination.AgendaItemId = source.AgendaItemId;
+        destination.Attachment = InMap(source.Attachment,existingMeeting, destination.Attachment);
+
+        return destination;
+    }
+
+    private Attachment InMap(AttachmentPostDTO source, Meeting existingMeeting, Attachment destination = null)
+    {
+        if (destination == null)
+            destination = new Attachment();
+
+        if (source.Identity == null) throw new BadRequestException("Document must have an attachment");
+
+        destination.CompanyId = existingMeeting.CompanyId;
+        destination.CreatedBy = existingMeeting.CreatedBy;
+        destination.CategoryId = destination.Id;
+        destination.Source = source.Source;
+        destination.StatusDescription = source.StatusDescription;
+        destination.Title = source.Title;
+        destination.Highlight = source.Highlight;
+        destination.HasExpiryDate = source.HasExpiryDate;
+        destination.OtherDetails = source.OtherDetails;
+        destination.DocumentStatus = source.DocumentStatus;
+        destination.Reference = source.Reference;
+        destination.ReferenceDate = source.ReferenceDate;
+        destination.ReferenceDescription = source.ReferenceDescription;
+        destination.ValidFrom = source.ValidFrom;
+        destination.ValidTo = source.ValidTo;
+        destination.FileId = source.Identity.FileId;
+        destination.FileName = source.Identity.FileName;
+        destination.FileSize = source.Identity.FileSize;
+        destination.FileType = source.Identity.FileType;
+
+        return destination;
+    }
     #endregion
 }

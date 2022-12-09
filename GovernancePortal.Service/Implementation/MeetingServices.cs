@@ -13,6 +13,7 @@ using GovernancePortal.Service.ClientModels.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings.Minute;
 using GovernancePortal.Service.Interface;
 using GovernancePortal.Service.Mappings.IMaps;
+using Humanizer;
 using Microsoft.Extensions.Logging;
 
 namespace GovernancePortal.Service.Implementation;
@@ -482,10 +483,31 @@ public class MeetingServices : IMeetingService
         return response;
     }
 
+    //public async Task<Response> GetMeetingDetails()
     //minutes
     public Task<Response> GetMeetingMinutesUpdateData(string meetingId)
     {
+
         throw new NotImplementedException();
+    }
+    public async Task<Response> GetMeetingMinutesData(string meetingId)
+    {
+
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside get minutes data for meeting {meetingId}");
+        var existingMeeting = await _unit.Meetings.GetMeeting_Minutes(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var outMeeting = _meetingMapses.OutMap(existingMeeting, new MeetingGET());
+
+        var response = new Response
+        {
+            Data = outMeeting,
+            Message = "Successful",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Get Meeting Pack Update Data successful: {response}", response);
+        return response;
     }
     public async Task<Response> UpdateMinutes(string meetingId, UpdateMeetingMinutesPOST updateMinutesPOST)
     {
@@ -508,7 +530,7 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation("UpdateMinutes successful: {response}", response);
         return response;
     }
-    public async Task<Response> AddMinutes(string meetingId, List<AddMinutePOST> data)
+    public async Task<Response> AddMinutes(string meetingId, AddMinutePOST data)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside add Minutes for {meetingId}");
@@ -529,8 +551,24 @@ public class MeetingServices : IMeetingService
         return response;
     }
 
-    public Task<Response> UploadMinutes(string meetingId, UploadMinutePOST data)
+    public async Task<Response> UploadMinutes(string meetingId, UploadMinutePOST data)
     {
-        throw new NotImplementedException();
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside upload Minutes for {meetingId}");
+        var existingMeeting = await _unit.Meetings.GetMeeting(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var meeting = _meetingMapses.InMap(data, existingMeeting);
+        existingMeeting.Minutes = meeting.Minutes;
+        _unit.SaveToDB();
+        var response = new Response
+        {
+            Data = existingMeeting,
+            Message = "Meeting updated successfully",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Add Minutes successful: {response}", response);
+        return response;
     }
 }

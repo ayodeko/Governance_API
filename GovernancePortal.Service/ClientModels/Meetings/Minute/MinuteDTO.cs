@@ -13,11 +13,13 @@ namespace GovernancePortal.Service.ClientModels.Meetings.Minute
     {
         public string Id { get; set; }
         public string MinuteText { get; set; }
+        public string AgendaItemId { get; set; }
+
     }
 
-    public class AddMinutePOST: AddMinuteDTO
+    public class AddMinutePOST
     {
-        public string AgendaItemId { get; set; }
+        public List<AddMinuteDTO> items { get; set; }
     }
     public class AddMinuteGET: AddMinuteDTO
     {
@@ -28,8 +30,7 @@ namespace GovernancePortal.Service.ClientModels.Meetings.Minute
     public class UploadMinuteDTO
     {
         public string Id { get; set; }
-        public string MeetingId { get; set; }
-        public AttachmentDTO Attachment { get; set; }
+        public AttachmentPostDTO Attachment { get; set; }
     }
     public class UploadMinutePOST : UploadMinuteDTO
     {

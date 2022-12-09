@@ -105,6 +105,9 @@ public static class CreateMeetingEndpoints
         #endregion
 
         #region Minute
+        app.MapGet("api/Meeting/{meetingId}/Minutes", ([FromServices] IMeetingService meetingService,
+               string meetingId) =>
+           meetingService.GetMeetingData(meetingId));
         app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingMinutesUpdateData(meetingId));
@@ -112,7 +115,7 @@ public static class CreateMeetingEndpoints
               string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
           meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST));
         app.MapPost("api/Meeting/{meetingId}/AddMinutes", ([FromServices] IMeetingService meetingService,
-                string meetingId, List<AddMinutePOST> data) =>
+                string meetingId, AddMinutePOST data) =>
             meetingService.AddMinutes(meetingId, data));
         app.MapPost("api/Meeting/{meetingId}/UploadMinutes", ([FromServices] IMeetingService meetingService,
                string meetingId, UploadMinutePOST data) =>
