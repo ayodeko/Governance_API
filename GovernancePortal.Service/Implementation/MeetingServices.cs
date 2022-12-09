@@ -571,4 +571,14 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation("Add Minutes successful: {response}", response);
         return response;
     }
+
+    public Task<Response> GetMeetingDetails(string meetingId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Response> GetMeetingData(string meetingId)
+    {
+        throw new NotImplementedException();
+    }
 }
