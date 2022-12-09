@@ -19,6 +19,8 @@ public interface IMeetingRepo : IGenericRepo<Meeting>
     Task<Meeting> GetMeeting_AgendaItems_MeetingPack(string meetingId, string companyId);
     Task<Meeting> GetMeeting_MeetingPack(string meetingId, string companyId);
     Task<Meeting> GetMeeting_AgendaItems_Attendees_MeetingPack(string meetingId, string companyId);
+    IEnumerable<Meeting> GetMeetingListByMeetingType(MeetingType meetingType, string companyId, int pageNumber, int pageSize,
+        out int totalRecords);
     Task<Meeting> GetMeeting_Minutes(string meetingId, string companyId);
     IEnumerable<Meeting> GetMeetingListByUserId(string userId, string companyId, int pageNumber, int pageSize,
         out int totalRecords);

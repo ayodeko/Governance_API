@@ -46,6 +46,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside Create New Meeting");
         var meeting = _meetingMapses.InMap(createMeetingPOST, new Meeting());
+        meeting.ModelStatus = ModelStatus.Draft;
         await _unit.Meetings.Add(meeting, loggedInUser);
         var outMeeting = _meetingMapses.OutMap(meeting);
         _unit.SaveToDB();
@@ -58,6 +59,27 @@ public class MeetingServices : IMeetingService
             IsSuccessful = true
         };
         _logger.LogInformation("Create new meeting successful: {response}", response);
+        return response;
+    }
+    public async Task<Response> UpdateMeetingDetails(string meetingId, UpdateMeetingPOST updateMeetingPost)
+    {
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside update meeting for Id {meetingId}");
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        
+        
+        existingMeeting = _meetingMapses.InMap(updateMeetingPost, existingMeeting);
+        _unit.SaveToDB();
+        
+        var response = new Response
+        {
+            Data = existingMeeting,
+            Message = "Meeting updated successfully",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("UpdateAttendees successful: {response}", response);
         return response;
     }
     public async Task<Response> AddAttendees(string meetingId, AddAttendeesPOST addAttendeesPost)
@@ -91,6 +113,9 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation($"Inside update Attendees for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var duplicateUserId = CheckDuplicateAttendees(updateAttendingUsersPost.Attendees);
+        if (!string.IsNullOrEmpty(duplicateUserId))
+            throw new Exception($"User Id {duplicateUserId} appears multiple times in list");
         var meeting = _meetingMapses.InMap(updateAttendingUsersPost, existingMeeting);
         existingMeeting.Attendees = meeting.Attendees;
         _unit.SaveToDB();
@@ -104,6 +129,13 @@ public class MeetingServices : IMeetingService
         };
         _logger.LogInformation("UpdateAttendees successful: {response}", response);
         return response;
+    }
+    
+    string CheckDuplicateAttendees(List<AttendingUserPOST> attendeePostList)
+    {
+        var attendeeGroup = attendeePostList.GroupBy(x => x.UserId);
+        var culprit = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
+        return culprit?.Key;
     }
 
     public async Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST)
@@ -388,14 +420,15 @@ public class MeetingServices : IMeetingService
             MeetingDate = existingMeeting.DateTime
         };
 
-    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery)
+    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
-        var allMeetings = await _unit.Meetings.FindByPage(loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize);
+        var type = Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : MeetingType.Board;
+        var allMeetings = _unit.Meetings.GetMeetingListByMeetingType(type, loggedInUser.CompanyId,
+            pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
         var allMeetingsList = allMeetings.ToList();
         var meetingListGet = _meetingMapses.OutMap(allMeetingsList);
-        var totalRecords = await _unit.Meetings.Count(loggedInUser.CompanyId);
         return new Pagination<MeetingListGET>
         {
             Data = meetingListGet.AsEnumerable(),

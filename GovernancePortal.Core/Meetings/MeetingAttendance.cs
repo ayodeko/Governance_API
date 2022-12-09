@@ -36,9 +36,8 @@ namespace GovernancePortal.Core.Meetings
 
     public enum AttendeePosition
     {
-        Moderator,
-        Secretary,
-        Participant,
-        Guest
+        MeetingOfficial = 0,
+        Participant = 2,
+        Guest = 3
     }
 }

@@ -137,6 +137,17 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
 
+    public IEnumerable<Meeting> GetMeetingListByMeetingType(MeetingType type, string companyId, int pageNumber, int pageSize,
+        out int totalRecords)
+    {
+        var skip = (pageNumber - 1) * pageSize;
+        var result = (_context.Set<Meeting>()
+            .Include(x => x.Attendees)
+            .Where(x => x.CompanyId.Equals(companyId) && x.Type == (MeetingType)type));
+        totalRecords = result.Count();
+        return result.Skip(skip)
+            .Take(pageSize)!;
+    }
     public IEnumerable<Meeting> GetMeetingListByUserId(string userId, string companyId, int pageNumber, int pageSize,
         out int totalRecords)
     {
