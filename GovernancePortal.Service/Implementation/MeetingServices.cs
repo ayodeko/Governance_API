@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using FluentValidation;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Data;
@@ -33,18 +34,21 @@ public class MeetingServices : IMeetingService
     private ILogger _logger;
     private IMeetingMaps _meetingMapses;
     private IUnitOfWork _unit;
+    private readonly IValidator<Meeting> _meetingValidator;
 
-    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork)
+    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator)
     {
         _meetingMapses = meetingMapses;
         _logger = logger;
         _unit = unitOfWork;
+        _meetingValidator = meetingValidator;
     }
     public async Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside Create New Meeting");
         var meeting = _meetingMapses.InMap(createMeetingPOST, new Meeting());
+        await _meetingValidator.ValidateAndThrowAsync(meeting);
         meeting.ModelStatus = ModelStatus.Draft;
         await _unit.Meetings.Add(meeting, loggedInUser);
         var outMeeting = _meetingMapses.OutMap(meeting);
