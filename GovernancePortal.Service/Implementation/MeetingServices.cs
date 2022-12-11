@@ -439,9 +439,9 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
         var type = meetingType != null ?  (Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : MeetingType.Board) : MeetingType.Board;
         var allMeetings = (meetingType == null)
-            ? _unit.Meetings.GetMeetingListByUserId(loggedInUser.Id, loggedInUser.CompanyId, pageQuery.PageNumber,
+            ? _unit.Meetings.GetMeetingList(loggedInUser.CompanyId, pageQuery.PageNumber,
                 pageQuery.PageSize, out var totalRecords) 
-            :  _unit.Meetings.GetMeetingListByMeetingType(type, loggedInUser.Id, loggedInUser.CompanyId,
+            :  _unit.Meetings.GetMeetingListByMeetingType(type, loggedInUser.CompanyId,
             pageQuery.PageNumber, pageQuery.PageSize, out totalRecords);
         var allMeetingsList = allMeetings.ToList();
         var meetingListGet = _meetingMapses.OutMap(allMeetingsList);
