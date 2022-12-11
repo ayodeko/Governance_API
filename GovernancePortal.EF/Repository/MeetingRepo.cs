@@ -130,13 +130,13 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
 
-    public IEnumerable<Meeting> GetMeetingListByMeetingType(MeetingType type, string companyId, int pageNumber, int pageSize,
+    public IEnumerable<Meeting> GetMeetingListByMeetingType(MeetingType type, string userId, string companyId, int pageNumber, int pageSize,
         out int totalRecords)
     {
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
-            .Where(x => x.CompanyId.Equals(companyId) && x.Type == (MeetingType)type));
+            .Where(x => x.CompanyId.Equals(companyId) && x.Type == type && x.Attendees.Any(c => c.UserId == userId)));
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;

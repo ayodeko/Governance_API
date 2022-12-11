@@ -29,7 +29,7 @@ public interface IMeetingService
     Task<Response> GetMeetingNoticeUpdateData(string meetingId);
     
     
-    Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery);
+    Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, PageQuery pageQuery);
     Task<Pagination<MeetingListGET>> GetUserMeetingList(PageQuery pageQuery);
     Task<Response> SearchMeetings(string meetingSearchString);
     Task<Response> SearchMeetingsByDate(DateTime meetingDateTime);
