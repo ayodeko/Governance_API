@@ -91,10 +91,15 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Attendees for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
+        
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        var duplicateUserId = CheckDuplicateAttendees(addAttendeesPost.Attendees);
+        if (addAttendeesPost.Attendees == null || addAttendeesPost.Attendees.Count < 1)
+            throw new Exception("Attendees list cannot be null or empty, ensure to select at least one participant");
+        var duplicateUserId = CheckNonOfficialDuplicateAttendees(addAttendeesPost.Attendees);
         if (!string.IsNullOrEmpty(duplicateUserId))
-            throw new Exception($"User Id {duplicateUserId} appears multiple times in list");
+            throw new Exception($"User Id {duplicateUserId} appears multiple times in list and has a non official Attendee position");
+        
+        addAttendeesPost.Attendees = addAttendeesPost.Attendees.DistinctBy(x => x.UserId).ToList();
         var attendingUserPosts = addAttendeesPost.Attendees.Select(x => new AttendingUserPOST()
         {
             UserId = x.UserId, Name = x.Name, AttendeePosition = x.AttendeePosition
@@ -114,11 +119,12 @@ public class MeetingServices : IMeetingService
         return response;
     }
     
-    string CheckDuplicateAttendees(List<AddAttendeesListPOST> attendeePostList)
+    string CheckNonOfficialDuplicateAttendees(List<AddAttendeesListPOST> attendeePostList)
     {
         var attendeeGroup = attendeePostList.GroupBy(x => x.UserId);
-        var culprit = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
-        return culprit?.Key;
+        var multipleAppearance = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
+        var culprit = multipleAppearance?.FirstOrDefault(x => x.AttendeePosition != AttendeePosition.MeetingOfficial);
+        return culprit?.UserId;
     }
 
     public async Task<Response> UpdateAttendingUsers(string meetingId, UpdateAttendingUsersPOST updateAttendingUsersPost)
@@ -127,9 +133,13 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation($"Inside update Attendees for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        var duplicateUserId = CheckDuplicateAttendees(updateAttendingUsersPost.Attendees);
+        if (updateAttendingUsersPost.Attendees == null || updateAttendingUsersPost.Attendees.Count < 1)
+            throw new Exception("Attendees list cannot be null or empty, ensure to select at least one participant");
+        var duplicateUserId = CheckNonOfficialDuplicateAttendees(updateAttendingUsersPost.Attendees);
         if (!string.IsNullOrEmpty(duplicateUserId))
-            throw new Exception($"User Id {duplicateUserId} appears multiple times in list");
+            throw new Exception($"User Id {duplicateUserId} appears multiple times in list and has a non official Attendee position");
+        
+        updateAttendingUsersPost.Attendees = updateAttendingUsersPost.Attendees.DistinctBy(x => x.UserId).ToList();
         var meeting = _meetingMapses.InMap(updateAttendingUsersPost, existingMeeting);
         existingMeeting.Attendees = meeting.Attendees;
         _unit.SaveToDB();
@@ -145,11 +155,12 @@ public class MeetingServices : IMeetingService
         return response;
     }
     
-    string CheckDuplicateAttendees(List<AttendingUserPOST> attendeePostList)
+    string CheckNonOfficialDuplicateAttendees(List<AttendingUserPOST> attendeePostList)
     {
         var attendeeGroup = attendeePostList.GroupBy(x => x.UserId);
-        var culprit = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
-        return culprit?.Key;
+        var multipleAppearance = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
+        var culprit = multipleAppearance?.FirstOrDefault(x => x.AttendeePosition != AttendeePosition.MeetingOfficial);
+        return culprit?.UserId;
     }
 
     public async Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST)
