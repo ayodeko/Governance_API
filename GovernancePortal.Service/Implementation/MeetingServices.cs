@@ -73,6 +73,7 @@ public class MeetingServices : IMeetingService
         
         
         existingMeeting = _meetingMapses.InMap(updateMeetingPost, existingMeeting);
+        await _meetingValidator.ValidateAndThrowAsync(existingMeeting);
         _unit.SaveToDB();
         
         var response = new Response
