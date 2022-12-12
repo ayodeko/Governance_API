@@ -437,7 +437,7 @@ public class MeetingServices : IMeetingService
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
-        var type = meetingType != null ?  (Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : MeetingType.Board) : MeetingType.Board;
+        var type = meetingType != null ?  (Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : throw new Exception("Wrong meeting type passed as query parameter")) : MeetingType.Board;
         var allMeetings = (meetingType == null)
             ? _unit.Meetings.GetMeetingList(loggedInUser.CompanyId, pageQuery.PageNumber,
                 pageQuery.PageSize, out var totalRecords) 
