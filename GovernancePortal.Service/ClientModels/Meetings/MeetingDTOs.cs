@@ -197,7 +197,8 @@ public class AttendingUserPOST
 
 public class AddAttendeesPOST
 {
-    public string MeetingId { get; set; }
+    public string ChairPersonUserId { get; set; }
+    public string SecretaryUserId { get; set; }
     public List<AddAttendeesListPOST> Attendees { get; set; }
 }
 public class AddAttendeesListPOST

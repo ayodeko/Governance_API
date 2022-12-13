@@ -106,6 +106,8 @@ public class MeetingServices : IMeetingService
         }).ToList();
         var attendingUsers = _meetingMapses.InMap(attendingUserPosts, existingMeeting);
         existingMeeting.Attendees = attendingUsers;
+        existingMeeting.ChairPersonUserId = addAttendeesPost.ChairPersonUserId;
+        existingMeeting.SecretaryUserId = addAttendeesPost.SecretaryUserId;
         _unit.SaveToDB();
         
         var response = new Response
