@@ -121,10 +121,15 @@ public class MeetingServices : IMeetingService
     
     string CheckNonOfficialDuplicateAttendees(List<AddAttendeesListPOST> attendeePostList)
     {
-        var attendeeGroup = attendeePostList.GroupBy(x => x.UserId);
-        var multipleAppearance = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
-        var culprit = multipleAppearance?.FirstOrDefault(x => x.AttendeePosition != AttendeePosition.MeetingOfficial);
-        return culprit?.UserId;
+        var duplicateIdList = attendeePostList.GroupBy(x => x.UserId).Where(y => y.Count() > 1);
+        var ids = duplicateIdList.Select(x => x.Key);
+        foreach (var id in ids)
+        {
+            var idList = attendeePostList.Where(x => x.UserId == id);
+            if (idList.All(x => x.AttendeePosition != AttendeePosition.MeetingOfficial))
+                return id;
+        }
+        return null;
     }
 
     public async Task<Response> UpdateAttendingUsers(string meetingId, UpdateAttendingUsersPOST updateAttendingUsersPost)
@@ -157,10 +162,15 @@ public class MeetingServices : IMeetingService
     
     string CheckNonOfficialDuplicateAttendees(List<AttendingUserPOST> attendeePostList)
     {
-        var attendeeGroup = attendeePostList.GroupBy(x => x.UserId);
-        var multipleAppearance = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
-        var culprit = multipleAppearance?.FirstOrDefault(x => x.AttendeePosition != AttendeePosition.MeetingOfficial);
-        return culprit?.UserId;
+        var duplicateIdList = attendeePostList.GroupBy(x => x.UserId).Where(y => y.Count() > 1);
+        var ids = duplicateIdList.Select(x => x.Key);
+        foreach (var id in ids)
+        {
+            var idList = attendeePostList.Where(x => x.UserId == id);
+            if (idList.All(x => x.AttendeePosition != AttendeePosition.MeetingOfficial))
+                return id;
+        }
+        return null;
     }
 
     public async Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST)
