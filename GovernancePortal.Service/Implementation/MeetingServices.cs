@@ -660,4 +660,9 @@ public class MeetingServices : IMeetingService
     {
         throw new NotImplementedException();
     }
+
+    public Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery)
+    {
+        throw new NotImplementedException();
+    }
 }
