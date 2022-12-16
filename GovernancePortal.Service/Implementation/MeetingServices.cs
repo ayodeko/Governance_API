@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using FluentValidation;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Data;
@@ -34,18 +35,21 @@ public class MeetingServices : IMeetingService
     private ILogger _logger;
     private IMeetingMaps _meetingMapses;
     private IUnitOfWork _unit;
+    private readonly IValidator<Meeting> _meetingValidator;
 
-    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork)
+    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator)
     {
         _meetingMapses = meetingMapses;
         _logger = logger;
         _unit = unitOfWork;
+        _meetingValidator = meetingValidator;
     }
     public async Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside Create New Meeting");
         var meeting = _meetingMapses.InMap(createMeetingPOST, new Meeting());
+        await _meetingValidator.ValidateAndThrowAsync(meeting);
         meeting.ModelStatus = ModelStatus.Draft;
         await _unit.Meetings.Add(meeting, loggedInUser);
         var outMeeting = _meetingMapses.OutMap(meeting);
@@ -70,6 +74,7 @@ public class MeetingServices : IMeetingService
         
         
         existingMeeting = _meetingMapses.InMap(updateMeetingPost, existingMeeting);
+        await _meetingValidator.ValidateAndThrowAsync(existingMeeting);
         _unit.SaveToDB();
         
         var response = new Response
@@ -87,13 +92,23 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Attendees for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
+        
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (addAttendeesPost.Attendees == null || addAttendeesPost.Attendees.Count < 1)
+            throw new Exception("Attendees list cannot be null or empty, ensure to select at least one participant");
+        var duplicateUserId = CheckNonOfficialDuplicateAttendees(addAttendeesPost.Attendees);
+        if (!string.IsNullOrEmpty(duplicateUserId))
+            throw new Exception($"User Id {duplicateUserId} appears multiple times in list and has a non official Attendee position");
+        
+        addAttendeesPost.Attendees = addAttendeesPost.Attendees.DistinctBy(x => x.UserId).ToList();
         var attendingUserPosts = addAttendeesPost.Attendees.Select(x => new AttendingUserPOST()
         {
             UserId = x.UserId, Name = x.Name, AttendeePosition = x.AttendeePosition
         }).ToList();
         var attendingUsers = _meetingMapses.InMap(attendingUserPosts, existingMeeting);
         existingMeeting.Attendees = attendingUsers;
+        existingMeeting.ChairPersonUserId = addAttendeesPost.ChairPersonUserId;
+        existingMeeting.SecretaryUserId = addAttendeesPost.SecretaryUserId;
         _unit.SaveToDB();
         
         var response = new Response
@@ -106,6 +121,19 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation("UpdateAttendees successful: {response}", response);
         return response;
     }
+    
+    string CheckNonOfficialDuplicateAttendees(List<AddAttendeesListPOST> attendeePostList)
+    {
+        var duplicateIdList = attendeePostList.GroupBy(x => x.UserId).Where(y => y.Count() > 1);
+        var ids = duplicateIdList.Select(x => x.Key);
+        foreach (var id in ids)
+        {
+            var idList = attendeePostList.Where(x => x.UserId == id);
+            if (idList.All(x => x.AttendeePosition != AttendeePosition.MeetingOfficial))
+                return id;
+        }
+        return null;
+    }
 
     public async Task<Response> UpdateAttendingUsers(string meetingId, UpdateAttendingUsersPOST updateAttendingUsersPost)
     {
@@ -113,9 +141,13 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation($"Inside update Attendees for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        var duplicateUserId = CheckDuplicateAttendees(updateAttendingUsersPost.Attendees);
+        if (updateAttendingUsersPost.Attendees == null || updateAttendingUsersPost.Attendees.Count < 1)
+            throw new Exception("Attendees list cannot be null or empty, ensure to select at least one participant");
+        var duplicateUserId = CheckNonOfficialDuplicateAttendees(updateAttendingUsersPost.Attendees);
         if (!string.IsNullOrEmpty(duplicateUserId))
-            throw new Exception($"User Id {duplicateUserId} appears multiple times in list");
+            throw new Exception($"User Id {duplicateUserId} appears multiple times in list and has a non official Attendee position");
+        
+        updateAttendingUsersPost.Attendees = updateAttendingUsersPost.Attendees.DistinctBy(x => x.UserId).ToList();
         var meeting = _meetingMapses.InMap(updateAttendingUsersPost, existingMeeting);
         existingMeeting.Attendees = meeting.Attendees;
         _unit.SaveToDB();
@@ -131,11 +163,17 @@ public class MeetingServices : IMeetingService
         return response;
     }
     
-    string CheckDuplicateAttendees(List<AttendingUserPOST> attendeePostList)
+    string CheckNonOfficialDuplicateAttendees(List<AttendingUserPOST> attendeePostList)
     {
-        var attendeeGroup = attendeePostList.GroupBy(x => x.UserId);
-        var culprit = attendeeGroup.FirstOrDefault(x => x.Count() > 1);
-        return culprit?.Key;
+        var duplicateIdList = attendeePostList.GroupBy(x => x.UserId).Where(y => y.Count() > 1);
+        var ids = duplicateIdList.Select(x => x.Key);
+        foreach (var id in ids)
+        {
+            var idList = attendeePostList.Where(x => x.UserId == id);
+            if (idList.All(x => x.AttendeePosition != AttendeePosition.MeetingOfficial))
+                return id;
+        }
+        return null;
     }
 
     public async Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST)
@@ -420,13 +458,16 @@ public class MeetingServices : IMeetingService
             MeetingDate = existingMeeting.DateTime
         };
 
-    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery)
+    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, PageQuery pageQuery)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
-        var type = Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : MeetingType.Board;
-        var allMeetings = _unit.Meetings.GetMeetingListByMeetingType(type, loggedInUser.CompanyId,
-            pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
+        var type = meetingType != null ?  (Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : throw new Exception("Wrong meeting type passed as query parameter")) : MeetingType.Board;
+        var allMeetings = (meetingType == null)
+            ? _unit.Meetings.GetMeetingList(loggedInUser.CompanyId, pageQuery.PageNumber,
+                pageQuery.PageSize, out var totalRecords) 
+            :  _unit.Meetings.GetMeetingListByMeetingType(type, loggedInUser.CompanyId,
+            pageQuery.PageNumber, pageQuery.PageSize, out totalRecords);
         var allMeetingsList = allMeetings.ToList();
         var meetingListGet = _meetingMapses.OutMap(allMeetingsList);
         return new Pagination<MeetingListGET>

@@ -143,7 +143,18 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
-            .Where(x => x.CompanyId.Equals(companyId) && x.Type == (MeetingType)type));
+            .Where(x => x.CompanyId.Equals(companyId) && x.Type == type));
+        totalRecords = result.Count();
+        return result.Skip(skip)
+            .Take(pageSize)!;
+    }
+    public IEnumerable<Meeting> GetMeetingListByMeetingTypeAndUserId(MeetingType type, string userId, string companyId, int pageNumber, int pageSize,
+        out int totalRecords)
+    {
+        var skip = (pageNumber - 1) * pageSize;
+        var result = (_context.Set<Meeting>()
+            .Include(x => x.Attendees)
+            .Where(x => x.CompanyId.Equals(companyId) && x.Type == type && x.Attendees.Any(c => c.UserId == userId)));
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;
@@ -155,6 +166,17 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
             .Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(c => c.UserId == userId)));
+        totalRecords = result.Count();
+        return result.Skip(skip)
+            .Take(pageSize)!;
+    }
+    public IEnumerable<Meeting> GetMeetingList(string companyId, int pageNumber, int pageSize,
+        out int totalRecords)
+    {
+        var skip = (pageNumber - 1) * pageSize;
+        var result = (_context.Set<Meeting>()
+            .Include(x => x.Attendees)
+            .Where(x => x.CompanyId.Equals(companyId)));
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;

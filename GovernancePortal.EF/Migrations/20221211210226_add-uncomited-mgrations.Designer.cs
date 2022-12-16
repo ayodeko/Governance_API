@@ -4,6 +4,7 @@ using GovernancePortal.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GovernancePortal.EF.Migrations
 {
     [DbContext(typeof(PortalContext))]
-    partial class PortalContextModelSnapshot : ModelSnapshot
+    [Migration("20221211210226_add-uncomited-mgrations")]
+    partial class adduncomitedmgrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,12 +89,6 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("StatusDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TaskItemId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("ValidFrom")
                         .HasColumnType("datetime2");
 
@@ -103,8 +99,6 @@ namespace GovernancePortal.EF.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TaskItemId");
 
                     b.ToTable("Attachment");
                 });
@@ -746,101 +740,6 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("VotingUser");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskItem", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("DocumentUpload")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaskId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("TaskItem");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CompanyId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MeetingId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ModelStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("TimeDue")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tasks");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskParticipant", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CompanyId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
-
-                    b.ToTable("TaskParticipant");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.General.Attachment", b =>
-                {
-                    b.HasOne("GovernancePortal.Core.TaskManagement.TaskItem", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("TaskItemId");
-                });
-
             modelBuilder.Entity("GovernancePortal.Core.Meetings.AttendingUser", b =>
                 {
                     b.HasOne("GovernancePortal.Core.Meetings.MeetingAttendance", null)
@@ -976,20 +875,6 @@ namespace GovernancePortal.EF.Migrations
                         .HasForeignKey("VotingId");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskItem", b =>
-                {
-                    b.HasOne("GovernancePortal.Core.TaskManagement.TaskModel", null)
-                        .WithMany("Items")
-                        .HasForeignKey("TaskId");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskParticipant", b =>
-                {
-                    b.HasOne("GovernancePortal.Core.TaskManagement.TaskModel", null)
-                        .WithMany("Participants")
-                        .HasForeignKey("TaskId");
-                });
-
             modelBuilder.Entity("GovernancePortal.Core.Meetings.Meeting", b =>
                 {
                     b.Navigation("Attendance");
@@ -1041,18 +926,6 @@ namespace GovernancePortal.EF.Migrations
             modelBuilder.Entity("GovernancePortal.Core.Resolutions.Voting", b =>
                 {
                     b.Navigation("Voters");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskItem", b =>
-                {
-                    b.Navigation("Attachments");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskModel", b =>
-                {
-                    b.Navigation("Items");
-
-                    b.Navigation("Participants");
                 });
 #pragma warning restore 612, 618
         }

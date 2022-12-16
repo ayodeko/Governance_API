@@ -1,7 +1,10 @@
 ﻿using System.Text;
+using FluentValidation;
+using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.Utilities;
 using GovernancePortal.EF;
 using GovernancePortal.Service.ClientModels.General;
+using GovernancePortal.Service.Validators.Meeting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +18,7 @@ public static class ServiceConfigurations
     
     public static void ConfigureGovernancePortalServices(this IServiceCollection services, IConfiguration Configuration)
     {
+        services.AddTransient<IValidator<Meeting>, MeetingValidator>();
         services.AddCors(options => options.AddPolicy("*",
                   builder =>
                   {

@@ -123,7 +123,6 @@ public class CreateMeetingPOST
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
-    public MeetingStatus Status { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
 }
@@ -154,6 +153,8 @@ public class UpdateMeetingGET
     public bool IsMeetingPackDownloadable { get; set; }
     public string Venue { get; set; }
     public string Link { get; set; }
+    public string SecretaryUserId { get; set; }
+    public string ChairPersonUserId { get; set; }
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
@@ -196,7 +197,8 @@ public class AttendingUserPOST
 
 public class AddAttendeesPOST
 {
-    public string MeetingId { get; set; }
+    public string ChairPersonUserId { get; set; }
+    public string SecretaryUserId { get; set; }
     public List<AddAttendeesListPOST> Attendees { get; set; }
 }
 public class AddAttendeesListPOST

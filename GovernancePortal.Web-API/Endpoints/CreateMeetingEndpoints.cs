@@ -89,7 +89,7 @@ public static class CreateMeetingEndpoints
 
         #region  Retrieve Meeting Details, Meetings
         app.MapGet("api/Meeting/List",
-            ([FromServices] IMeetingService meetingService, int meetingType, PageQuery pageQuery) =>
+            ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
                 meetingService.GetAllMeetingList(meetingType, pageQuery));
         app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, PageQuery pageQuery) =>
             meetingService.GetUserMeetingList(pageQuery));
