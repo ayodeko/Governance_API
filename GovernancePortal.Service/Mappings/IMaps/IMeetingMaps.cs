@@ -30,5 +30,7 @@ public interface IMeetingMaps
     Meeting InMap(UpdateMeetingNoticePOST updateMeetingAgendaItemPost, Meeting existingMeeting);
 
     //minute
-    Meeting InMap(List<AddMinutePOST> source, Meeting destination);
+    Meeting InMap(AddMinutePOST source, Meeting destination);
+    Meeting InMap(UploadMinutePOST source, Meeting destination);
+
 }

@@ -12,7 +12,7 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public List<TaskItem> Items { get; set; }
-		public List<TaskPerson> Participants { get; set; }
+		public List<TaskParticipant> Participants { get; set; }
 		public DateTime? TimeDue { get; set; }
 	}
 }

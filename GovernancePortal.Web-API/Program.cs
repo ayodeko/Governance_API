@@ -10,7 +10,7 @@ var app = builder.Build();
 
 app.MapSectionedMeetingEndpoints();
 app.MapResolutionEndpoints();
-
+app.MapTaskMgtEndpoints();
 app.UseGovernancePortalServices();
 app.UseCors("*");
 app.UseGovernancePortalExceptionHandler();

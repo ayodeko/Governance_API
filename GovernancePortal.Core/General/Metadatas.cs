@@ -4,12 +4,12 @@ using System.Text;
 
 namespace GovernancePortal.Core.General
 {
-
 		public enum TaskStatus
 		{
 			NotStarted,
 			Ongoing,
-			Completed
+			Completed,
+			Due
 		}
 		public enum TaskItemStatus
 		{

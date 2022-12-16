@@ -65,7 +65,6 @@ public static class CreateMeetingEndpoints
                 string meetingId) =>
             meetingService.GetMeetingUpdateData(meetingId));
         
-        
         app.MapGet("api/Meeting/{meetingId}/Attendees/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingAttendeesUpdateData(meetingId));
@@ -109,6 +108,9 @@ public static class CreateMeetingEndpoints
         #endregion
 
         #region Minute
+        app.MapGet("api/Meeting/{meetingId}/Minutes", ([FromServices] IMeetingService meetingService,
+               string meetingId) =>
+           meetingService.GetMeetingData(meetingId));
         app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingMinutesUpdateData(meetingId));
@@ -116,11 +118,12 @@ public static class CreateMeetingEndpoints
               string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
           meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST));
         app.MapPost("api/Meeting/{meetingId}/AddMinutes", ([FromServices] IMeetingService meetingService,
-                string meetingId, List<AddMinutePOST> data) =>
+                string meetingId, AddMinutePOST data) =>
             meetingService.AddMinutes(meetingId, data));
         app.MapPost("api/Meeting/{meetingId}/UploadMinutes", ([FromServices] IMeetingService meetingService,
                string meetingId, UploadMinutePOST data) =>
            meetingService.UploadMinutes(meetingId, data));
+        
 
         #endregion
 
@@ -174,6 +177,10 @@ public static class CreateMeetingEndpoints
         
         builder.Services.AddScoped<IResolutionServices, ResolutionServices>();
         builder.Services.AddScoped<IResolutionMaps, ResolutionMaps>();
+
+        builder.Services.AddScoped<ITaskService, TaskService>();
+        builder.Services.AddScoped<ITaskMaps, TaskMaps>();
+
         return builder;
     }
 
