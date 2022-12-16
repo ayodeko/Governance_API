@@ -21,8 +21,8 @@ namespace GovernancePortal.Service.Mappings.Maps
             CreateMap<TaskModel, TaskPOST>();
             CreateMap<TaskItem, TaskItemGET>();
             CreateMap<TaskItem, TaskItemPOST>();
-            CreateMap<TaskPerson, TaskPersonGET>();
-            CreateMap<TaskPerson, TaskPersonPOST>();
+            CreateMap<TaskParticipant, TaskPersonGET>();
+            CreateMap<TaskParticipant, TaskPersonPOST>();
         }
     }
 
@@ -36,6 +36,13 @@ namespace GovernancePortal.Service.Mappings.Maps
             var config = new MapperConfiguration(cfg => cfg.AddProfiles(profiles));
             _autoMapper = config.CreateMapper();
         }
+
+        public List<TaskListGET> OutMap(List<TaskModel> source, List<TaskListGET> destination)
+        {
+            var returnModel = _autoMapper.Map<List<TaskListGET>>(source.ToList());
+            return returnModel;
+        }
+
         public TaskModel InMap(string companyId, TaskPOST task, TaskModel existingTask = null)
         {
             if (existingTask == null)
@@ -73,9 +80,9 @@ namespace GovernancePortal.Service.Mappings.Maps
             return taskItem;
     }
 
-        private List<TaskPerson> InMap(TaskModel existingTask, List<TaskPersonPOST> person)
+        private List<TaskParticipant> InMap(TaskModel existingTask, List<TaskPersonPOST> person)
         {
-            var destinations = new List<TaskPerson>();
+            var destinations = new List<TaskParticipant>();
             foreach (var source in person)
             {
                 destinations.Add(InMap(existingTask, source));
@@ -83,12 +90,17 @@ namespace GovernancePortal.Service.Mappings.Maps
             return destinations;
         }
 
-        private TaskPerson InMap(TaskModel existingTask, TaskPersonPOST person, TaskPerson taskPerson = null)
+        private TaskParticipant InMap(TaskModel existingTask, TaskPersonPOST person, TaskParticipant taskPerson = null)
         {
             if (taskPerson == null)
-                taskPerson = new TaskPerson();
+                taskPerson = new TaskParticipant();
 
             taskPerson.TaskId = existingTask.Id;
+            taskPerson.UserId = person.Id;
+            taskPerson.FirstName = person.FirstName;
+            taskPerson.LastName = person.LastName;
+            taskPerson.ImageId = person.ImageId;    
+            taskPerson.Role = person.Role;
             return taskPerson;
         }
     }

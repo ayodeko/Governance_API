@@ -21,6 +21,7 @@ namespace GovernancePortal.EF
         {
             //builder.ApplyConfiguration<TaskModel>(new TaskConfig());
             builder.AddMeetingConfigs();
+            builder.AddTaskConfigs();
             base.OnModelCreating(builder);
         }
 
@@ -34,5 +35,8 @@ namespace GovernancePortal.EF
         public DbSet<MeetingPackItemUser> MeetingPackItemUsers { get; set; }
         public DbSet<Voting> Votings { get; set; }
         public DbSet<Poll> Polls { get; set; }
+
+        //task management
+        public DbSet<TaskModel> Tasks { get; set; }
     }
 }
