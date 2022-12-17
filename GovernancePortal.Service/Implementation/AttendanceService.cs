@@ -31,6 +31,7 @@ public class AttendanceService : IAttendanceServices
         var user = GetLoggedUser();
         var code = GenerateAttendanceCode();
         var meeting = await _unit.Meetings.GetMeeting(meetingId, user.CompanyId);
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         meeting.AttendanceGeneratedCode = code;
         _unit.SaveToDB();
         var response = new Response
@@ -54,7 +55,7 @@ public class AttendanceService : IAttendanceServices
     {
         var user = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting(meetingId, user.CompanyId);
-        if (meeting == null) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         var code = meeting.AttendanceGeneratedCode;
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"No generated attendance code yet for meeting with Id: {meetingId}");
@@ -74,6 +75,7 @@ public class AttendanceService : IAttendanceServices
     {
         var loggedInUser = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         var code = meeting?.AttendanceGeneratedCode;
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"Retrieved attendance code for meeting {meetingId} is null or empty");
@@ -95,6 +97,7 @@ public class AttendanceService : IAttendanceServices
     {
         var loggedInUser = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         var code = meeting?.AttendanceGeneratedCode;
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"Retrieved attendance code for meeting {meetingId} is null or empty");
@@ -116,6 +119,7 @@ public class AttendanceService : IAttendanceServices
     {
         var loggedInUser = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         var code = meeting?.AttendanceGeneratedCode;
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"Retrieved attendance code for meeting {meetingId} is null or empty");
@@ -135,6 +139,7 @@ public class AttendanceService : IAttendanceServices
     {
         var loggedInUser = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         var code = meeting?.AttendanceGeneratedCode;
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"Retrieved attendance code for meeting {meetingId} is null or empty");
@@ -154,6 +159,7 @@ public class AttendanceService : IAttendanceServices
     {
         var user = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, user.CompanyId);
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         var attendingUser = meeting.Attendees?.FirstOrDefault(x => x.UserId == userId);
         if (attendingUser == null)
             throw new NotFoundException($"User with Id: {userId} not found as an attendee of meeting: {meetingId}");
@@ -187,6 +193,7 @@ public class AttendanceService : IAttendanceServices
     {
         var user = GetLoggedUser();
         var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, user.CompanyId);
+        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
         var attendingUser = meeting.Attendees?.Select(x =>
             new AttendanceDetails
             {
