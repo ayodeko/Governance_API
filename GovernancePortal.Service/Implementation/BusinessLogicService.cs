@@ -9,21 +9,21 @@ public class BusinessLogicService : IBusinessLogic
 {
     public Task<bool> SendNotificationToSingleUser(string notificationMessage, string userId, CancellationToken token)
     {
-        return default;
+        return Task.FromResult<bool>(default);
     }
 
     public Task<bool> SendNotificationToBulkUser(string notificationMessage, List<string> userIds, CancellationToken token)
     {
-        return default;
+        return Task.FromResult<bool>(default);
     }
 
     public Task<bool> SendMailToSingleUserAsync(string notificationMessage, string userId, CancellationToken token)
     {
-        return default;
+        return Task.FromResult<bool>(default);
     }
 
     public Task<bool> SendMailToBulkUsersAsync(string notificationMessage, List<string> userIds, CancellationToken token)
     {
-        return default;
+        return Task.FromResult(false);
     }
 }
