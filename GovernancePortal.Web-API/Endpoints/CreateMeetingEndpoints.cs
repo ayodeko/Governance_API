@@ -109,6 +109,10 @@ public static class CreateMeetingEndpoints
         #endregion
 
         #region Minute
+        
+        app.MapGet("api/Meeting/{meetingId}/Minutes", ([FromServices] IMeetingService meetingService,
+                string meetingId) =>
+            meetingService.GetMeetingData(meetingId));
         app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingMinutesUpdateData(meetingId));
@@ -175,6 +179,9 @@ public static class CreateMeetingEndpoints
         builder.Services.AddScoped<IResolutionServices, ResolutionServices>();
         builder.Services.AddScoped<IResolutionMaps, ResolutionMaps>();
         builder.Services.AddScoped<IBridgeRepo, BridgeRepo>();
+        
+        builder.Services.AddScoped<ITaskService, TaskService>();
+        builder.Services.AddScoped<ITaskMaps, TaskMaps>();
         return builder;
     }
 
