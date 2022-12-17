@@ -120,7 +120,7 @@ public static class CreateMeetingEndpoints
               string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
           meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST));
         app.MapPost("api/Meeting/{meetingId}/AddMinutes", ([FromServices] IMeetingService meetingService,
-                string meetingId, List<AddMinutePOST> data) =>
+                string meetingId, AddMinutePOST data) =>
             meetingService.AddMinutes(meetingId, data));
         app.MapPost("api/Meeting/{meetingId}/UploadMinutes", ([FromServices] IMeetingService meetingService,
                string meetingId, UploadMinutePOST data) =>
