@@ -51,10 +51,6 @@ public static class CreateMeetingEndpoints
                string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST) =>
             meetingService.FullUpdateAgendaItems(meetingId, updateMeetingAgendaItemPOST));
         
-        app.MapPost("api/Meeting/{meetingId}/MeetingPack/Update", ([FromServices] IMeetingService meetingService,
-                string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST) =>
-            meetingService.UpdateMeetingPack(meetingId, updateMeetingPackPOST));
-        
         app.MapPost("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingNoticePOST updateMeetingMinutesPOST) =>
             meetingService.UpdateNotice(meetingId, updateMeetingMinutesPOST));
@@ -78,10 +74,6 @@ public static class CreateMeetingEndpoints
                 string meetingId) =>
             meetingService.GetMeetingAgendaItemsFullUpdateData(meetingId));
         
-        app.MapGet("api/Meeting/{meetingId}/MeetingPack/Update", ([FromServices] IMeetingService meetingService,
-                string meetingId) =>
-            meetingService.GetMeetingPackUpdateData(meetingId));
-        
         app.MapGet("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingNoticeUpdateData(meetingId));
@@ -101,11 +93,19 @@ public static class CreateMeetingEndpoints
 
         #endregion
 
-        #region Get Meeting Relations
-
+        #region Meeting Pack
+/*
         app.MapGet("api/Meeting/{meetingId}/MeetingPack", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingPack(meetingId));
+        app.MapPost("api/Meeting/{meetingId}/MeetingPack/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST) =>
+            meetingService.UpdateMeetingPack(meetingId, updateMeetingPackPOST));
+        
+        app.MapGet("api/Meeting/{meetingId}/MeetingPack/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId) =>
+            meetingService.GetMeetingPackUpdateData(meetingId));
+            */
         #endregion
 
         #region Minute
@@ -174,6 +174,7 @@ public static class CreateMeetingEndpoints
         
         builder.Services.AddScoped<IResolutionServices, ResolutionServices>();
         builder.Services.AddScoped<IResolutionMaps, ResolutionMaps>();
+        builder.Services.AddScoped<IBridgeRepo, BridgeRepo>();
         return builder;
     }
 

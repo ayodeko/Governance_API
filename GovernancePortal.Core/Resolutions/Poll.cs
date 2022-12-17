@@ -14,8 +14,12 @@ public class Poll : BaseModel, ICompanyModel
     public string Title { get; set; }
     public bool isUnlimitedSelection { get; set; }
     public int MaximumSelection { get; set; }
+    public DateTime DateTIme { get; set; }
     public List<PollItem> PollItems { get; set; }
     public List<PollUser> PollUsers { get; set; }
+    public List<PastPollItem> PastPollItems { get; set; }
+    public int PastPollParticipantAmount { get; set; }
+    public bool IsPastPoll { get; set; }
 }
 
 public class PollItem
@@ -39,6 +43,17 @@ public class PollUser
     public string UserId { get; set; }
     public string PollId { get; set; }
     public List<PollItemVote> PollVotes { get; set; }
+}
+
+public class PastPollItem
+{
+    public PastPollItem()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
+    public string Id { get; set; }
+    public string Title { get; set; }
+    public int Percentage { get; set; }
 }
 
 public class PollItemVote

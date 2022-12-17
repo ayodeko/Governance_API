@@ -14,7 +14,7 @@ public static class ResolutionEndPoints
                 resolutionServices.CreateVotingAsync(createVotingPost, cancellationToken));
 
         app.MapPost("api/Resolution/{resolutionId}/ChangeIsAnonymous",
-            ([FromServices] IResolutionServices resolutionServices, string resolutionId, bool isAnonymous) =>
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId, IsAllowAnonymousPOST isAnonymous) =>
                 resolutionServices.ChangeIsAnonymousAsync(resolutionId, isAnonymous));
         
         app.MapPost("api/Resolution/{resolutionId}/Vote/{userId}",
@@ -28,12 +28,30 @@ public static class ResolutionEndPoints
         app.MapGet("api/Resolution/VotingList",
             ([FromServices] IResolutionServices resolutionServices, PageQuery pageQuery) =>
                 resolutionServices.GetVotingList(pageQuery));
+
+        app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToVoting",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId, LinkedMeetingIdPOST meetingIdPost) =>
+                resolutionServices.LinkMeetingToVoting(resolutionId, meetingIdPost));
         
+        app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByVotingId",
+            
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
+                resolutionServices.GetLinkedMeetingByVotingId(resolutionId));
+
+        app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToPoll",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId, LinkedMeetingIdPOST meetingIdPost) =>
+                resolutionServices.LinkMeetingToVoting(resolutionId, meetingIdPost));
         
+        app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByPollId",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
+                resolutionServices.GetLinkedMeetingByVotingId(resolutionId));
 
         app.MapPost("api/Resolution/CreatePolling",
             ([FromServices] IResolutionServices resolutionServices, CreatePollingPOST createVotingPost) =>
                 resolutionServices.CreatePolling(createVotingPost));
+        app.MapPost("api/Resolution/CreatePolling",
+            ([FromServices] IResolutionServices resolutionServices, CreatePastPollPOST createPastPollPOST) =>
+                resolutionServices.CreatePastPoll(createPastPollPOST));
 
         app.MapPost("api/Resolution/{resolutionId}/PollVote/{userId}",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, string userId, PollVotePOST votePost) =>

@@ -12,4 +12,5 @@ public interface IResolutionMaps
     
     Poll InMap(CreatePollingPOST createVotingPost);
     PollUser InMap(PollVotePOST createVotingPost, PollUser pollVoter);
+    Poll InMap(CreatePastPollPOST createPastPollPost);
 }

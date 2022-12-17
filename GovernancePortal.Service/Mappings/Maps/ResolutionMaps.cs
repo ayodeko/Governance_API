@@ -36,6 +36,7 @@ public class ResolutionMaps : IResolutionMaps
             Title = createVotingPost.Title,
             Summary = createVotingPost.Summary,
             IsAnonymous = createVotingPost.IsAnonymous,
+            DateTime = createVotingPost.DateTime,
             };
         newVoting.Voters = createVotingPost.Voters.Select(x => InMap(x, newVoting)).ToList();
         return newVoting;
@@ -70,6 +71,7 @@ public class ResolutionMaps : IResolutionMaps
             Title = pollPost.Title,
             isUnlimitedSelection = pollPost.isUnlimitedSelection,
             MaximumSelection = pollPost.MaximumSelection,
+            DateTIme = pollPost.DateTime
         };
         newPoll.PollItems = pollPost.PollItems.Select(x => InMap(x, newPoll)).ToList();
         newPoll.PollUsers = pollPost.PollUsers.Select(x => InMap(x, newPoll)).ToList();
@@ -94,6 +96,27 @@ public class ResolutionMaps : IResolutionMaps
 
     public PollUser InMap(PollVotePOST createVotingPost, PollUser pollVoter)
     {
-        throw new Exception("The way Poll Votes will be done is not know so this implementation is pending");
+        throw new Exception("The way Poll Votes will be done is not yet known, so this implementation is pending");
+    }
+
+    public Poll InMap(CreatePastPollPOST pollPost)
+    {
+        var newPoll = new Poll
+        {
+            Title = pollPost.Title,
+            PastPollParticipantAmount = pollPost.PastPollParticipantAmount,
+            DateTIme = pollPost.DateTime
+        };
+        newPoll.PastPollItems = pollPost.PastPollItems.Select(x => InMap(x, newPoll)).ToList();
+        return newPoll;
+    }
+
+    private PastPollItem InMap(PastPollItemPOST createPollPost, Poll poll)
+    {
+        return new PastPollItem()
+        {
+            Title = createPollPost.Title,
+            Percentage = createPollPost.Percentage
+        };
     }
 }

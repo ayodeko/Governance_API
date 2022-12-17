@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Data;
+using GovernancePortal.EF.Repository;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.Interface;
@@ -19,20 +20,22 @@ public class ResolutionServices : IResolutionServices
     private IHttpContextAccessor _context;
     private IUnitOfWork _unit;
     private IResolutionMaps _resolutionMaps;
-    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps)
+    private IBridgeRepo _bridgeRepo;
+    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps, IBridgeRepo bridgeRepo)
     {
         _context = context;
         _unit = unit;
         _resolutionMaps = resolutionMaps;
+        _bridgeRepo = bridgeRepo;
     }
     Person GetLoggedInUser()
     {
-        var companyId = _context.HttpContext?.Request.Headers["CompanyId"];
+        //var companyIdStringValues = _context.HttpContext?.Request.Headers["CompanyId"];
         return new Person()
         {
             Id = "18312549-7133-41cb-8fd2-e76e1d088bb6",
             Name = "User1",
-            CompanyId = companyId ?? "CompanyId",
+            CompanyId = "Company1",
             UserType = UserType.StandaloneUser
         };
     }
@@ -53,11 +56,13 @@ public class ResolutionServices : IResolutionServices
         return response;
     }
 
-    public async Task<Response> ChangeIsAnonymousAsync(string resolutionId, bool isAnonymous)
+    public async Task<Response> ChangeIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
     {
         var person = GetLoggedInUser();
         var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
-        retrievedVoting.IsAnonymous = isAnonymous;
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"No resolution found  with Id: {resolutionId}");
+        retrievedVoting.IsAnonymous = isAnonymous.IsAllowAnonymous;
         _unit.SaveToDB();
         var response = new Response()
         {
@@ -128,6 +133,92 @@ public class ResolutionServices : IResolutionServices
         };
         return Task.FromResult(response);
     }
+    public async Task<Response> LinkMeetingToVoting(string resolutionId, LinkedMeetingIdPOST meetingId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+        var getMeeting = await _unit.Meetings.GetMeeting(meetingId.LinkedMeetingId, person.CompanyId);
+        if (getMeeting == null || getMeeting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Meeting with ID: {meetingId.LinkedMeetingId} not found");
+        await _bridgeRepo.AddMeeting_Resolution(meetingId.LinkedMeetingId, resolutionId, person.CompanyId);
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Voting successfully created",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    public async Task<Response> LinkMeetingToPoll(string resolutionId, LinkedMeetingIdPOST meetingId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+        var getMeeting = await _unit.Meetings.GetMeeting(meetingId.LinkedMeetingId, person.CompanyId);
+        if (getMeeting == null || getMeeting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Meeting with ID: {meetingId.LinkedMeetingId} not found");
+        await _bridgeRepo.AddMeeting_Resolution(meetingId.LinkedMeetingId, resolutionId, person.CompanyId);
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Voting successfully created",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    
+    public async Task<Response> GetLinkedMeetingByVotingId(string resolutionId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+
+        var bridge = await _bridgeRepo.RetrieveMeetingByResolutionId(resolutionId, person.CompanyId);
+        if (bridge == null)
+            throw new NotFoundException(
+                $"No relationship between resolution Id : {resolutionId} and any other meeting found");
+        var response = new Response()
+        {
+            Data = new LinkedMeetingIdPOST(bridge.MeetingId),
+            Exception = null,
+            Message = "Voting successfully created",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    
+    public async Task<Response> GetLinkedMeetingByPollId(string resolutionId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+
+        var bridge = await _bridgeRepo.RetrieveMeetingByResolutionId(resolutionId, person.CompanyId);
+        if (bridge == null)
+            throw new NotFoundException(
+                $"Not relationship between resolution Id : {resolutionId} and any other meeting found");
+        var response = new Response()
+        {
+            Data = new LinkedMeetingIdPOST(bridge.MeetingId),
+            Exception = null,
+            Message = "Voting successfully created",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
 
     public async Task<Response> CreatePolling(CreatePollingPOST createPollingPOST)
     {
@@ -138,6 +229,24 @@ public class ResolutionServices : IResolutionServices
         var response = new Response()
         {
             Data = voting,
+            Exception = null,
+            Message = "Voting successfully created",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.Created.ToString()
+        };
+        return response;
+    }
+
+    public async Task<Response> CreatePastPoll(CreatePastPollPOST createPastPollPOST)
+    {
+        var person = GetLoggedInUser();
+        var poll = _resolutionMaps.InMap(createPastPollPOST);
+        poll.IsPastPoll = true;
+        await _unit.Polls.Add(poll, person);
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = poll,
             Exception = null,
             Message = "Voting successfully created",
             IsSuccessful = true,
@@ -189,7 +298,7 @@ public class ResolutionServices : IResolutionServices
     public Task<Response> GetPollingList(PageQuery pageQuery)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = _unit.Votings.GetVoting_VotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
+        var retrievedVoting = _unit.Polls.GetPoll_PollVotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
         if (retrievedVoting == null || !retrievedVoting.Any())
             throw new NotFoundException($"No resolution found in company with Id: {person.CompanyId}");
         var response = new Response()

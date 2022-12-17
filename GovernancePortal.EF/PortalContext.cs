@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GovernancePortal.Core.Bridges;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.Resolutions;
 using GovernancePortal.EF.ModelConfig.Meetings;
+using GovernancePortal.EF.ModelConfig.Resolutions;
 
 namespace GovernancePortal.EF
 {
@@ -21,6 +23,7 @@ namespace GovernancePortal.EF
         {
             //builder.ApplyConfiguration<TaskModel>(new TaskConfig());
             builder.AddMeetingConfigs();
+            builder.AddResolutionConfigs();
             base.OnModelCreating(builder);
         }
 
@@ -32,6 +35,7 @@ namespace GovernancePortal.EF
         public DbSet<Minute> Minutes { get; set; }
         public DbSet<NoticeMeeting> Notices { get; set; }
         public DbSet<MeetingPackItemUser> MeetingPackItemUsers { get; set; }
+        public DbSet<Meeting_Resolution> Meeting_Resolutions { get; set; }
         public DbSet<Voting> Votings { get; set; }
         public DbSet<Poll> Polls { get; set; }
     }
