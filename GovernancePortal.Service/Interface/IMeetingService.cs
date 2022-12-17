@@ -20,8 +20,7 @@ public interface IMeetingService
     Task<Response> UpdateNotice(string meetingId, UpdateMeetingNoticePOST updateMinutesPOST);
     
     
-    Task<Response> GetMeetingUpdateData(string meetingId);
-    Task<Response> GetMeetingMinutesUpdateData(string meetingId);
+   
     Task<Response> GetMeetingAttendeesUpdateData(string meetingId);
     Task<Response> GetMeetingAgendaItemsUpdateData(string meetingId);
     Task<Response> GetMeetingAgendaItemsFullUpdateData(string meetingId);
@@ -29,15 +28,21 @@ public interface IMeetingService
     Task<Response> GetMeetingNoticeUpdateData(string meetingId);
     
     
+    Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery);
+    Task<Response> GetMeetingUpdateData(string meetingId);
+    Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery);
     Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, PageQuery pageQuery);
     Task<Pagination<MeetingListGET>> GetUserMeetingList(PageQuery pageQuery);
     Task<Response> SearchMeetings(string meetingSearchString);
     Task<Response> SearchMeetingsByDate(DateTime meetingDateTime);
     Task<Response> AddAttendees(string meetingId, AddAttendeesPOST updateMeetingAttendeesPost);
     Task<Response> GetMeetingPack(string meetingId);
+    Task<Response> GetMeetingDetails(string meetingId);
 
     //minute
-    Task<Response> AddMinutes(string meetingId, List<AddMinutePOST> data);
+    Task<Response> AddMinutes(string meetingId, AddMinutePOST data);
     Task<Response> UploadMinutes(string meetingId, UploadMinutePOST data);
+    Task<Response> GetMeetingData(string meetingId);
+    Task<Response> GetMeetingMinutesUpdateData(string meetingId);
 
 }

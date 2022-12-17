@@ -4,6 +4,7 @@ using GovernancePortal.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GovernancePortal.EF.Migrations
 {
     [DbContext(typeof(PortalContext))]
-    partial class PortalContextModelSnapshot : ModelSnapshot
+    [Migration("20221216174959_UpdatetaskMgtSTable")]
+    partial class UpdatetaskMgtSTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,31 +23,6 @@ namespace GovernancePortal.EF.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, (int)1L, 1);
-
-            modelBuilder.Entity("GovernancePortal.Core.Bridges.Meeting_Resolution", b =>
-                {
-                    b.Property<string>("MeetingId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ResolutionId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CompanyId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("MeetingId", "ResolutionId");
-
-                    b.HasIndex("MeetingId")
-                        .IsUnique();
-
-                    b.HasIndex("ResolutionId")
-                        .IsUnique();
-
-                    b.ToTable("Meeting_Resolutions");
-                });
 
             modelBuilder.Entity("GovernancePortal.Core.General.Attachment", b =>
                 {
@@ -598,27 +575,6 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("Notices");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PastPollItem", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Percentage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PollId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PollId");
-
-                    b.ToTable("PastPollItem");
-                });
-
             modelBuilder.Entity("GovernancePortal.Core.Resolutions.Poll", b =>
                 {
                     b.Property<string>("Id")
@@ -636,22 +592,13 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateTIme")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPastPoll")
                         .HasColumnType("bit");
 
                     b.Property<int>("MaximumSelection")
                         .HasColumnType("int");
 
                     b.Property<int>("ModelStatus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PastPollParticipantAmount")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -734,9 +681,6 @@ namespace GovernancePortal.EF.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsAnonymous")
@@ -1021,13 +965,6 @@ namespace GovernancePortal.EF.Migrations
                     b.Navigation("Signature");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.Resolutions.PastPollItem", b =>
-                {
-                    b.HasOne("GovernancePortal.Core.Resolutions.Poll", null)
-                        .WithMany("PastPollItems")
-                        .HasForeignKey("PollId");
-                });
-
             modelBuilder.Entity("GovernancePortal.Core.Resolutions.PollItem", b =>
                 {
                     b.HasOne("GovernancePortal.Core.Resolutions.Poll", null)
@@ -1108,8 +1045,6 @@ namespace GovernancePortal.EF.Migrations
 
             modelBuilder.Entity("GovernancePortal.Core.Resolutions.Poll", b =>
                 {
-                    b.Navigation("PastPollItems");
-
                     b.Navigation("PollItems");
 
                     b.Navigation("PollUsers");

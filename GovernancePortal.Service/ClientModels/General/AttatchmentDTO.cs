@@ -20,7 +20,7 @@ namespace GovernancePortal.Service.ClientModels.General
 
     public class AttachmentDTO
     {
-
+        public string Title { get; set; }
         public string Highlight { get; set; }
         public string Source { get; set; }
         public bool HasExpiryDate { get; set; }

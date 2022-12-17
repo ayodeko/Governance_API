@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaskStatus = GovernancePortal.Core.General.TaskStatus;
 
 namespace GovernancePortal.Core.TaskManagement
 {
@@ -10,6 +11,8 @@ namespace GovernancePortal.Core.TaskManagement
 		public TaskModel()
 		{
 			Id = Guid.NewGuid().ToString();
+			Items = new List<TaskItem>();
+			Participants = new List<TaskParticipant>();
 		}
 		public string Id { get; set; }
 		public string CompanyId { get; set; }
@@ -21,8 +24,8 @@ namespace GovernancePortal.Core.TaskManagement
 		public string Title { get; set; }
 		public string Description { get; set; }
 		public List<TaskItem> Items { get; set; }
-		public List<TaskPerson> Participants { get; set; }
+		public List<TaskParticipant> Participants { get; set; }
 		public DateTime? TimeDue { get; set; }
-		public General.TaskStatus Status { get; set; }
+		public TaskStatus Status { get; set; }
 	}
 }
