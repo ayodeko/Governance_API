@@ -1,4 +1,5 @@
-﻿using GovernancePortal.Core.Resolutions;
+﻿using System.Collections.Generic;
+using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Service.Interface;
 
 namespace GovernancePortal.Service.Mappings.IMaps;
@@ -11,6 +12,6 @@ public interface IResolutionMaps
     
     
     Poll InMap(CreatePollingPOST createVotingPost);
-    PollUser InMap(PollVotePOST createVotingPost, PollUser pollVoter);
+    List<PollItemVote> InMap(PollVotePOST createVotingPost, List<PollItemVote> preexistingPollItemVotes);
     Poll InMap(CreatePastPollPOST createPastPollPost);
 }

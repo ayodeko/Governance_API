@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -262,7 +263,8 @@ public class ResolutionServices : IResolutionServices
         var pollVoter = retrievedVoting?.PollUsers?.FirstOrDefault(x => x.UserId == userId);
         if (pollVoter == null)
             throw new NotFoundException($"Voter with UserID: {userId} not found");
-        pollVoter = _resolutionMaps.InMap(votePost, pollVoter);
+        var pollVoteList = pollVoter.PollVotes ?? new List<PollItemVote>();
+        pollVoter.PollVotes = _resolutionMaps.InMap(votePost, pollVoteList);
         _unit.SaveToDB();
 
         var response = new Response()
