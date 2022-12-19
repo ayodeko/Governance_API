@@ -121,8 +121,6 @@ public class ResolutionServices : IResolutionServices
     {
         var person = GetLoggedInUser();
         var retrievedVoting = _unit.Votings.GetVoting_VotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
-        if (retrievedVoting == null || !retrievedVoting.Any())
-            throw new NotFoundException($"No resolution found in company with Id: {person.CompanyId}");
         var response = new Response()
         {
             Data = retrievedVoting,
@@ -299,8 +297,6 @@ public class ResolutionServices : IResolutionServices
     {
         var person = GetLoggedInUser();
         var retrievedVoting = _unit.Polls.GetPoll_PollVotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
-        if (retrievedVoting == null || !retrievedVoting.Any())
-            throw new NotFoundException($"No resolution found in company with Id: {person.CompanyId}");
         var response = new Response()
         {
             Data = retrievedVoting,
