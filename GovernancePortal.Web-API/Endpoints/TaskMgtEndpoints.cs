@@ -23,6 +23,8 @@ namespace GovernancePortal.Web_API.Endpoints
                => taskServices.GetUserTasks(pageQuery));
             app.MapPost("api/TaskMgt/CreateTask",([FromServices] ITaskService taskServices, TaskPOST input) 
                 =>taskServices.CreateTask(input));
+            app.MapGet("api/TaskMgt/{taskId}/Update", ([FromServices] ITaskService taskServices, string taskId)
+               => taskServices.GetTaskData(taskId));
             app.MapPost("api/TaskMgt/{taskId}/UpdateTask", ([FromServices] ITaskService taskServices, TaskPOST input, string taskId)
             => taskServices.UpdateTask(input, taskId));
             app.MapGet("api/TaskMgt/{taskId}", ([FromServices] ITaskService taskServices, string taskId)
