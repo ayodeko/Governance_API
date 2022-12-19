@@ -206,10 +206,9 @@ namespace GovernancePortal.Service.Implementation
         {
             var loggedInUser = GetLoggedInUser();
             _logger.LogInformation($"Inside get tasks for taskId: {taskId}");
-            var existingMeeting = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
-            if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
-            throw new NotFoundException($"Task with ID: {taskId} not found");
-            var outMeeting = "";
+            var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
+            if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
+            var outMeeting = _taskMaps.OutMap(existingTask, new TaskGET());
             var response = new Response
             {
                 Data = outMeeting,
@@ -221,11 +220,7 @@ namespace GovernancePortal.Service.Implementation
             return response;
         }
 
-        Task<Pagination<TaskGET>> ITaskService.GetTaskData(string taskId)
-        {
-            throw new NotFoundException($"Task with ID: {taskId} not found");
-
-        }
+        
 
         public Task<Response> UpdateTask(TaskPOST task, string taskId)
         {
