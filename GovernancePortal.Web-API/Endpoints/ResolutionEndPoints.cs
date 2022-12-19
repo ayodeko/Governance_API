@@ -49,7 +49,7 @@ public static class ResolutionEndPoints
         app.MapPost("api/Resolution/CreatePolling",
             ([FromServices] IResolutionServices resolutionServices, CreatePollingPOST createVotingPost) =>
                 resolutionServices.CreatePolling(createVotingPost));
-        app.MapPost("api/Resolution/CreatePolling",
+        app.MapPost("api/Resolution/CreatePastPolling",
             ([FromServices] IResolutionServices resolutionServices, CreatePastPollPOST createPastPollPOST) =>
                 resolutionServices.CreatePastPoll(createPastPollPOST));
 
