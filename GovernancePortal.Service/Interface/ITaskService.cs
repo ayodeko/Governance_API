@@ -17,7 +17,7 @@ namespace GovernancePortal.Service.Interface
         Task<Pagination<TaskListGET>> GetCompletedTasks(PageQuery pageQuery);
         Task<Pagination<TaskListGET>> GetDueTasks(PageQuery pageQuery);
         Task<Pagination<TaskListGET>> GetUserTasks(PageQuery pageQuery);
-        Task<Pagination<TaskGET>> GetTaskData(string taskId);
+        Task<Response> GetTaskData(string taskId);
         Task<Response> CreateTask( TaskPOST task);
         Task<Response> UpdateTask(TaskPOST task, string taskId);
 

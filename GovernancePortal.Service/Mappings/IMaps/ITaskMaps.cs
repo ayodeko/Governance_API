@@ -13,5 +13,6 @@ namespace GovernancePortal.Service.Mappings.IMaps
     {
         TaskModel InMap(string companyId, TaskPOST item, Core.TaskManagement.TaskModel existingTask = null);
         List<TaskListGET> OutMap(List<TaskModel> source, List<TaskListGET> destination);
+        TaskGET OutMap(TaskModel source, TaskGET destination);
     }
 }

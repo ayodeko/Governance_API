@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 
 namespace GovernancePortal.Service.Mappings.Maps
 {
@@ -102,6 +103,13 @@ namespace GovernancePortal.Service.Mappings.Maps
             taskPerson.ImageId = person.ImageId;    
             taskPerson.Role = person.Role;
             return taskPerson;
+        }
+        public TaskGET OutMap(TaskModel source, TaskGET destination )
+        {
+            var returnModel = _autoMapper.Map<TaskGET>(source);
+            returnModel.Items = _autoMapper.Map<List<TaskItemGET>>(source.Items);
+            var taskParticipants = _autoMapper.Map<List<TaskParticipant>>(source.Participants);
+            return returnModel;
         }
     }
 }
