@@ -10,14 +10,13 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
     {
         public TaskItemDTO()
         {
-            //Attachments = new List<AttachmentDTO>();
         }
         public string Id { get; set; }
         public string Title { get; set; }
         public bool DocumentUpload { get; set; }
         public bool IsActive { get; set; }
         public TaskItemStatus Status { get; set; }
-        //public List<AttachmentDTO> Attachments { get; set; }
+        public List<AttachmentIdentityDTO> Attachments { get; set; }
     }
 
     public class TaskItemPOST : TaskItemDTO

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using GovernancePortal.Service.ClientModels.Exceptions;
 
 namespace GovernancePortal.Service.Mappings.Maps
 {
@@ -18,12 +19,13 @@ namespace GovernancePortal.Service.Mappings.Maps
         public TaskAutoMaps()
         {
             CreateMap<TaskModel, TaskListGET>();
-            CreateMap<TaskModel, TaskGET>();
+            CreateMap<TaskModel, TaskGET>().ForAllOtherMembers(x => x.Ignore());
             CreateMap<TaskModel, TaskPOST>();
             CreateMap<TaskItem, TaskItemGET>();
             CreateMap<TaskItem, TaskItemPOST>();
             CreateMap<TaskParticipant, TaskPersonGET>();
             CreateMap<TaskParticipant, TaskPersonPOST>();
+            CreateMap<TaskAttachment, AttachmentIdentityDTO>();
         }
     }
 
@@ -40,6 +42,7 @@ namespace GovernancePortal.Service.Mappings.Maps
 
         public List<TaskListGET> OutMap(List<TaskModel> source, List<TaskListGET> destination)
         {
+            if (source is null) return new List<TaskListGET>();
             var returnModel = _autoMapper.Map<List<TaskListGET>>(source.ToList());
             return returnModel;
         }
@@ -107,9 +110,83 @@ namespace GovernancePortal.Service.Mappings.Maps
         public TaskGET OutMap(TaskModel source, TaskGET destination )
         {
             var returnModel = _autoMapper.Map<TaskGET>(source);
-            returnModel.Items = _autoMapper.Map<List<TaskItemGET>>(source.Items);
-            var taskParticipants = _autoMapper.Map<List<TaskParticipant>>(source.Participants);
+            returnModel.Items = OutMap(source.Items, new List<TaskItemGET>()); 
+            returnModel.Participants = _autoMapper.Map<List<TaskPersonGET>>(source.Participants);
             return returnModel;
+        }
+
+        public List<TaskItemGET> OutMap(List<TaskItem> source, List<TaskItemGET> destination)
+        {
+            foreach (var item in source)
+            {
+                var toAdd = _autoMapper.Map<TaskItemGET>(item);
+                var doc = item.Attachments;
+                toAdd.Attachments = OutMap(doc, new List<AttachmentIdentityDTO>());
+                destination.Add(toAdd);
+            }
+            return destination;
+        }
+        private List<AttachmentIdentityDTO> OutMap(List<TaskAttachment> source, List<AttachmentIdentityDTO> destination)
+        {
+            foreach (var item in source)
+            {
+                destination.Add(OutMap(item, new AttachmentIdentityDTO())); 
+            }
+            return destination;
+        }
+        private AttachmentIdentityDTO OutMap(TaskAttachment source, AttachmentIdentityDTO destinations)
+        {
+            if (source != null) {
+                destinations.FileId = source.FileId;
+                destinations.FileName = source.FileName;
+                destinations.FileSize = source.FileSize;
+            }
+            return destinations;
+        }
+
+        public TaskItem InMap(AddDocumentToTaskItemDTO source, TaskItem existingTaskitem)
+        {
+
+            existingTaskitem.Attachments = InMap(existingTaskitem.Id, source.Documents);
+            return existingTaskitem;
+        }
+        public List<TaskAttachment> InMap(string catgeoryId, List<AttachmentPostDTO> attachments)
+        {
+            var newAttachments = new List<TaskAttachment>();
+            var invalidAttachments = new List<AttachmentPostDTO>();
+            foreach (var attachment in attachments)
+            {
+                if (attachment.Identity == null)
+                    continue;
+
+                newAttachments.Add(InMap(catgeoryId, attachment));
+            }
+
+            //remove all non persistent values
+            foreach (var item in invalidAttachments)
+            {
+                attachments.Remove(item);
+            }
+
+            return newAttachments;
+        }
+        private TaskAttachment InMap( string categoryId, AttachmentPostDTO attachment1, TaskAttachment attachment2 = null)
+        {
+            if (attachment2 == null)
+                attachment2 = new TaskAttachment();
+
+            if (attachment1.Identity == null) throw new BadRequestException("Document must have an attachment");
+
+            //attachment2.CompanyId = user.CompanyId;
+            //attachment2.CreatedBy = user.Id;
+            attachment2.CategoryId = categoryId;
+            attachment2.Title = attachment1.Title;
+            attachment2.FileId = attachment1.Identity.FileId;
+            attachment2.FileName = attachment1.Identity.FileName;
+            attachment2.FileSize = attachment1.Identity.FileSize;
+            attachment2.FileType = attachment1.Identity.FileType;
+
+            return attachment2;
         }
     }
 }

@@ -55,8 +55,7 @@ namespace GovernancePortal.Service.Implementation
             _logger.LogInformation($"Inside get tasks");
 
             var retrievedTasks =  _unit.Tasks.GetTaskList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any())
-                throw new NotFoundException($"No tasks found in company with Id: {person.CompanyId}");
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
             var response = new Pagination<TaskListGET>
             {
@@ -78,8 +77,7 @@ namespace GovernancePortal.Service.Implementation
             _logger.LogInformation($"Inside get not started tasks");
 
             var retrievedTasks = _unit.Tasks.GetNotStartedTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any())
-                throw new NotFoundException($"No tasks found in company with Id: {person.CompanyId}");
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
             var response = new Pagination<TaskListGET>
             {
@@ -100,8 +98,7 @@ namespace GovernancePortal.Service.Implementation
             var person = GetLoggedInUser();
             _logger.LogInformation($"Inside get ongoing tasks");
             var retrievedTasks = _unit.Tasks.GetOngoingTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any())
-                throw new NotFoundException($"No tasks found in company with Id: {person.CompanyId}");
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
             var response = new Pagination<TaskListGET>
             {
@@ -122,8 +119,7 @@ namespace GovernancePortal.Service.Implementation
             var person = GetLoggedInUser();
             _logger.LogInformation($"Inside get completed tasks");
             var retrievedTasks = _unit.Tasks.GetCompletedTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any())
-                throw new NotFoundException($"No tasks found in company with Id: {person.CompanyId}");
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
             var response = new Pagination<TaskListGET>
             {
@@ -144,8 +140,7 @@ namespace GovernancePortal.Service.Implementation
             var person = GetLoggedInUser();
             _logger.LogInformation($"Inside get due tasks");
             var retrievedTasks = _unit.Tasks.GetDueTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any())
-                throw new NotFoundException($"No tasks found in company with Id: {person.CompanyId}");
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
             var response = new Pagination<TaskListGET>
             {
@@ -166,8 +161,7 @@ namespace GovernancePortal.Service.Implementation
             var person = GetLoggedInUser();
             _logger.LogInformation($"Inside get user tasks");
             var retrievedTasks = _unit.Tasks.GetTaskListByUserId(person.Id, person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any())
-                throw new NotFoundException($"No tasks found in company with Id: {person.CompanyId}");
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
             var response = new Pagination<TaskListGET>
             {
@@ -237,7 +231,7 @@ namespace GovernancePortal.Service.Implementation
                 IsSuccessful = true,
                 StatusCode = HttpStatusCode.Created.ToString()
             };
-            _logger.LogInformation("create task successful: {response}", response);
+            _logger.LogInformation("update task successful: {response}", response);
             return response;
 
         }
@@ -245,12 +239,12 @@ namespace GovernancePortal.Service.Implementation
         public async Task<Response> CompleteTaskItem(CompleteTaskDTO input, string taskId)
         {
             int completedtskCount = 0;
-            var loggedInUser = GetLoggedInUser();
+            var loggedInUser = GetLoggedInUser();      
             var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
             if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
             var taskItem = existingTask.Items.FirstOrDefault(x => x.Id == input.TaskItemId);
             if (taskItem is null) throw new NotFoundException($"Task item with ID: {input.TaskItemId} not found");
-
+            if (taskItem.Status == TaskItemStatus.Completed) throw new BadRequestException("This task item has been completed");
             taskItem.Status = TaskItemStatus.Completed;
             foreach(var item in existingTask.Items)
             {
@@ -267,14 +261,33 @@ namespace GovernancePortal.Service.Implementation
                 IsSuccessful = true,
                 StatusCode = HttpStatusCode.Created.ToString()
             };
-            _logger.LogInformation("create task successful: {response}", response);
+            _logger.LogInformation("complete task item successful: {response}", response);
             return response;
 
         }
 
-        public Task<Response> AddTaskItemDocument(AddDocumentToTaskItemDTO task, string taskId)
+        public async Task<Response> AddTaskItemDocument(AddDocumentToTaskItemDTO input, string taskId)
         {
-            throw new NotFoundException($"Task with ID: {taskId} not found");
+            var loggedInUser = GetLoggedInUser();
+            var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
+            if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
+            var taskItem = existingTask.Items.FirstOrDefault(x => x.Id == input.TaskItemId);
+            if (taskItem is null) throw new NotFoundException($"Task item with ID: {input.TaskItemId} not found");
+            taskItem = _taskMaps.InMap( input, taskItem);
+            existingTask.Status = existingTask.Status == TaskStatus.Completed ? TaskStatus.Completed: TaskStatus.Ongoing;
+            foreach (var item in existingTask.Items)
+            {
+                if (item.Id == input.TaskItemId) item.Attachments = taskItem.Attachments;
+            }
+            _unit.SaveToDB();
+            var response = new Response()
+            {
+                Message = "task item document successfully added",
+                IsSuccessful = true,
+                StatusCode = HttpStatusCode.Created.ToString()
+            };
+            _logger.LogInformation("add task item successful: {response}", response);
+            return response;
 
         }
     }
