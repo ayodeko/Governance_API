@@ -222,15 +222,53 @@ namespace GovernancePortal.Service.Implementation
 
         
 
-        public Task<Response> UpdateTask(TaskPOST task, string taskId)
+        public async Task<Response> UpdateTask(TaskPOST task, string taskId)
         {
-            throw new NotFoundException($"Task with ID: {taskId} not found");
+            var loggedInUser = GetLoggedInUser();
+            var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
+            if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
+            var newTask = _taskMaps.InMap(loggedInUser.CompanyId, task);
+            _unit.SaveToDB();
+            var response = new Response()
+            {
+                Data = newTask,
+                Exception = null,
+                Message = "task successfully created",
+                IsSuccessful = true,
+                StatusCode = HttpStatusCode.Created.ToString()
+            };
+            _logger.LogInformation("create task successful: {response}", response);
+            return response;
 
         }
 
-        public Task<Response> CompleteTaskItem(CompleteTaskDTO task, string taskId)
+        public async Task<Response> CompleteTaskItem(CompleteTaskDTO input, string taskId)
         {
-            throw new NotFoundException($"Task with ID: {taskId} not found");
+            int completedtskCount = 0;
+            var loggedInUser = GetLoggedInUser();
+            var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
+            if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
+            var taskItem = existingTask.Items.FirstOrDefault(x => x.Id == input.TaskItemId);
+            if (taskItem is null) throw new NotFoundException($"Task item with ID: {input.TaskItemId} not found");
+
+            taskItem.Status = TaskItemStatus.Completed;
+            foreach(var item in existingTask.Items)
+            {
+                if(item.Status == TaskItemStatus.Completed) completedtskCount++;
+            }
+            //check if all ask items are completed
+            if (completedtskCount >= existingTask.Items.Count) existingTask.Status = TaskStatus.Completed;
+            _unit.SaveToDB();
+            var response = new Response()
+            {
+                Data = existingTask,
+                Exception = null,
+                Message = "task successfully created",
+                IsSuccessful = true,
+                StatusCode = HttpStatusCode.Created.ToString()
+            };
+            _logger.LogInformation("create task successful: {response}", response);
+            return response;
 
         }
 
