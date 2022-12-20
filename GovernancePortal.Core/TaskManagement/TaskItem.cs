@@ -10,7 +10,7 @@ namespace GovernancePortal.Core.TaskManagement
 		public TaskItem()
 		{
 			Id = Guid.NewGuid().ToString();
-			Attachments = new List<Attachment>();
+			Attachments = new List<TaskAttachment>();
 		}
 		public string Id { get; set; }
 		public string TaskId { get; set; }
@@ -18,6 +18,6 @@ namespace GovernancePortal.Core.TaskManagement
 		public bool DocumentUpload { get; set; }
 		public bool IsActive { get; set; }
 		public TaskItemStatus Status { get; set; }
-		public List<Attachment> Attachments { get; set; }
+		public List<TaskAttachment> Attachments { get; set; }
 	}
 }

@@ -36,11 +36,11 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
     {
         public TaskGET()
         {
-            Items = new List<TaskItemPOST>();
-            Participants = new List<TaskPersonPOST>();
+            Items = new List<TaskItemGET>();
+            Participants = new List<TaskPersonGET>();
         }
-        public List<TaskItemPOST> Items { get; set; }
-        public List<TaskPersonPOST> Participants { get; set; }
+        public List<TaskItemGET> Items { get; set; }
+        public List<TaskPersonGET> Participants { get; set; }
         public Core.General.TaskStatus Status { get; set; }
 
     }

@@ -4,6 +4,7 @@ using GovernancePortal.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GovernancePortal.EF.Migrations
 {
     [DbContext(typeof(PortalContext))]
-    partial class PortalContextModelSnapshot : ModelSnapshot
+    [Migration("20221219125419_UpdatetaskTable")]
+    partial class UpdatetaskTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,6 +114,9 @@ namespace GovernancePortal.EF.Migrations
                     b.Property<string>("StatusDescription")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TaskItemId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -125,6 +130,8 @@ namespace GovernancePortal.EF.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TaskItemId");
 
                     b.ToTable("Attachment");
                 });
@@ -799,90 +806,6 @@ namespace GovernancePortal.EF.Migrations
                     b.ToTable("VotingUser");
                 });
 
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskAttachment", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CategoryId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CompanyId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DocumentStatus")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileSize")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasExpiryDate")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Highlight")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("OtherDetails")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Reference")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ReferenceDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReferenceDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Source")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StatusDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TaskItemId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ValidTo")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("VersionNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskItemId");
-
-                    b.ToTable("TaskAttachment");
-                });
-
             modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskItem", b =>
                 {
                     b.Property<string>("Id")
@@ -984,6 +907,13 @@ namespace GovernancePortal.EF.Migrations
                     b.HasIndex("TaskId");
 
                     b.ToTable("TaskParticipant");
+                });
+
+            modelBuilder.Entity("GovernancePortal.Core.General.Attachment", b =>
+                {
+                    b.HasOne("GovernancePortal.Core.TaskManagement.TaskItem", null)
+                        .WithMany("Attachments")
+                        .HasForeignKey("TaskItemId");
                 });
 
             modelBuilder.Entity("GovernancePortal.Core.Meetings.AttendingUser", b =>
@@ -1126,13 +1056,6 @@ namespace GovernancePortal.EF.Migrations
                     b.HasOne("GovernancePortal.Core.Resolutions.Voting", null)
                         .WithMany("Voters")
                         .HasForeignKey("VotingId");
-                });
-
-            modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskAttachment", b =>
-                {
-                    b.HasOne("GovernancePortal.Core.TaskManagement.TaskItem", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("TaskItemId");
                 });
 
             modelBuilder.Entity("GovernancePortal.Core.TaskManagement.TaskItem", b =>

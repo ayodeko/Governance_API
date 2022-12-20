@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TaskStatus = GovernancePortal.Core.General.TaskStatus;
 using EF = Microsoft.EntityFrameworkCore.EF;
+using GovernancePortal.Core.Meetings;
+using System.Threading;
 
 namespace GovernancePortal.EF.Repository
 {
@@ -88,8 +90,14 @@ namespace GovernancePortal.EF.Repository
         }
         public async Task<TaskModel> GetTaskData(string taskId, string companyId)
         {
-            return (await _context.Set<TaskModel>().Include(x=>x.Participants).Include(x=>x.Items)
+            return (await _context.Set<TaskModel>().Include(x=>x.Participants).Include(x=>x.Items).ThenInclude(y=>y.Attachments)
                 .FirstOrDefaultAsync(x => x.Id.Equals(taskId) && x.CompanyId.Equals(companyId)))!;
+        }
+
+        public async Task<AttendingUser> GetAttendingUsers(string meetingId, string companyId, CancellationToken token)
+        {
+            return (await _context.Set<AttendingUser>()
+                .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId), token))!;
         }
 
     }
