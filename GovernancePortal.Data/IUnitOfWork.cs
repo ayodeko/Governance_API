@@ -11,6 +11,7 @@ namespace GovernancePortal.Data
         IMeetingRepo Meetings { get; }
         IVotingRepo Votings { get; }
         IPollRepo Polls { get; }
+        IBridgeRepo Bridges { get; }
         int SaveToDB();
 
     }

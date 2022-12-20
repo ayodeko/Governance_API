@@ -9,6 +9,7 @@ using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Data;
+using GovernancePortal.Data.Repository;
 using GovernancePortal.EF.Repository;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
