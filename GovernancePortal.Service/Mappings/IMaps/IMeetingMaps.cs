@@ -32,5 +32,6 @@ public interface IMeetingMaps
     //minute
     Meeting InMap(AddMinutePOST source, Meeting destination);
     Meeting InMap(UploadMinutePOST source, Meeting destination);
+    List<MinuteGET> OutMap(List<Minute> source, MinuteGET destination);
 
 }

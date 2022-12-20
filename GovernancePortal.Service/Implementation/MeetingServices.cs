@@ -564,25 +564,25 @@ public class MeetingServices : IMeetingService
 
         throw new NotImplementedException();
     }
-    public async Task<Response> GetMeetingMinutesData(string meetingId)
-    {
+    //public async Task<Response> GetMeetingMinutesData(string meetingId)
+    //{
 
-        var loggedInUser = GetLoggedUser();
-        _logger.LogInformation($"Inside get minutes data for meeting {meetingId}");
-        var existingMeeting = await _unit.Meetings.GetMeeting_Minutes(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        var outMeeting = _meetingMapses.OutMap(existingMeeting, new MeetingGET());
+    //    var loggedInUser = GetLoggedUser();
+    //    _logger.LogInformation($"Inside get minutes data for meeting {meetingId}");
+    //    var existingMeeting = await _unit.Meetings.GetMeeting_Minutes(meetingId, loggedInUser.CompanyId);
+    //    if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+    //    var outMeeting = _meetingMapses.OutMap(existingMeeting, new MeetingGET());
 
-        var response = new Response
-        {
-            Data = outMeeting,
-            Message = "Successful",
-            StatusCode = HttpStatusCode.OK.ToString(),
-            IsSuccessful = true
-        };
-        _logger.LogInformation("Get Meeting Pack Update Data successful: {response}", response);
-        return response;
-    }
+    //    var response = new Response
+    //    {
+    //        Data = outMeeting,
+    //        Message = "Successful",
+    //        StatusCode = HttpStatusCode.OK.ToString(),
+    //        IsSuccessful = true
+    //    };
+    //    _logger.LogInformation("Get Meeting Pack Update Data successful: {response}", response);
+    //    return response;
+    //}
     public async Task<Response> UpdateMinutes(string meetingId, UpdateMeetingMinutesPOST updateMinutesPOST)
     {
         var loggedInUser = GetLoggedUser();
@@ -617,7 +617,7 @@ public class MeetingServices : IMeetingService
         var response = new Response
         {
             Data = existingMeeting,
-            Message = "Meeting updated successfully",
+            Message = "minute added successfully",
             StatusCode = HttpStatusCode.Created.ToString(),
             IsSuccessful = true
         };
@@ -638,11 +638,11 @@ public class MeetingServices : IMeetingService
         var response = new Response
         {
             Data = existingMeeting,
-            Message = "Meeting updated successfully",
+            Message = "Meeting uploaded successfully",
             StatusCode = HttpStatusCode.Created.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("Add Minutes successful: {response}", response);
+        _logger.LogInformation("Upload Minutes successful: {response}", response);
         return response;
     }
 
@@ -651,9 +651,24 @@ public class MeetingServices : IMeetingService
         throw new NotImplementedException();
     }
 
-    public Task<Response> GetMeetingData(string meetingId)
+    public async Task<Response> GetMeetingMinutes(string meetingId)
     {
-        throw new NotImplementedException();
+
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside get Minutes for meeting with id: {meetingId}");
+        var existingMeeting = await _unit.Meetings.GetMeeting_Minutes(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if(existingMeeting.Minutes is null || !existingMeeting.Minutes.Any()) throw new BadRequestException($"This meeting has no uploaded minutes");
+        var minutes = _meetingMapses.OutMap(existingMeeting.Minutes, new MinuteGET());
+        var response = new Response
+        {
+            Data = minutes,
+            Message = "Successful",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Get Minutes successful: {response}", response);
+        return response;
     }
 
     public Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery)
