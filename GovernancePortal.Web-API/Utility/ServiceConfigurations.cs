@@ -1,10 +1,12 @@
 ﻿using System.Text;
 using FluentValidation;
 using GovernancePortal.Core.Meetings;
+using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Core.Utilities;
 using GovernancePortal.EF;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.Validators.Meeting;
+using GovernancePortal.Service.Validators.Resolution;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,6 +21,7 @@ public static class ServiceConfigurations
     public static void ConfigureGovernancePortalServices(this IServiceCollection services, IConfiguration Configuration)
     {
         services.AddTransient<IValidator<Meeting>, MeetingValidator>();
+        services.AddTransient<IValidator<VotingUser>, VotingUserValidator>();
         services.AddCors(options => options.AddPolicy("*",
                   builder =>
                   {
@@ -42,7 +45,7 @@ public static class ServiceConfigurations
         //       .EnableSensitiveDataLogging());
 
         services.AddDbContext<PortalContext>(opt =>
-            opt.UseSqlServer(EnvironmentVariables.ConnectionString,
+            opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
                     x => x.MigrationsAssembly("GovernancePortal.EF"))
                 .EnableSensitiveDataLogging());
 

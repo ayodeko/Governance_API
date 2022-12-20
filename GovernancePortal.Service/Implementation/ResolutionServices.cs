@@ -4,7 +4,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
 using GovernancePortal.Core.General;
+using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Data;
 using GovernancePortal.EF.Repository;
@@ -22,12 +24,14 @@ public class ResolutionServices : IResolutionServices
     private IUnitOfWork _unit;
     private IResolutionMaps _resolutionMaps;
     private IBridgeRepo _bridgeRepo;
-    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps, IBridgeRepo bridgeRepo)
+    private IValidator<VotingUser> _votingUserValidator;
+    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps, IBridgeRepo bridgeRepo, IValidator<VotingUser> votingUserValidator)
     {
         _context = context;
         _unit = unit;
         _resolutionMaps = resolutionMaps;
         _bridgeRepo = bridgeRepo;
+        _votingUserValidator = votingUserValidator;
     }
     Person GetLoggedInUser()
     {
@@ -87,6 +91,7 @@ public class ResolutionServices : IResolutionServices
             throw new NotFoundException($"Voter with UserID: {userId} not found");
         voter.Stance = votePost.Stance;
         voter.StanceReason = votePost.StanceReason;
+        await _votingUserValidator.ValidateAndThrowAsync(voter);
         _unit.SaveToDB();
 
         var response = new Response()
