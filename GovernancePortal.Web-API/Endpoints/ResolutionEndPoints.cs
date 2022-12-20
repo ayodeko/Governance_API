@@ -67,8 +67,11 @@ public static class ResolutionEndPoints
                 resolutionServices.GetPollingList(pageQuery));
         
         
-        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, string searchMeetingsString) =>
-            meetingService.SearchMeetings(searchMeetingsString));
+        app.MapGet("api/Meeting/SearchVotingByTitle", ([FromServices] IResolutionServices resolutionServices, string searchMeetingsString, PageQuery pageQuery) =>
+            resolutionServices.SearchVotingByTitle(searchMeetingsString, pageQuery));
+        
+        app.MapGet("api/Meeting/SearchPollByTitle", ([FromServices] IResolutionServices resolutionServices, string searchMeetingsString) =>
+            resolutionServices.SearchPollByTitle(searchMeetingsString));
         
         return app;
     }

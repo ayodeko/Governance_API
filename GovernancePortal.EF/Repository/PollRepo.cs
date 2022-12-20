@@ -34,4 +34,12 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
         return votingList.Skip(skip)
             .Take(pageSize)!;
     }
+    
+    
+    public IEnumerable<Poll> SearchPollByTitle(string companyId, string title)
+    {
+        var reslt =  _context.Set<Poll>().
+            Where(x => x.CompanyId == companyId && x.Title.Contains(title));
+        return reslt;
+    }
 }

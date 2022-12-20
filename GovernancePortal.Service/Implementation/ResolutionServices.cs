@@ -314,4 +314,32 @@ public class ResolutionServices : IResolutionServices
         };
         return Task.FromResult(response);
     }
+    public Task<Response> SearchPollByTitle(string title)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = _unit.Polls.SearchPollByTitle(person.CompanyId, title).ToList();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Retrieved successfully",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return Task.FromResult(response);
+    }
+    public Task<Response> SearchVotingByTitle(string title, PageQuery pageQuery)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = _unit.Votings.SearchVotingByTitleList(title, person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Retrieved successfully",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return Task.FromResult(response);
+    }
 }

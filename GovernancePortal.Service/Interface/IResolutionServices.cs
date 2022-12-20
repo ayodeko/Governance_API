@@ -20,6 +20,7 @@ public interface IResolutionServices
     Task<Response> GetLinkedMeetingByVotingId(string resolutionId);
     Task<Response> GetLinkedMeetingByPollId(string resolutionId);
     Task<Response> GetVotingList(PageQuery pageQuery);
+    Task<Response> SearchVotingByTitle(string searchMeetingsString, PageQuery pageQuery);
     
     
     
@@ -28,6 +29,7 @@ public interface IResolutionServices
     Task<Response> GetPollingDetails(string resolutionId);
     Task<Response> GetPollingList(PageQuery pageQuery);
     Task<Response> CreatePastPoll(CreatePastPollPOST createPastPollPost);
+    Task<Response> SearchPollByTitle(string searchMeetingsString);
 }
 
 public class VotingDetailsGET
