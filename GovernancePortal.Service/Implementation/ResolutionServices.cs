@@ -205,7 +205,7 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> GetLinkedMeetingByPollId(string resolutionId)
     {
         var person = GetLoggedInUser();
-        var retrievedPolling = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        var retrievedPolling = await _unit.Polls.FindById(resolutionId, person.CompanyId);
         if (retrievedPolling == null || retrievedPolling.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
 

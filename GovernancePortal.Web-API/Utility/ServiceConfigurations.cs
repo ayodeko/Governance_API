@@ -39,15 +39,15 @@ public static class ServiceConfigurations
         //    options.BucketName = Configuration["ExternalProviders:AwsS3:Bucket"];
         //});
 
-        //services.AddDbContext<PortalContext>(opt =>
-        //   opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
-        //           x => x.MigrationsAssembly("GovernancePortal.EF"))
-        //       .EnableSensitiveDataLogging());
-
         services.AddDbContext<PortalContext>(opt =>
+           opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+                   x => x.MigrationsAssembly("GovernancePortal.EF"))
+               .EnableSensitiveDataLogging());
+
+        /*services.AddDbContext<PortalContext>(opt =>
             opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
                     x => x.MigrationsAssembly("GovernancePortal.EF"))
-                .EnableSensitiveDataLogging());
+                .EnableSensitiveDataLogging());*/
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
