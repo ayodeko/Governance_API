@@ -9,6 +9,7 @@ using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
 using GovernancePortal.Service.ClientModels.Meetings.Minute;
+using GovernancePortal.Service.ClientModels.TaskManagement;
 using GovernancePortal.Service.Mappings.IMaps;
 
 namespace GovernancePortal.Service.Mappings.Maps;
@@ -31,6 +32,7 @@ public class MeetingsAutoMapper : Profile
         CreateMap<NoticeMeeting, UpdateMeetingNoticePOST>();
         CreateMap<MeetingPackItem, UpdateMeetingPackItemPOST>();
         CreateMap<MeetingPackItemUser, MeetingPackUserPOST>();
+        CreateMap<Minute, MinuteGET>();
         //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
     }
 }
@@ -457,5 +459,12 @@ public class MeetingMaps : IMeetingMaps
 
         return destination;
     }
+
+    public List<MinuteGET> OutMap(List<Minute> source, MinuteGET destination)
+    {
+        var returnModel = _autoMapper.Map<List<MinuteGET>>(source.ToList());
+        return returnModel;
+    }
+
     #endregion
 }

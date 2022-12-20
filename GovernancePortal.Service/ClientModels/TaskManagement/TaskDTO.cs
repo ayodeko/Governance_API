@@ -10,7 +10,7 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
 {
     public abstract class TaskDTO
     {
-        public string Id { get; set; }
+        public string Id { get; set; }      
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime? TimeDue { get; set; }

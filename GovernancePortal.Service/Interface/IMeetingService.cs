@@ -42,7 +42,7 @@ public interface IMeetingService
     //minute
     Task<Response> AddMinutes(string meetingId, AddMinutePOST data);
     Task<Response> UploadMinutes(string meetingId, UploadMinutePOST data);
-    Task<Response> GetMeetingData(string meetingId);
+    Task<Response> GetMeetingMinutes(string meetingId);
     Task<Response> GetMeetingMinutesUpdateData(string meetingId);
 
 }

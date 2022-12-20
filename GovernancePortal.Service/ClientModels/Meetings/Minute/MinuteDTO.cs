@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace GovernancePortal.Service.ClientModels.Meetings.Minute
 {
+    public class MinuteDTO
+    {
+        public string Id { get; set; }
+        public string MinuteText { get; set; }
+        public string AgendaItemId { get; set; }
+    }
     //add minute
     public class AddMinuteDTO
     {
@@ -39,6 +45,13 @@ namespace GovernancePortal.Service.ClientModels.Meetings.Minute
     public class UploadMinuteGET : UploadMinuteDTO
     {
         public BaseAgendaItemGET AgendaItem { get; set; }
+    }
+
+    public class MinuteGET
+    {
+        public string Id { get; set; }
+        public string MinuteText { get; set; }
+        public string AgendaItemId { get; set; }
     }
 
 }
