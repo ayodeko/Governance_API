@@ -112,7 +112,7 @@ public static class CreateMeetingEndpoints
         
         app.MapGet("api/Meeting/{meetingId}/Minutes", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingData(meetingId));
+            meetingService.GetMeetingMinutes(meetingId));
         app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingMinutesUpdateData(meetingId));
