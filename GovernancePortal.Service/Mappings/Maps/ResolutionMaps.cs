@@ -70,6 +70,7 @@ public class ResolutionMaps : IResolutionMaps
         {
             Title = pollPost.Title,
             isUnlimitedSelection = pollPost.isUnlimitedSelection,
+            IsAnonymousVote = pollPost.IsAnonymousVote,
             MaximumSelection = pollPost.MaximumSelection,
             DateTIme = pollPost.DateTime
         };

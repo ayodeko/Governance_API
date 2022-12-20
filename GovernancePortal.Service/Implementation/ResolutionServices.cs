@@ -73,7 +73,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = retrievedVoting,
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Successful",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -152,7 +152,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = retrievedVoting,
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Meeting Successfully linked",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -173,7 +173,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = retrievedVoting,
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Meeting Successfully linked",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -195,7 +195,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = new LinkedMeetingIdPOST(bridge.MeetingId),
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Successful",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -205,8 +205,8 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> GetLinkedMeetingByPollId(string resolutionId)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
-        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+        var retrievedPolling = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        if (retrievedPolling == null || retrievedPolling.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
 
         var bridge = await _bridgeRepo.RetrieveMeetingByResolutionId(resolutionId, person.CompanyId);
@@ -217,7 +217,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = new LinkedMeetingIdPOST(bridge.MeetingId),
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Successful",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };

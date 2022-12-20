@@ -13,6 +13,7 @@ public class Poll : BaseModel, ICompanyModel
     public string Id { get; set; }
     public string Title { get; set; }
     public bool isUnlimitedSelection { get; set; }
+    public bool IsAnonymousVote { get; set; }
     public int MaximumSelection { get; set; }
     public DateTime DateTIme { get; set; }
     public List<PollItem> PollItems { get; set; }

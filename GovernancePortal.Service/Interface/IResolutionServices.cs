@@ -81,6 +81,7 @@ public class CreatePollingPOST
 {
     public string Title { get; set; }
     public bool isUnlimitedSelection { get; set; }
+    public bool IsAnonymousVote { get; set; }
     public int MaximumSelection { get; set; }
     public DateTime DateTime { get; set; }
     public List<PollItemPOST> PollItems { get; set; }

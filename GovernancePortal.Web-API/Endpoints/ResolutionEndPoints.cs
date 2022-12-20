@@ -40,11 +40,11 @@ public static class ResolutionEndPoints
 
         app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToPoll",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, LinkedMeetingIdPOST meetingIdPost) =>
-                resolutionServices.LinkMeetingToVoting(resolutionId, meetingIdPost));
+                resolutionServices.LinkMeetingToPoll(resolutionId, meetingIdPost));
         
         app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByPollId",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
-                resolutionServices.GetLinkedMeetingByVotingId(resolutionId));
+                resolutionServices.GetLinkedMeetingByPollId(resolutionId));
 
         app.MapPost("api/Resolution/CreatePolling",
             ([FromServices] IResolutionServices resolutionServices, CreatePollingPOST createVotingPost) =>
@@ -65,6 +65,10 @@ public static class ResolutionEndPoints
         app.MapGet("api/Resolution/PollingList",
             ([FromServices] IResolutionServices resolutionServices, PageQuery pageQuery) =>
                 resolutionServices.GetPollingList(pageQuery));
+        
+        
+        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, string searchMeetingsString) =>
+            meetingService.SearchMeetings(searchMeetingsString));
         
         return app;
     }

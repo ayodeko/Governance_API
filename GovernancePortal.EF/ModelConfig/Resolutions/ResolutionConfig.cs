@@ -41,6 +41,5 @@ public class Meeting_ResolutionConfig : IEntityTypeConfiguration<Meeting_Resolut
     {
         builder.HasKey(ky => new { ky.MeetingId, ky.ResolutionId });
         builder.HasIndex(ky => ky.ResolutionId).IsUnique();
-        builder.HasIndex(ky => ky.MeetingId).IsUnique();
     }
 }
