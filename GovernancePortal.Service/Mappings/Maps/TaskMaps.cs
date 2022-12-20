@@ -19,7 +19,7 @@ namespace GovernancePortal.Service.Mappings.Maps
         public TaskAutoMaps()
         {
             CreateMap<TaskModel, TaskListGET>();
-            CreateMap<TaskModel, TaskGET>().ForAllOtherMembers(x => x.Ignore());
+            CreateMap<TaskModel, TaskGET>();
             CreateMap<TaskModel, TaskPOST>();
             CreateMap<TaskItem, TaskItemGET>();
             CreateMap<TaskItem, TaskItemPOST>();
