@@ -40,9 +40,9 @@ public static class ServiceConfigurations
         //});
 
         services.AddDbContext<PortalContext>(opt =>
-           opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
-                   x => x.MigrationsAssembly("GovernancePortal.EF"))
-               .EnableSensitiveDataLogging());
+               opt.UseSqlServer(EnvironmentVariables.ConnectionString,
+                  x => x.MigrationsAssembly("CorporateUniverse.EF"))
+                  .EnableSensitiveDataLogging());
 
         /*services.AddDbContext<PortalContext>(opt =>
             opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
