@@ -33,6 +33,7 @@ public class MeetingsAutoMapper : Profile
         CreateMap<MeetingPackItem, UpdateMeetingPackItemPOST>();
         CreateMap<MeetingPackItemUser, MeetingPackUserPOST>();
         CreateMap<Minute, MinuteGET>();
+        //CreateMap<MeetingAgendaItem, BaseAgendaItemGET>();  
         //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
     }
 }
