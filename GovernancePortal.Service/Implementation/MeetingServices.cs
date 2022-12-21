@@ -571,8 +571,41 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-
         var resolutionIdList = _unit.Bridges.GetResolutionIdsMeetingId(meetingId, loggedInUser.CompanyId).ToList();
+        
+        var response = new Response
+        {
+            Data = resolutionIdList,
+            Message = $"Retrieved successfully",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        return response;
+    }
+    public async Task<Response> GetPollsByMeetingId(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var resolutionIdList = _unit.Bridges.GetPollsByMeetingId(meetingId, loggedInUser.CompanyId).ToList();
+        
+        var response = new Response
+        {
+            Data = resolutionIdList,
+            Message = $"Retrieved successfully",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        return response;
+    }
+    public async Task<Response> GetVotingByMeetingId(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var resolutionIdList = _unit.Bridges.GetVotingsByMeetingId(meetingId, loggedInUser.CompanyId).ToList();
         
         var response = new Response
         {

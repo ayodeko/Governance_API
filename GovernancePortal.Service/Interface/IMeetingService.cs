@@ -46,4 +46,6 @@ public interface IMeetingService
     Task<Response> GetMeetingMinutesUpdateData(string meetingId);
     Task<Response> GetResolutionIds(string meetingId);
 
+    Task<Response> GetPollsByMeetingId(string meetingId);
+    Task<Response> GetVotingByMeetingId(string meetingId);
 }

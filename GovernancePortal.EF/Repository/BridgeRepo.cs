@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using GovernancePortal.Core.Bridges;
 using GovernancePortal.Core.Meetings;
+using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Data.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace GovernancePortal.EF.Repository
 {
@@ -33,6 +35,32 @@ namespace GovernancePortal.EF.Repository
             return _context.Set<Meeting_Resolution>()
                 .Where(x => x.MeetingId == meetingId && x.CompanyId == companyId)
                 .Select(x => x.ResolutionId);
+        }
+        public IEnumerable<Voting> GetVotingsByMeetingId(string meetingId, string companyId)
+        {
+            var result =  _context.Set<Meeting>()
+                .Join(_context.Meeting_Resolutions, meeting => meeting.Id, bridge => bridge.MeetingId,
+                    (meeting, bridge) => new { Meeting = meeting, Bridge = bridge })
+                .GroupJoin(_context.Votings, voteBridge => voteBridge.Bridge.ResolutionId, voting => voting.Id,
+                    (voteBridge, voting) => new { voteBridge.Meeting, Voting = voting, voteBridge.Bridge })
+                .SelectMany(bridge => bridge.Voting.DefaultIfEmpty(), 
+                    (bridge, voting) => new {bridge.Bridge, Voting = voting} )
+                .Where(x => x.Bridge.MeetingId == meetingId && x.Bridge.CompanyId == companyId).
+                Select( x=> x.Voting);
+            return result;
+        }
+        public IEnumerable<Poll> GetPollsByMeetingId(string meetingId, string companyId)
+        {
+            var result =  _context.Set<Meeting>()
+                .Join(_context.Meeting_Resolutions, meeting => meeting.Id, bridge => bridge.MeetingId,
+                    (meeting, bridge) => new { Meeting = meeting, Bridge = bridge })
+                .GroupJoin(_context.Polls, voteBridge => voteBridge.Bridge.ResolutionId, poll => poll.Id,
+                    (voteBridge, poll) => new { voteBridge.Meeting, Poll = poll, voteBridge.Bridge })
+                .SelectMany(bridge => bridge.Poll.DefaultIfEmpty(), 
+                    (bridge, poll) => new {bridge.Bridge, Poll = poll} )
+                .Where(x => x.Bridge.MeetingId == meetingId && x.Bridge.CompanyId == companyId).
+                Select( x=> x.Poll);
+            return result;
         }
     
         public async Task AddMeeting_Resolution(string meetingId, string resolutionId, string companyId)
