@@ -12,7 +12,7 @@ namespace GovernancePortal.Service.Interface;
 public interface IResolutionServices
 {
     Task<Response> CreateVotingAsync(CreateVotingPOST createVotingPOST, CancellationToken cancellationToken);
-    Task<Response> ChangeIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);
+    Task<Response> ChangeVoteIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);
     Task<Response> VoteAsync(string resolutionId, string userId, VotePOST votePost);
     Task<Response> GetVotingDetails(string resolutionId);
     Task<Response> LinkMeetingToVoting(string resolutionId, LinkedMeetingIdPOST meetingId);
@@ -30,6 +30,7 @@ public interface IResolutionServices
     Task<Response> GetPollingList(PageQuery pageQuery);
     Task<Response> CreatePastPoll(CreatePastPollPOST createPastPollPost);
     Task<Response> SearchPollByTitle(string searchMeetingsString);
+    Task<Response> ChangePollIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);
 }
 
 public class VotingDetailsGET

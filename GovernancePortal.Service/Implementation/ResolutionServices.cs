@@ -62,13 +62,31 @@ public class ResolutionServices : IResolutionServices
         return response;
     }
 
-    public async Task<Response> ChangeIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
+    public async Task<Response> ChangeVoteIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
     {
         var person = GetLoggedInUser();
         var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
         if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"No resolution found  with Id: {resolutionId}");
         retrievedVoting.IsAnonymous = isAnonymous.IsAllowAnonymous;
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Successful",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    public async Task<Response> ChangePollIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"No resolution found  with Id: {resolutionId}");
+        retrievedVoting.IsAnonymousVote = isAnonymous.IsAllowAnonymous;
         _unit.SaveToDB();
         var response = new Response()
         {
