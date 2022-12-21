@@ -133,7 +133,7 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
     public async Task<Meeting> GetMeeting_Minutes(string meetingId, string companyId)
     {
         return (await _context.Set<Meeting>()
-            .Include(x => x.Minutes)
+            .Include(x => x.Minutes).ThenInclude(x=>x.AgendaItem)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
 

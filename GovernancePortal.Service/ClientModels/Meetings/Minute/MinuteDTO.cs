@@ -52,6 +52,9 @@ namespace GovernancePortal.Service.ClientModels.Meetings.Minute
         public string Id { get; set; }
         public string MinuteText { get; set; }
         public string AgendaItemId { get; set; }
+        public FullAgendaItemPOST AgendaItem { get; set; }
+        //public Attachment Attachment { get; set; }
+
     }
 
 }
