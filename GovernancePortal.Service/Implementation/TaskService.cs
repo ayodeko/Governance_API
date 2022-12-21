@@ -221,7 +221,7 @@ namespace GovernancePortal.Service.Implementation
             var loggedInUser = GetLoggedInUser();
             var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
             if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
-            existingTask = _taskMaps.InMap(loggedInUser.CompanyId, task);
+            existingTask = _taskMaps.InMap(loggedInUser.CompanyId, task, existingTask);
             _unit.SaveToDB();
             var response = new Response()
             {
