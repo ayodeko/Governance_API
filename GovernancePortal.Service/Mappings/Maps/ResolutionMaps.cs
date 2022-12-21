@@ -70,6 +70,7 @@ public class ResolutionMaps : IResolutionMaps
         {
             Title = pollPost.Title,
             isUnlimitedSelection = pollPost.isUnlimitedSelection,
+            IsAnonymousVote = pollPost.IsAnonymousVote,
             MaximumSelection = pollPost.MaximumSelection,
             DateTIme = pollPost.DateTime
         };
@@ -93,10 +94,22 @@ public class ResolutionMaps : IResolutionMaps
             UserId = pollUserPost.UserId
         };
     }
-
-    public PollUser InMap(PollVotePOST createVotingPost, PollUser pollVoter)
+    
+    public List<PollItemVote> InMap(PollVotePOST pollVotePost, List<PollItemVote> preexistingPollItemVotes)
     {
-        throw new Exception("The way Poll Votes will be done is not yet known, so this implementation is pending");
+        var votedItemIds = pollVotePost.PollItemIds;
+        var returnList = votedItemIds.Select(x => InMap(pollVotePost.UserId, x, preexistingPollItemVotes));
+        return returnList.ToList();
+    }
+
+    private PollItemVote InMap(string userId, string pollItemId, List<PollItemVote> preexistingPollItemVotes)
+    {
+        var alreadyVoted = preexistingPollItemVotes.FirstOrDefault(x => x.PollItemId == pollItemId && x.PollUserId == userId);
+        return alreadyVoted ?? new PollItemVote()
+        {
+            PollItemId = pollItemId,
+            PollUserId = userId
+        };
     }
 
     public Poll InMap(CreatePastPollPOST pollPost)

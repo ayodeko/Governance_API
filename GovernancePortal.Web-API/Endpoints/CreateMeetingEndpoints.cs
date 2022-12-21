@@ -164,6 +164,14 @@ public static class CreateMeetingEndpoints
 
         #endregion
 
+        #region Resolution
+
+        
+        app.MapGet("api/Meeting/{meetingId}/GetResolutionIds", ([FromServices] IMeetingService meetingServices, string meetingId) =>
+            meetingServices.GetResolutionIds(meetingId));
+
+        #endregion
+
         return app;
     }
 

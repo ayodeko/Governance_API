@@ -8,6 +8,7 @@ using FluentValidation;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Data;
+using GovernancePortal.EF.Repository;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
@@ -563,6 +564,24 @@ public class MeetingServices : IMeetingService
     {
 
         throw new NotImplementedException();
+    }
+
+    public async Task<Response> GetResolutionIds(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var resolutionIdList = _unit.Bridges.GetResolutionIdsMeetingId(meetingId, loggedInUser.CompanyId).ToList();
+        
+        var response = new Response
+        {
+            Data = resolutionIdList,
+            Message = $"Retrieved successfully",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        return response;
     }
     //public async Task<Response> GetMeetingMinutesData(string meetingId)
     //{

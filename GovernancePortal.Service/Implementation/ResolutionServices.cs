@@ -1,11 +1,15 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
 using GovernancePortal.Core.General;
+using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Data;
+using GovernancePortal.Data.Repository;
 using GovernancePortal.EF.Repository;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
@@ -21,12 +25,14 @@ public class ResolutionServices : IResolutionServices
     private IUnitOfWork _unit;
     private IResolutionMaps _resolutionMaps;
     private IBridgeRepo _bridgeRepo;
-    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps, IBridgeRepo bridgeRepo)
+    private IValidator<VotingUser> _votingUserValidator;
+    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps, IBridgeRepo bridgeRepo, IValidator<VotingUser> votingUserValidator)
     {
         _context = context;
         _unit = unit;
         _resolutionMaps = resolutionMaps;
         _bridgeRepo = bridgeRepo;
+        _votingUserValidator = votingUserValidator;
     }
     Person GetLoggedInUser()
     {
@@ -56,7 +62,7 @@ public class ResolutionServices : IResolutionServices
         return response;
     }
 
-    public async Task<Response> ChangeIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
+    public async Task<Response> ChangeVoteIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
     {
         var person = GetLoggedInUser();
         var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
@@ -68,7 +74,25 @@ public class ResolutionServices : IResolutionServices
         {
             Data = retrievedVoting,
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Successful",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    public async Task<Response> ChangePollIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"No resolution found  with Id: {resolutionId}");
+        retrievedVoting.IsAnonymousVote = isAnonymous.IsAllowAnonymous;
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Successful",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -86,6 +110,7 @@ public class ResolutionServices : IResolutionServices
             throw new NotFoundException($"Voter with UserID: {userId} not found");
         voter.Stance = votePost.Stance;
         voter.StanceReason = votePost.StanceReason;
+        await _votingUserValidator.ValidateAndThrowAsync(voter);
         _unit.SaveToDB();
 
         var response = new Response()
@@ -121,8 +146,6 @@ public class ResolutionServices : IResolutionServices
     {
         var person = GetLoggedInUser();
         var retrievedVoting = _unit.Votings.GetVoting_VotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
-        if (retrievedVoting == null || !retrievedVoting.Any())
-            throw new NotFoundException($"No resolution found in company with Id: {person.CompanyId}");
         var response = new Response()
         {
             Data = retrievedVoting,
@@ -148,7 +171,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = retrievedVoting,
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Meeting Successfully linked",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -169,7 +192,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = retrievedVoting,
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Meeting Successfully linked",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -191,7 +214,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = new LinkedMeetingIdPOST(bridge.MeetingId),
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Successful",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -201,8 +224,8 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> GetLinkedMeetingByPollId(string resolutionId)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
-        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+        var retrievedPolling = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedPolling == null || retrievedPolling.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
 
         var bridge = await _bridgeRepo.RetrieveMeetingByResolutionId(resolutionId, person.CompanyId);
@@ -213,7 +236,7 @@ public class ResolutionServices : IResolutionServices
         {
             Data = new LinkedMeetingIdPOST(bridge.MeetingId),
             Exception = null,
-            Message = "Voting successfully created",
+            Message = "Successful",
             IsSuccessful = true,
             StatusCode = HttpStatusCode.OK.ToString()
         };
@@ -264,7 +287,8 @@ public class ResolutionServices : IResolutionServices
         var pollVoter = retrievedVoting?.PollUsers?.FirstOrDefault(x => x.UserId == userId);
         if (pollVoter == null)
             throw new NotFoundException($"Voter with UserID: {userId} not found");
-        pollVoter = _resolutionMaps.InMap(votePost, pollVoter);
+        var pollVoteList = pollVoter.PollVotes ?? new List<PollItemVote>();
+        pollVoter.PollVotes = _resolutionMaps.InMap(votePost, pollVoteList);
         _unit.SaveToDB();
 
         var response = new Response()
@@ -299,8 +323,34 @@ public class ResolutionServices : IResolutionServices
     {
         var person = GetLoggedInUser();
         var retrievedVoting = _unit.Polls.GetPoll_PollVotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
-        if (retrievedVoting == null || !retrievedVoting.Any())
-            throw new NotFoundException($"No resolution found in company with Id: {person.CompanyId}");
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Retrieved successfully",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return Task.FromResult(response);
+    }
+    public Task<Response> SearchPollByTitle(string title)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = _unit.Polls.SearchPollByTitle(person.CompanyId, title).ToList();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Retrieved successfully",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return Task.FromResult(response);
+    }
+    public Task<Response> SearchVotingByTitle(string title, PageQuery pageQuery)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = _unit.Votings.SearchVotingByTitleList(title, person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
         var response = new Response()
         {
             Data = retrievedVoting,

@@ -12,7 +12,7 @@ namespace GovernancePortal.Service.Interface;
 public interface IResolutionServices
 {
     Task<Response> CreateVotingAsync(CreateVotingPOST createVotingPOST, CancellationToken cancellationToken);
-    Task<Response> ChangeIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);
+    Task<Response> ChangeVoteIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);
     Task<Response> VoteAsync(string resolutionId, string userId, VotePOST votePost);
     Task<Response> GetVotingDetails(string resolutionId);
     Task<Response> LinkMeetingToVoting(string resolutionId, LinkedMeetingIdPOST meetingId);
@@ -20,6 +20,7 @@ public interface IResolutionServices
     Task<Response> GetLinkedMeetingByVotingId(string resolutionId);
     Task<Response> GetLinkedMeetingByPollId(string resolutionId);
     Task<Response> GetVotingList(PageQuery pageQuery);
+    Task<Response> SearchVotingByTitle(string searchMeetingsString, PageQuery pageQuery);
     
     
     
@@ -28,6 +29,8 @@ public interface IResolutionServices
     Task<Response> GetPollingDetails(string resolutionId);
     Task<Response> GetPollingList(PageQuery pageQuery);
     Task<Response> CreatePastPoll(CreatePastPollPOST createPastPollPost);
+    Task<Response> SearchPollByTitle(string searchMeetingsString);
+    Task<Response> ChangePollIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);
 }
 
 public class VotingDetailsGET
@@ -81,6 +84,7 @@ public class CreatePollingPOST
 {
     public string Title { get; set; }
     public bool isUnlimitedSelection { get; set; }
+    public bool IsAnonymousVote { get; set; }
     public int MaximumSelection { get; set; }
     public DateTime DateTime { get; set; }
     public List<PollItemPOST> PollItems { get; set; }

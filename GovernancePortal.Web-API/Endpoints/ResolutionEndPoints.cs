@@ -13,9 +13,9 @@ public static class ResolutionEndPoints
             ([FromServices] IResolutionServices resolutionServices, CreateVotingPOST createVotingPost, CancellationToken cancellationToken) =>
                 resolutionServices.CreateVotingAsync(createVotingPost, cancellationToken));
 
-        app.MapPost("api/Resolution/{resolutionId}/ChangeIsAnonymous",
+        app.MapPost("api/Resolution/{resolutionId}/ChangeVoteIsAnonymous",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, IsAllowAnonymousPOST isAnonymous) =>
-                resolutionServices.ChangeIsAnonymousAsync(resolutionId, isAnonymous));
+                resolutionServices.ChangeVoteIsAnonymousAsync(resolutionId, isAnonymous));
         
         app.MapPost("api/Resolution/{resolutionId}/Vote/{userId}",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, string userId, VotePOST votePost) =>
@@ -40,11 +40,11 @@ public static class ResolutionEndPoints
 
         app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToPoll",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, LinkedMeetingIdPOST meetingIdPost) =>
-                resolutionServices.LinkMeetingToVoting(resolutionId, meetingIdPost));
+                resolutionServices.LinkMeetingToPoll(resolutionId, meetingIdPost));
         
         app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByPollId",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
-                resolutionServices.GetLinkedMeetingByVotingId(resolutionId));
+                resolutionServices.GetLinkedMeetingByPollId(resolutionId));
 
         app.MapPost("api/Resolution/CreatePolling",
             ([FromServices] IResolutionServices resolutionServices, CreatePollingPOST createVotingPost) =>
@@ -65,6 +65,19 @@ public static class ResolutionEndPoints
         app.MapGet("api/Resolution/PollingList",
             ([FromServices] IResolutionServices resolutionServices, PageQuery pageQuery) =>
                 resolutionServices.GetPollingList(pageQuery));
+        
+        app.MapPost("api/Resolution/{resolutionId}/ChangePollIsAnonymous",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId, IsAllowAnonymousPOST isAnonymous) =>
+                resolutionServices.ChangePollIsAnonymousAsync(resolutionId, isAnonymous));
+        
+        
+        app.MapGet("api/Resolution/SearchVotingByTitle", ([FromServices] IResolutionServices resolutionServices, string searchMeetingsString, PageQuery pageQuery) =>
+            resolutionServices.SearchVotingByTitle(searchMeetingsString, pageQuery));
+        
+        app.MapGet("api/Resolution/SearchPollByTitle", ([FromServices] IResolutionServices resolutionServices, string searchMeetingsString) =>
+            resolutionServices.SearchPollByTitle(searchMeetingsString));
+        
+        
         
         return app;
     }
