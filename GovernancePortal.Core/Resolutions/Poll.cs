@@ -9,6 +9,9 @@ public class Poll : BaseModel, ICompanyModel
     public Poll()
     {
         Id = Guid.NewGuid().ToString();
+        PollItems = new List<PollItem>();
+        PollUsers = new List<PollUser>();
+        PastPollItems = new List<PastPollItem>();
     }
     public string Id { get; set; }
     public string Title { get; set; }
@@ -39,6 +42,7 @@ public class PollUser
     public PollUser()
     {
         Id = Guid.NewGuid().ToString();
+        PollVotes = new List<PollItemVote>();
     }
     public string Id { get; set; }
     public string UserId { get; set; }
