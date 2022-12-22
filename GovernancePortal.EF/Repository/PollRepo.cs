@@ -38,8 +38,11 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
     
     public IEnumerable<Poll> SearchPollByTitle(string companyId, string title)
     {
-        var reslt =  _context.Set<Poll>().
-            Where(x => x.CompanyId == companyId && x.Title.Contains(title));
+        var reslt =  _context.Set<Poll>()
+            .Include(x => x.PollItems)
+            .Include(x => x.PollUsers)
+            .Include(x => x.PastPollItems)
+            .Where(x => x.CompanyId == companyId && x.Title.Contains(title));
         return reslt;
     }
 }
