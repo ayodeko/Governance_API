@@ -35,15 +35,17 @@ public class MeetingServices : IMeetingService
 
     private ILogger _logger;
     private IMeetingMaps _meetingMapses;
+    private IResolutionMaps _resolutionMaps;
     private IUnitOfWork _unit;
     private readonly IValidator<Meeting> _meetingValidator;
 
-    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator)
+    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps)
     {
         _meetingMapses = meetingMapses;
         _logger = logger;
         _unit = unitOfWork;
         _meetingValidator = meetingValidator;
+        _resolutionMaps = resolutionMaps;
     }
     public async Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST)
     {
@@ -606,10 +608,10 @@ public class MeetingServices : IMeetingService
         if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
         var resolutionIdList = _unit.Bridges.GetVotingsByMeetingId(meetingId, loggedInUser.CompanyId).ToList();
-        
+        var votingList = resolutionIdList.Select(x => _resolutionMaps.OutMap(x)).ToList();
         var response = new Response
         {
-            Data = resolutionIdList,
+            Data = votingList,
             Message = $"Retrieved successfully",
             StatusCode = HttpStatusCode.OK.ToString(),
             IsSuccessful = true
