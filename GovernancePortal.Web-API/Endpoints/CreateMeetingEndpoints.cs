@@ -176,6 +176,19 @@ public static class CreateMeetingEndpoints
 
         #endregion
 
+
+
+
+
+
+
+
+        #region Stub Endpoints
+
+        app.MapGet("api/Stub/GetCurrentUserDetails", StaticLogics.DummyGetCurrentEnterpriseUser);
+
+        #endregion
+
         return app;
     }
 

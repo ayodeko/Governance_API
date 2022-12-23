@@ -81,6 +81,12 @@ public class BusinessLogicService : IBusinessLogic
 
 public static class StaticLogics
 {
+    private static IConfiguration _configuration;
+
+    public static void Init(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
     public static async Task<string> HttpGetAsync(string url, CancellationToken token = default)
     {
         using var httpClient = new HttpClient();
@@ -99,4 +105,10 @@ public static class StaticLogics
         var responseString = await response.Content.ReadAsStringAsync(token);
         return responseString;
     }
+
+    public static string DummyGetCurrentEnterpriseUser()
+    {
+        return _configuration?.GetSection("DummyData")?["CurrentUser"];
+    }
+    
 }
