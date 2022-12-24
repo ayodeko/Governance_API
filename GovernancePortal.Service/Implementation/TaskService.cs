@@ -71,6 +71,29 @@ namespace GovernancePortal.Service.Implementation
 
             return response;
         }
+
+        public async Task<Pagination<TaskListGET>> GetTaskListBySearch(string title, PageQuery pageQuery)
+        {
+            var person = GetLoggedInUser();
+            _logger.LogInformation($"Inside get tasks");
+
+            var retrievedTasks =  _unit.Tasks.GetTaskListBySearch(title, person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
+            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
+            var response = new Pagination<TaskListGET>
+            {
+                Data = taskList,
+                PageNumber = pageQuery.PageNumber,
+                PageSize = pageQuery.PageSize,
+                TotalRecords = totalRecords,
+                Message = "Retrieved successfully",
+                IsSuccessful = true,
+                StatusCode = HttpStatusCode.OK.ToString()
+            };
+            _logger.LogInformation("get tasks successful: {response}", response);
+
+            return response;
+        }
         public async Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery)
         {
             var person = GetLoggedInUser();

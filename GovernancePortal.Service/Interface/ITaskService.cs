@@ -12,6 +12,7 @@ namespace GovernancePortal.Service.Interface
     public interface ITaskService
     {
         Task<Pagination<TaskListGET>> GetTaskList(PageQuery pageQuery);
+        Task<Pagination<TaskListGET>> GetTaskListBySearch(string title, PageQuery pageQuery);
         Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery);
         Task<Pagination<TaskListGET>> GetOngoingTasks(PageQuery pageQuery);
         Task<Pagination<TaskListGET>> GetCompletedTasks(PageQuery pageQuery);

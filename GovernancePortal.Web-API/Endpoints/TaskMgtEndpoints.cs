@@ -11,6 +11,8 @@ namespace GovernancePortal.Web_API.Endpoints
         {
             app.MapGet("api/TaskMgt/list",([FromServices] ITaskService taskServices, PageQuery pageQuery) 
                 => taskServices.GetTaskList(pageQuery));
+            app.MapGet("api/TaskMgt/SearchByTitle",([FromServices] ITaskService taskServices, string title, PageQuery pageQuery) 
+                => taskServices.GetTaskListBySearch(title, pageQuery));
             app.MapGet("api/TaskMgt/NotStarted/List", ([FromServices] ITaskService taskServices, PageQuery pageQuery)
                 => taskServices.GetNotStartedTasks(pageQuery));
             app.MapGet("api/TaskMgt/Ongoing/List", ([FromServices] ITaskService taskServices, PageQuery pageQuery)

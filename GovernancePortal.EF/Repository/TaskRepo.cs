@@ -32,6 +32,17 @@ namespace GovernancePortal.EF.Repository
             totalRecords = tasks.Count();
             return tasks;
         }
+        public List<TaskModel> GetTaskListBySearch(string title, string companyId, int pageNumber, int pageSize, out int totalRecords)
+        {
+            int skip = (pageNumber - 1) * pageSize;
+            var tasks = _context.Set<TaskModel>().Where(x => x.CompanyId.Equals(companyId) && x.Title.Contains(title))
+                .Include(x=>x.Items).Include(y=>y.Participants)
+                       .Skip(skip)
+                       .Take(pageSize)
+                       .ToList();
+            totalRecords = tasks.Count();
+            return tasks;
+        }
         public List<TaskModel> GetNotStartedTasks(string companyId, int pageNumber, int pageSize, out int totalRecords)
         {
             int skip = (pageNumber - 1) * pageSize;

@@ -712,7 +712,7 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation($"Inside get Minutes for meeting with id: {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Minutes(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        if(existingMeeting.Minutes is null || !existingMeeting.Minutes.Any()) throw new BadRequestException($"This meeting has no uploaded minutes");
+        if(existingMeeting.Minutes is null || !existingMeeting.Minutes.Any()) existingMeeting.Minutes = new List<Minute>();
         var minutes = _meetingMapses.OutMap(existingMeeting.Minutes, new MinuteGET());
         var response = new Response
         {
