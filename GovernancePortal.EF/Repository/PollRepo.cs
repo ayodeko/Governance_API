@@ -29,7 +29,8 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
             .Include(x => x.PollItems)
             .Include(x => x.PollUsers)
             .Include(x => x.PastPollItems)
-            .Where(x => x.CompanyId == companyId);
+            .Where(x => x.CompanyId == companyId)
+            .OrderByDescending(X =>X.DateTIme);
         totalRecords = votingList.Count();
         return votingList.Skip(skip)
             .Take(pageSize)!;
@@ -42,7 +43,8 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
             .Include(x => x.PollItems)
             .Include(x => x.PollUsers)
             .Include(x => x.PastPollItems)
-            .Where(x => x.CompanyId == companyId && x.Title.Contains(title));
+            .Where(x => x.CompanyId == companyId && x.Title.Contains(title))
+            .OrderByDescending(X =>X.DateTIme);
         return reslt;
     }
 }

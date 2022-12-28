@@ -33,7 +33,8 @@ public class VotingRepo : GenericRepo<Voting>, IVotingRepo
         var skip = (pageNumber - 1) * pageSize;
         var votingList = _context.Set<Voting>()
             .Include(x => x.Voters)
-            .Where(x => x.CompanyId == companyId);
+            .Where(x => x.CompanyId == companyId)
+            .OrderByDescending(X =>X.DateTime);
         totalRecords = votingList.Count();
         return votingList.Skip(skip)
             .Take(pageSize)!;
@@ -44,7 +45,8 @@ public class VotingRepo : GenericRepo<Voting>, IVotingRepo
         var skip = (pageNumber - 1) * pageSize;
         var votingList = _context.Set<Voting>()
             .Include(x => x.Voters)
-            .Where(x => x.CompanyId == companyId && x.Title.Contains(title));
+            .Where(x => x.CompanyId == companyId && x.Title.Contains(title))
+            .OrderByDescending(X =>X.DateTime);
         totalRecords = votingList.Count();
         return votingList.Skip(skip)
             .Take(pageSize)!;
