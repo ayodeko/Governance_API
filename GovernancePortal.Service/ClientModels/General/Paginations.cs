@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GovernancePortal.Service.ClientModels.General
 {
     public class PageQuery
     {
+        [FromQuery(Name = "PageNumber")]
         public int PageNumber { get; set; }
+        [FromQuery(Name = "PageSize")]
         public int PageSize { get; set; }
         public PageQuery()
         {
@@ -24,8 +27,8 @@ namespace GovernancePortal.Service.ClientModels.General
         
         public static ValueTask<PageQuery> BindAsync(HttpContext context)
             => new ValueTask<PageQuery>(new PageQuery(
-                pageNumber: int.TryParse(context.Request.Query["skip"], out var skip) ? skip : 1,
-                pageSize: int.TryParse(context.Request.Query["take"], out var take) ? take : 50));
+                pageNumber: int.TryParse(context.Request.Query["pageNumber"], out var skip) ? skip : 1,
+                pageSize: int.TryParse(context.Request.Query["pageSize"], out var take) ? take : 50));
     }
 
     public class Pagination<T> where T: class

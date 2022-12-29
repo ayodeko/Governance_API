@@ -1,3 +1,4 @@
+using GovernancePortal.Service.Implementation;
 using GovernancePortal.Web_API.Endpoints;
 using GovernancePortal.Web_API.Utility;
 
@@ -7,7 +8,7 @@ builder.RegisterMeetingServices();
 builder.Services.ConfigureGovernancePortalServices(builder.Configuration);
 
 var app = builder.Build();
-
+StaticLogics.Init(app.Services.GetRequiredService<IConfiguration>());
 app.MapSectionedMeetingEndpoints();
 app.MapResolutionEndpoints();
 app.MapTaskMgtEndpoints();

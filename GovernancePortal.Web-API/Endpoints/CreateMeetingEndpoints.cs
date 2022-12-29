@@ -169,6 +169,23 @@ public static class CreateMeetingEndpoints
         
         app.MapGet("api/Meeting/{meetingId}/GetResolutionIds", ([FromServices] IMeetingService meetingServices, string meetingId) =>
             meetingServices.GetResolutionIds(meetingId));
+        app.MapGet("api/Meeting/{meetingId}/GetPollsByMeetingId", ([FromServices] IMeetingService meetingServices, string meetingId) =>
+            meetingServices.GetPollsByMeetingId(meetingId));
+        app.MapGet("api/Meeting/{meetingId}/GetVotesByMeetingId", ([FromServices] IMeetingService meetingServices, string meetingId) =>
+            meetingServices.GetVotingByMeetingId(meetingId));
+
+        #endregion
+
+
+
+
+
+
+
+
+        #region Stub Endpoints
+
+        app.MapGet("api/Stub/GetCurrentUserDetails", StaticLogics.DummyGetCurrentEnterpriseUser);
 
         #endregion
 

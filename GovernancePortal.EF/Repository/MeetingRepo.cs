@@ -143,7 +143,8 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
-            .Where(x => x.CompanyId.Equals(companyId) && x.Type == type));
+            .Where(x => x.CompanyId.Equals(companyId) && x.Type == type))
+            .OrderByDescending(X =>X.DateTime);
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;
@@ -154,7 +155,8 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
-            .Where(x => x.CompanyId.Equals(companyId) && x.Type == type && x.Attendees.Any(c => c.UserId == userId)));
+            .Where(x => x.CompanyId.Equals(companyId) && x.Type == type && x.Attendees.Any(c => c.UserId == userId)))
+            .OrderByDescending(X =>X.DateTime);
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;
@@ -165,7 +167,8 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
-            .Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(c => c.UserId == userId)));
+            .Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(c => c.UserId == userId)))
+            .OrderByDescending(x => x.DateTime);
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;
@@ -176,7 +179,9 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
-            .Where(x => x.CompanyId.Equals(companyId)));
+            .Where(x => x.CompanyId.Equals(companyId) ))
+            .OrderByDescending(X =>X.DateTime);
+            //.Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(y => y.UserId == "f176b897-84a1-465f-6b1f-08dae3c6e6fc")));
         totalRecords = result.Count();
         return result.Skip(skip)
             .Take(pageSize)!;
@@ -186,7 +191,8 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
     {
         return _context.Set<Meeting>().
             Include(x => x.Attendees).
-            Where(x => x.CompanyId == companyId && x.Title.Contains(searchString));
+            Where(x => x.CompanyId == companyId && x.Title.Contains(searchString))
+            .OrderByDescending(X =>X.DateTime);
     }
     public IEnumerable<Meeting> FindByDate(DateTime dateTime, string companyId)
     {

@@ -12,4 +12,11 @@ public class Meeting_Resolution
     public string CompanyId { get; set; }
     public string MeetingId { get; set; }
     public string ResolutionId { get; set; }
+    public ResolutionType ResolutionType { get; set; }
+}
+
+public enum ResolutionType
+{
+    Vote,
+    Poll
 }

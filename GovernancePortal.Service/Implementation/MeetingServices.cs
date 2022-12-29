@@ -35,16 +35,18 @@ public class MeetingServices : IMeetingService
 
     private ILogger _logger;
     private IMeetingMaps _meetingMapses;
+    private IResolutionMaps _resolutionMaps;
     private IUnitOfWork _unit;
     private readonly IValidator<Meeting> _meetingValidator;
 
-    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator)
+    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps)
     {
         _meetingMapses = meetingMapses;
         _logger = logger;
         _unit = unitOfWork;
         _meetingValidator = meetingValidator;
-    } 
+        _resolutionMaps = resolutionMaps;
+    }
     public async Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST)
     {
         var loggedInUser = GetLoggedUser();
@@ -571,12 +573,45 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-
         var resolutionIdList = _unit.Bridges.GetResolutionIdsMeetingId(meetingId, loggedInUser.CompanyId).ToList();
         
         var response = new Response
         {
             Data = resolutionIdList,
+            Message = $"Retrieved successfully",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        return response;
+    }
+    public async Task<Response> GetPollsByMeetingId(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var resolutionIdList = _unit.Bridges.GetPollsByMeetingId(meetingId, loggedInUser.CompanyId).ToList();
+        
+        var response = new Response
+        {
+            Data = resolutionIdList,
+            Message = $"Retrieved successfully",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        return response;
+    }
+    public async Task<Response> GetVotingByMeetingId(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var resolutionIdList = _unit.Bridges.GetVotingsByMeetingId(meetingId, loggedInUser.CompanyId).ToList();
+        var votingList = resolutionIdList.Select(x => _resolutionMaps.OutMap(x)).ToList();
+        var response = new Response
+        {
+            Data = votingList,
             Message = $"Retrieved successfully",
             StatusCode = HttpStatusCode.OK.ToString(),
             IsSuccessful = true
@@ -677,7 +712,7 @@ public class MeetingServices : IMeetingService
         _logger.LogInformation($"Inside get Minutes for meeting with id: {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Minutes(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        if(existingMeeting.Minutes is null || !existingMeeting.Minutes.Any()) throw new BadRequestException($"This meeting has no uploaded minutes");
+        if(existingMeeting.Minutes is null || !existingMeeting.Minutes.Any()) existingMeeting.Minutes = new List<Minute>();
         var minutes = _meetingMapses.OutMap(existingMeeting.Minutes, new MinuteGET());
         var response = new Response
         {
