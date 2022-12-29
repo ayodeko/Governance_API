@@ -44,7 +44,7 @@ public class MeetingServices : IMeetingService
         _logger = logger;
         _unit = unitOfWork;
         _meetingValidator = meetingValidator;
-    }
+    } 
     public async Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST)
     {
         var loggedInUser = GetLoggedUser();

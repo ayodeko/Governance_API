@@ -33,6 +33,9 @@ namespace GovernancePortal.Web_API.Endpoints
               => taskServices.CompleteTaskItem(input, taskId));
             app.MapPost("api/TaskMgt/{taskId}/AddDocument", ([FromServices] ITaskService taskServices, AddDocumentToTaskItemDTO input, string taskId)
              => taskServices.AddTaskItemDocument(input, taskId));
+            app.MapGet("api/TaslMgt/SearchTasks", ([FromServices] ITaskService taskServices, string searchTaskssString) =>
+            taskService.SearchTasks(searchTasksString));
+
             return app;
 
 

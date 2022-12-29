@@ -21,10 +21,15 @@ namespace GovernancePortal.Service.Interface
         Task<Response> CreateTask( TaskPOST task);
         Task<Response> UpdateTask(TaskPOST task, string taskId);
 
+        
         Task<Response> CompleteTaskItem(CompleteTaskDTO task, string taskId);
+        
+        
         Task<Response> AddTaskItemDocument(AddDocumentToTaskItemDTO task, string taskId);
 
-        
+
+
+
 
     }
 }

@@ -3,7 +3,7 @@ using GovernancePortal.Core.TaskManagement;
 using GovernancePortal.Data;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
-using GovernancePortal.Service.ClientModels.Meetings;
+using GovernancePortal.Service.ClientModels.Tasks;
 using GovernancePortal.Service.ClientModels.TaskManagement;
 using GovernancePortal.Service.Interface;
 using GovernancePortal.Service.Mappings.IMaps;
@@ -265,7 +265,33 @@ namespace GovernancePortal.Service.Implementation
             return response;
 
         }
+        public async Task<Response>SearchTasks(string taskSearchString)
+        {
+            var loggedInUser = GetLoggedInUser();
+            var retrievedTasks = _unit.Tasks.FindBySearchString(taskSearchString, loggedInUser.CompanyId).ToList();
+            if (!retrievedTasks.Any())
+            {
+                var failedResponse = new Response
+                {
+                    Data = null,
+                    Message = $"Tasks that contain: {taskSearchString} not found",
+                    StatusCode = HttpStatusCode.OK.ToString(),
+                    IsSuccessful = true
+                };
 
+                return failedResponse;
+            }
+
+            var taskListGet = _taskMaps.OutMap(retrievedTasks);
+            var response = new Response
+            {
+                Data = taskListGet,
+                Message = $"Retrieved successfully",
+                StatusCode = HttpStatusCode.OK.ToString(),
+                IsSuccessful = true
+            };
+            return response;
+        }
         public async Task<Response> AddTaskItemDocument(AddDocumentToTaskItemDTO input, string taskId)
         {
             var loggedInUser = GetLoggedInUser();
