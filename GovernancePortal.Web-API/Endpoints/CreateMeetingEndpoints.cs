@@ -84,12 +84,12 @@ public static class CreateMeetingEndpoints
         app.MapGet("api/Meeting/List",
             ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
                 meetingService.GetAllMeetingList(meetingType, pageQuery));
-        app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, PageQuery pageQuery) =>
-            meetingService.GetUserMeetingList(pageQuery));
-        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, string searchMeetingsString) =>
-            meetingService.SearchMeetings(searchMeetingsString));
-        app.MapGet("api/Meeting/SearchMeetingsByDate", ([FromServices] IMeetingService meetingService, DateTime dateTime) =>
-            meetingService.SearchMeetingsByDate(dateTime));
+        app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
+            meetingService.GetUserMeetingList(pageQuery, meetingType));
+        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, string searchMeetingsString) =>
+            meetingService.SearchMeetings(searchMeetingsString, meetingType));
+        app.MapGet("api/Meeting/SearchMeetingsByDate", ([FromServices] IMeetingService meetingService, int? meetingType, DateTime dateTime) =>
+            meetingService.SearchMeetingsByDate(dateTime, meetingType));
 
         #endregion
 
