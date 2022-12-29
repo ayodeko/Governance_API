@@ -87,12 +87,12 @@ public static class MeetingEndpoints
         app.MapGet("api/Meeting/List",
             ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
                 meetingService.GetAllMeetingList(meetingType, pageQuery)).RequireAuthorization();
-        app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, PageQuery pageQuery) =>
-            meetingService.GetUserMeetingList(pageQuery)).RequireAuthorization();
-        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, string searchMeetingsString) =>
-            meetingService.SearchMeetings(searchMeetingsString)).RequireAuthorization();
-        app.MapGet("api/Meeting/SearchMeetingsByDate", ([FromServices] IMeetingService meetingService, DateTime dateTime) =>
-            meetingService.SearchMeetingsByDate(dateTime)).RequireAuthorization();
+        app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
+            meetingService.GetUserMeetingList(pageQuery, meetingType)).RequireAuthorization();
+        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, string searchMeetingsString) =>
+            meetingService.SearchMeetings(searchMeetingsString, meetingType)).RequireAuthorization();
+        app.MapGet("api/Meeting/SearchMeetingsByDate", ([FromServices] IMeetingService meetingService, int? meetingType, DateTime dateTime) =>
+            meetingService.SearchMeetingsByDate(dateTime, meetingType)).RequireAuthorization();
 
         #endregion
 
@@ -204,6 +204,8 @@ public static class MeetingEndpoints
         
         builder.Services.AddScoped<ITaskService, TaskService>();
         builder.Services.AddScoped<ITaskMaps, TaskMaps>();
+
+        builder.Services.AddScoped<IUtilityService, UtilityService>();
         return builder;
     }
 

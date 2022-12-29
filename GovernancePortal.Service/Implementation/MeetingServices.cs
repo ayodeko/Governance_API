@@ -22,12 +22,6 @@ namespace GovernancePortal.Service.Implementation;
 
 public class MeetingServices : IMeetingService
 {
-    UserModel GetLoggedUser()
-    {
-        var user = _utilityService.GetUser();
-        return user;
-    }
-
     private ILogger _logger;
     private IMeetingMaps _meetingMapses;
     private IResolutionMaps _resolutionMaps;
@@ -35,6 +29,7 @@ public class MeetingServices : IMeetingService
     private readonly IValidator<Meeting> _meetingValidator;
     private readonly IUtilityService _utilityService;
 
+ 
 
     public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps, IUtilityService utility)
     {
@@ -45,6 +40,12 @@ public class MeetingServices : IMeetingService
         _resolutionMaps = resolutionMaps;
         _utilityService = utility;
     }
+    UserModel GetLoggedUser()
+    {
+        var user = _utilityService.GetUser();
+        return user;
+    }
+
     public async Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST)
     {
         var loggedInUser = GetLoggedUser();

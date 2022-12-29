@@ -24,8 +24,7 @@ namespace GovernancePortal.Service.Implementation
             try
             {
                 var userId = _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Jti).Value;
-                var headers = _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
-                //string companyId = headers[1];
+                var companyId = _httpContextAccessor.HttpContext.Request.Headers["companyId"];
                 var role = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value;
                 var email = _httpContextAccessor.HttpContext.User.FindFirst("email").Value;
                 var firstName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value;
@@ -34,7 +33,7 @@ namespace GovernancePortal.Service.Implementation
                 var user = new UserModel()
                 {
                     Id = userId,
-                    CompanyId = "companyId",
+                    CompanyId = companyId,
                     Email = email,
                     FirstName = firstName,
                     LastName = lastName,
