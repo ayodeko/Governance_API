@@ -161,12 +161,13 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         return result.Skip(skip)
             .Take(pageSize)!;
     }
-    public IEnumerable<Meeting> GetMeetingListByUserId(string userId, string companyId, int pageNumber, int pageSize,
+    public IEnumerable<Meeting> GetMeetingListByUserId(string userId, MeetingType? meetingType, string companyId, int pageNumber, int pageSize,
         out int totalRecords)
     {
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
+            .Where(x => meetingType == null || x.Type == meetingType)
             .Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(c => c.UserId == userId)))
             .OrderByDescending(x => x.DateTime);
         totalRecords = result.Count();
@@ -194,11 +195,21 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             Where(x => x.CompanyId == companyId && x.Title.Contains(searchString))
             .OrderByDescending(X =>X.DateTime);
     }
-    public IEnumerable<Meeting> FindByDate(DateTime dateTime, string companyId)
+    
+    public IEnumerable<Meeting> FindBySearchStringAndMeetingType(string searchString, MeetingType? meetingType, string companyId)
     {
         return _context.Set<Meeting>().
-            Include(x => x.Attendees).
-            Where(x => x.CompanyId == companyId && x.DateTime == dateTime);
+            Include(x => x.Attendees)
+            .Where(x => meetingType == null || x.Type == meetingType)
+            .Where(x => x.CompanyId == companyId && x.Title.Contains(searchString))
+            .OrderByDescending(X =>X.DateTime);
+    }
+    public IEnumerable<Meeting> FindMeetingByDate(DateTime dateTime, MeetingType? meetingType, string companyId)
+    {
+        return _context.Set<Meeting>().
+            Include(x => x.Attendees)
+            .Where(x => meetingType == null || x.Type == meetingType)
+            .Where(x => x.CompanyId == companyId && x.DateTime == dateTime);
     }
 
 }
