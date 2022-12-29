@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using FluentValidation;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.Resolutions;
@@ -32,12 +33,7 @@ public static class ServiceConfigurations
                              .Build();
                   }));
         services.AddHttpContextAccessor();
-        //services.Configure<UploadConfig>(options =>
-        //{
-        //    options.AccessKey = Configuration["ExternalProviders:AwsS3:AccessKey"];
-        //    options.AccessSecret = Configuration["ExternalProviders:AwsS3:AccessSecret"];
-        //    options.BucketName = Configuration["ExternalProviders:AwsS3:Bucket"];
-        //});
+        
 
         services.AddDbContext<PortalContext>(opt =>
                opt.UseSqlServer(EnvironmentVariables.ConnectionString,
@@ -54,39 +50,37 @@ public static class ServiceConfigurations
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "BodAdmin API Governance Portal", Version = "v1" });
         });
+        services.ConfigureServiceForAuthentication_Authorization(Configuration);
 
     }
 
     public static void ConfigureServiceForAuthentication_Authorization(this IServiceCollection services, IConfiguration Configuration)
     {
-        services.AddAuthentication(options =>
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+        services.AddAuthentication(o =>
+        {
+            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(o =>
+        {
+            o.RequireHttpsMetadata = false;
+            o.SaveToken = true;
+            o.TokenValidationParameters = new TokenValidationParameters()
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ClockSkew = TimeSpan.Zero,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Secret"]))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    //add cookie based
-                    OnMessageReceived = context =>
-                    {
-                        context.Token = context.Request.Cookies["BodAccess"];
-                        return Task.CompletedTask;
-                    },
-                };
-            });
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = EnvironmentVariables.BODADMINIssuer,
+                ValidAudience = EnvironmentVariables.BODADMINAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvironmentVariables.BODADMINSecretKey))
+            };
+
+        }).AddCookie("cookie");
+
+        services.AddHttpContextAccessor();
 
         services.AddAuthorization();
     }
@@ -95,6 +89,8 @@ public static class ServiceConfigurations
     {
         app.UseSwagger();
         app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BodAdmin_Api_Governance_Portal v1"));
+        app.UseAuthentication();
+        app.UseAuthorization();
 
     }
 }

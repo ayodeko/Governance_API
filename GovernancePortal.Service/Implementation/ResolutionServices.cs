@@ -26,24 +26,21 @@ public class ResolutionServices : IResolutionServices
     private IResolutionMaps _resolutionMaps;
     private IBridgeRepo _bridgeRepo;
     private IValidator<VotingUser> _votingUserValidator;
-    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps, IBridgeRepo bridgeRepo, IValidator<VotingUser> votingUserValidator)
+    private readonly IUtilityService _utilityService;
+
+    public ResolutionServices(IHttpContextAccessor context, IUnitOfWork unit, IResolutionMaps resolutionMaps, IBridgeRepo bridgeRepo, IValidator<VotingUser> votingUserValidator, IUtilityService utilityService)
     {
         _context = context;
         _unit = unit;
         _resolutionMaps = resolutionMaps;
         _bridgeRepo = bridgeRepo;
         _votingUserValidator = votingUserValidator;
+        _utilityService = utilityService;
     }
-    Person GetLoggedInUser()
+    UserModel GetLoggedInUser()
     {
-        //var companyIdStringValues = _context.HttpContext?.Request.Headers["CompanyId"];
-        return new Person()
-        {
-            Id = "18312549-7133-41cb-8fd2-e76e1d088bb6",
-            Name = "User1",
-            CompanyId = "Company1",
-            UserType = UserType.StandaloneUser
-        };
+        var user = _utilityService.GetUser();
+        return user;
     }
     public async Task<Response> CreateVotingAsync(CreateVotingPOST createVotingPOST, CancellationToken cancellationToken)
     {

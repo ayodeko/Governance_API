@@ -3,7 +3,6 @@ using GovernancePortal.Core.TaskManagement;
 using GovernancePortal.Data;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
-using GovernancePortal.Service.ClientModels.Tasks;
 using GovernancePortal.Service.ClientModels.TaskManagement;
 using GovernancePortal.Service.Interface;
 using GovernancePortal.Service.Mappings.IMaps;
@@ -28,25 +27,21 @@ namespace GovernancePortal.Service.Implementation
         private readonly ITaskMaps _taskMaps;
         private readonly IUnitOfWork _unit;
         private ILogger _logger;
+        private readonly IUtilityService _utilityService;
 
-        public TaskService(IHttpContextAccessor context, ITaskMaps tasksMaps, IUnitOfWork unit, ILogger logger)
+        public TaskService(IHttpContextAccessor context, ITaskMaps tasksMaps, IUnitOfWork unit, ILogger logger, IUtilityService utilityService)
         {
             _taskMaps = tasksMaps;
             _unit = unit;
             _context = context;
             _logger = logger;
+            _utilityService = utilityService;
         }
 
-        Person GetLoggedInUser()
+        UserModel GetLoggedInUser()
         {
-            var companyId = _context.HttpContext?.Request.Headers["CompanyId"].FirstOrDefault();
-            return new Person()
-            {
-                Id = "18312549-7133-41cb-8fd2-e76e1d088bb6",
-                Name = "User1",
-                CompanyId = companyId ?? "CompanyId",
-                UserType = UserType.StandaloneUser
-            };
+            var user = _utilityService.GetUser();
+            return user;
         }
 
         public async Task<Pagination<TaskListGET>> GetTaskList(PageQuery pageQuery)
@@ -287,33 +282,6 @@ namespace GovernancePortal.Service.Implementation
             _logger.LogInformation("complete task item successful: {response}", response);
             return response;
 
-        }
-        public async Task<Response>SearchTasks(string taskSearchString)
-        {
-            var loggedInUser = GetLoggedInUser();
-            var retrievedTasks = _unit.Tasks.FindBySearchString(taskSearchString, loggedInUser.CompanyId).ToList();
-            if (!retrievedTasks.Any())
-            {
-                var failedResponse = new Response
-                {
-                    Data = null,
-                    Message = $"Tasks that contain: {taskSearchString} not found",
-                    StatusCode = HttpStatusCode.OK.ToString(),
-                    IsSuccessful = true
-                };
-
-                return failedResponse;
-            }
-
-            var taskListGet = _taskMaps.OutMap(retrievedTasks);
-            var response = new Response
-            {
-                Data = taskListGet,
-                Message = $"Retrieved successfully",
-                StatusCode = HttpStatusCode.OK.ToString(),
-                IsSuccessful = true
-            };
-            return response;
         }
         public async Task<Response> AddTaskItemDocument(AddDocumentToTaskItemDTO input, string taskId)
         {
