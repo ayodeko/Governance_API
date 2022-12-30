@@ -43,6 +43,19 @@ namespace GovernancePortal.EF.Repository
             totalRecords = tasks.Count();
             return tasks;
         }
+
+        public List<TaskModel> GetTaskListByStatus(TaskStatus status, string companyId, int pageNumber, int pageSize, out int totalRecords)
+        {
+            int skip = (pageNumber - 1) * pageSize;
+            var tasks = _context.Set<TaskModel>().Where(x => x.CompanyId.Equals(companyId)).Where(y => y.Status == status)
+                .Include(x => x.Items).Include(y => y.Participants)
+                       .Skip(skip)
+                       .Take(pageSize)
+                       .ToList();
+            totalRecords = tasks.Count();
+            return tasks;
+        }
+
         public List<TaskModel> GetNotStartedTasks(string companyId, int pageNumber, int pageSize, out int totalRecords)
         {
             int skip = (pageNumber - 1) * pageSize;
@@ -87,6 +100,16 @@ namespace GovernancePortal.EF.Repository
             totalRecords = tasks.Count();
             return tasks;
         }
+        public List<TaskModel> GetUserTaskListByStatus(TaskStatus status, string userId, string companyId, int pageNumber, int pageSize, out int totalRecords)
+        {
+            int skip = (pageNumber - 1) * pageSize;
+            var result = _context.Set<TaskModel>().Include(x => x.Items).Include(y => y.Participants)
+                     .Where(x => x.CompanyId.Equals(companyId) && x.Participants.Any(c => c.UserId == userId) &&  x.Status == status);
+            totalRecords = result.Count();
+            return result.Skip(skip)
+                .Take(pageSize).ToList()!;
+        }
+
         public List<TaskModel> GetTaskListByUserId(string userId, string companyId, int pageNumber, int pageSize,
        out int totalRecords)
         {

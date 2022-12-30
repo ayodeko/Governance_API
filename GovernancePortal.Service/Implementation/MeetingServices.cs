@@ -22,31 +22,30 @@ namespace GovernancePortal.Service.Implementation;
 
 public class MeetingServices : IMeetingService
 {
-    Person GetLoggedUser()
-    {
-        return new Person()
-        {
-            Id = "18312549-7133-41cb-8fd2-e76e1d088bb6",
-            Name = "User1",
-            CompanyId = "Company1",
-            UserType = UserType.StandaloneUser
-        };
-    }
-
     private ILogger _logger;
     private IMeetingMaps _meetingMapses;
     private IResolutionMaps _resolutionMaps;
     private IUnitOfWork _unit;
     private readonly IValidator<Meeting> _meetingValidator;
+    private readonly IUtilityService _utilityService;
 
-    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps)
+ 
+
+    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps, IUtilityService utility)
     {
         _meetingMapses = meetingMapses;
         _logger = logger;
         _unit = unitOfWork;
         _meetingValidator = meetingValidator;
         _resolutionMaps = resolutionMaps;
+        _utilityService = utility;
     }
+    UserModel GetLoggedUser()
+    {
+        var user = _utilityService.GetUser();
+        return user;
+    }
+
     public async Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST)
     {
         var loggedInUser = GetLoggedUser();

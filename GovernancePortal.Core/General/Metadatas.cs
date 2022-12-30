@@ -6,6 +6,7 @@ namespace GovernancePortal.Core.General
 {
 		public enum TaskStatus
 		{
+			
 			NotStarted,
 			Ongoing,
 			Completed,

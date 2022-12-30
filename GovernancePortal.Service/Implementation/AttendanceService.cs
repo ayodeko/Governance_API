@@ -19,12 +19,14 @@ public class AttendanceService : IAttendanceServices
     private readonly ILogger _logger;
     private readonly IUnitOfWork _unit;
     private readonly IBusinessLogic _logic;
+    private readonly IUtilityService _utilityService;
 
-    public AttendanceService(ILogger logger, IBusinessLogic logic, IUnitOfWork unit)
+    public AttendanceService(ILogger logger, IBusinessLogic logic, IUnitOfWork unit, IUtilityService utilityService)
     {
         _logger = logger;
         _unit = unit;
         _logic = logic;
+        _utilityService = utilityService;
     }
     public async Task<Response> GenerateAttendanceCode(string meetingId, CancellationToken token)
     {
@@ -220,14 +222,9 @@ public class AttendanceService : IAttendanceServices
     }
     
     
-    Person GetLoggedUser()
+    UserModel GetLoggedUser()
     {
-        return new Person()
-        {
-            Id = "18312549-7133-41cb-8fd2-e76e1d088bb6",
-            Name = "User1",
-            CompanyId = "Company1",
-            UserType = UserType.StandaloneUser
-        };
+        var user = _utilityService.GetUser();
+        return user;
     }
 }

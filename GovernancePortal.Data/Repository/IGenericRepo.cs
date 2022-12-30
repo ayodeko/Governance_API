@@ -9,7 +9,7 @@ namespace GovernancePortal.Data.Repository
 {
     public interface IGenericRepo<TModel> where TModel : class, ICompanyModel
     {
-        Task Add(TModel model, Person user);
+        Task Add(TModel model, UserModel user);
         Task<IEnumerable<TModel>> FindByIds(IEnumerable<string> Ids, string companyId);
         Task<IEnumerable<TModel>> FindByLogic(Expression<Func<TModel, bool>> predicate, string companyId);
         Task<IEnumerable<TModel>> FindAll(string companyId);

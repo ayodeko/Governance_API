@@ -18,7 +18,7 @@ namespace GovernancePortal.EF.Repository
             _context = context;
         }
 
-        public async Task Add(TModel model, Person user)
+        public async Task Add(TModel model, UserModel user)
         {
             model.DateCreated = DateTime.Now;
             model.CompanyId = user.CompanyId;
