@@ -460,16 +460,13 @@ public class MeetingServices : IMeetingService
             MeetingDate = existingMeeting.DateTime
         };
 
-    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, PageQuery pageQuery)
+    public async Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, string userId, string searchString, DateTime? dateTime, PageQuery pageQuery)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside get all meetings, {pageQuery}", pageQuery);
         var type = meetingType != null ?  (Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : throw new Exception("Wrong meeting type passed as query parameter")) : MeetingType.Board;
-        var allMeetings = (meetingType == null)
-            ? _unit.Meetings.GetMeetingList(loggedInUser.CompanyId, pageQuery.PageNumber,
-                pageQuery.PageSize, out var totalRecords) 
-            :  _unit.Meetings.GetMeetingListByMeetingType(type, loggedInUser.CompanyId,
-            pageQuery.PageNumber, pageQuery.PageSize, out totalRecords);
+        var allMeetings = _unit.Meetings.GetMeetingList(loggedInUser.CompanyId, meetingType == null ? null : type, userId, searchString, dateTime, pageQuery.PageNumber,
+                pageQuery.PageSize, out var totalRecords);
         var allMeetingsList = allMeetings.ToList();
         var meetingListGet = _meetingMapses.OutMap(allMeetingsList);
         return new Pagination<MeetingListGET>
@@ -508,11 +505,12 @@ public class MeetingServices : IMeetingService
         return response;
     }
     
-    public async Task<Response> SearchMeetings(string meetingSearchString, int? meetingType)
+    public async Task<Response> SearchMeetings(string meetingSearchString, int? meetingType, string userId)
     {
         var loggedInUser = GetLoggedUser();
+        var pageQuery = new PageQuery();
         var type = meetingType != null ?  (Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : throw new Exception("Wrong meeting type passed as query parameter")) : MeetingType.Board;
-        var retrievedMeetings =  _unit.Meetings.FindBySearchStringAndMeetingType(meetingSearchString, meetingType == null ? null : type, loggedInUser.CompanyId).ToList();
+        var retrievedMeetings =  _unit.Meetings.FindBySearchStringAndMeetingType(meetingSearchString, meetingType == null ? null : type, userId, loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalNumber).ToList();
         if (!retrievedMeetings.Any())
         {
             var failedResponse = new Response
@@ -535,11 +533,11 @@ public class MeetingServices : IMeetingService
         };
         return response;
     }
-    public async Task<Response> SearchMeetingsByDate(DateTime meetingDateTime, int? meetingType)
+    public async Task<Response> SearchMeetingsByDate(DateTime meetingDateTime, int? meetingType, string userId, PageQuery pageQuery)
     {
         var loggedInUser = GetLoggedUser();
         var type = meetingType != null ?  (Enum.IsDefined(typeof(MeetingType), meetingType) ? (MeetingType)meetingType : throw new Exception("Wrong meeting type passed as query parameter")) : MeetingType.Board;
-        var retrievedMeetings =  _unit.Meetings.FindMeetingByDate(meetingDateTime, meetingType == null ? null : type, loggedInUser.CompanyId).ToList();
+        var retrievedMeetings =  _unit.Meetings.FindMeetingByDate(meetingDateTime, meetingType == null ? null : type, userId, loggedInUser.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords ).ToList();
         if (!retrievedMeetings.Any())
         {
             var failedResponse = new Response

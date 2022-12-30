@@ -85,14 +85,14 @@ public static class MeetingEndpoints
 
         #region  Retrieve Meeting Details, Meetings
         app.MapGet("api/Meeting/List",
-            ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
-                meetingService.GetAllMeetingList(meetingType, pageQuery)).RequireAuthorization();
+            ([FromServices] IMeetingService meetingService, int? meetingType, string? userId, string? searchString, DateTime? dateTime, PageQuery pageQuery) =>
+                meetingService.GetAllMeetingList(meetingType, userId, searchString, dateTime, pageQuery)).RequireAuthorization();
         app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
             meetingService.GetUserMeetingList(pageQuery, meetingType)).RequireAuthorization();
-        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, string searchMeetingsString) =>
-            meetingService.SearchMeetings(searchMeetingsString, meetingType)).RequireAuthorization();
-        app.MapGet("api/Meeting/SearchMeetingsByDate", ([FromServices] IMeetingService meetingService, int? meetingType, DateTime dateTime) =>
-            meetingService.SearchMeetingsByDate(dateTime, meetingType)).RequireAuthorization();
+        app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, string? userId, string searchMeetingsString, PageQuery pageQuery) =>
+            meetingService.SearchMeetings(searchMeetingsString, meetingType, userId)).RequireAuthorization();
+        app.MapGet("api/Meeting/SearchMeetingsByDate", ([FromServices] IMeetingService meetingService, int? meetingType, string? userId, DateTime dateTime, PageQuery pageQuery) =>
+            meetingService.SearchMeetingsByDate(dateTime, meetingType, userId, pageQuery)).RequireAuthorization();
 
         #endregion
 

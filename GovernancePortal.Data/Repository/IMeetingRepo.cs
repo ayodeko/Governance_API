@@ -28,10 +28,12 @@ public interface IMeetingRepo : IGenericRepo<Meeting>
     Task<Meeting> GetMeeting_Minutes(string meetingId, string companyId);
     IEnumerable<Meeting> GetMeetingListByUserId(string userId, MeetingType? meetingType, string companyId, int pageNumber, int pageSize,
         out int totalRecords);
-    IEnumerable<Meeting> GetMeetingList(string companyId, int pageNumber, int pageSize,
+    IEnumerable<Meeting> GetMeetingList(string companyId, MeetingType? meetingType, string userId, string searchString, DateTime? DateTime, int pageNumber, int pageSize,
         out int totalRecords);
     IEnumerable<Meeting> FindBySearchString(string searchString, string companyId);
-    IEnumerable<Meeting> FindBySearchStringAndMeetingType(string searchString, MeetingType? meetingType, string companyId);
-    IEnumerable<Meeting> FindMeetingByDate(DateTime dateTime, MeetingType? meetingType, string companyId);
+    IEnumerable<Meeting> FindBySearchStringAndMeetingType(string searchString, MeetingType? meetingType, string userId, string companyId, int pageNumber, int pageSize,
+        out int totalRecords);
+    IEnumerable<Meeting> FindMeetingByDate(DateTime dateTime, MeetingType? meetingType, string userId, string companyId, int pageNumber, int pageSize,
+        out int totalRecords);
     IEnumerable<MeetingAgendaItem> GetAgendaItems_With_MeetingHolder(string meetingId, string companyId);
 }

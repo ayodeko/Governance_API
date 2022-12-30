@@ -31,10 +31,10 @@ public interface IMeetingService
     Task<Pagination<MeetingListGET>> GetAllMeetingList(int meetingType, PageQuery pageQuery);
     Task<Response> GetMeetingUpdateData(string meetingId);
     Task<Pagination<MeetingListGET>> GetAllMeetingList(PageQuery pageQuery);
-    Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, PageQuery pageQuery);
+    Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, string userId, string searchString, DateTime? DateTime, PageQuery pageQuery);
     Task<Pagination<MeetingListGET>> GetUserMeetingList(PageQuery pageQuery, int? meetingType);
-    Task<Response> SearchMeetings(string meetingSearchString, int? meetingType);
-    Task<Response> SearchMeetingsByDate(DateTime meetingDateTime, int? meetingType);
+    Task<Response> SearchMeetings(string meetingSearchString, int? meetingType, string userId);
+    Task<Response> SearchMeetingsByDate(DateTime meetingDateTime, int? meetingType, string userId, PageQuery pageQuery);
     Task<Response> AddAttendees(string meetingId, AddAttendeesPOST updateMeetingAttendeesPost);
     Task<Response> GetMeetingPack(string meetingId);
     Task<Response> GetMeetingDetails(string meetingId);

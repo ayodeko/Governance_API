@@ -16,8 +16,8 @@ namespace GovernancePortal.Service.ClientModels.General
         public int PageSize { get; set; }
         public PageQuery()
         {
-            this.PageNumber = 1;
-            this.PageSize = 50;
+            this.PageNumber = this.PageNumber != 0 ? this.PageNumber : 1;
+            this.PageSize = this.PageSize != 0 ? this.PageSize : 50;
         }
         public PageQuery(int pageNumber, int pageSize)
         {

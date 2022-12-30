@@ -174,12 +174,16 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
         return result.Skip(skip)
             .Take(pageSize)!;
     }
-    public IEnumerable<Meeting> GetMeetingList(string companyId, int pageNumber, int pageSize,
+    public IEnumerable<Meeting> GetMeetingList(string companyId, MeetingType? meetingType, string userId, string searchString, DateTime? dateTime, int pageNumber, int pageSize,
         out int totalRecords)
     {
         var skip = (pageNumber - 1) * pageSize;
         var result = (_context.Set<Meeting>()
             .Include(x => x.Attendees)
+            .Where(x => meetingType == null || x.Type == meetingType )
+            .Where(x => dateTime == null || x.DateTime == dateTime )
+            .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
+            .Where(x => string.IsNullOrEmpty(userId) || x.Attendees.Any(c => c.UserId == userId))
             .Where(x => x.CompanyId.Equals(companyId) ))
             .OrderByDescending(X =>X.DateTime);
             //.Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(y => y.UserId == "f176b897-84a1-465f-6b1f-08dae3c6e6fc")));
@@ -191,25 +195,34 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
     public IEnumerable<Meeting> FindBySearchString(string searchString, string companyId)
     {
         return _context.Set<Meeting>().
-            Include(x => x.Attendees).
-            Where(x => x.CompanyId == companyId && x.Title.Contains(searchString))
-            .OrderByDescending(X =>X.DateTime);
-    }
-    
-    public IEnumerable<Meeting> FindBySearchStringAndMeetingType(string searchString, MeetingType? meetingType, string companyId)
-    {
-        return _context.Set<Meeting>().
             Include(x => x.Attendees)
-            .Where(x => meetingType == null || x.Type == meetingType)
             .Where(x => x.CompanyId == companyId && x.Title.Contains(searchString))
             .OrderByDescending(X =>X.DateTime);
     }
-    public IEnumerable<Meeting> FindMeetingByDate(DateTime dateTime, MeetingType? meetingType, string companyId)
+    
+    public IEnumerable<Meeting> FindBySearchStringAndMeetingType(string searchString, MeetingType? meetingType, string userId, string companyId, int pageNumber, int pageSize,
+        out int totalRecords)
     {
-        return _context.Set<Meeting>().
+        var skip = (pageNumber - 1) * pageSize;
+        var result =  _context.Set<Meeting>().
+            Include(x => x.Attendees)
+            .Where(x => string.IsNullOrEmpty(userId) || x.Attendees.Any(c => c.UserId == userId))
+            .Where(x => meetingType == null || x.Type == meetingType)
+            .Where(x => x.CompanyId == companyId && x.Title.Contains(searchString))
+            .OrderByDescending(X =>X.DateTime);
+        totalRecords = result.Count();
+        return result.Skip(skip).Take(pageSize);
+    }
+    public IEnumerable<Meeting> FindMeetingByDate(DateTime dateTime, MeetingType? meetingType, string userId, string companyId, int pageNumber, int pageSize,
+        out int totalRecords)
+    {
+        var skip = (pageNumber - 1) * pageSize;
+        var result =  _context.Set<Meeting>().
             Include(x => x.Attendees)
             .Where(x => meetingType == null || x.Type == meetingType)
             .Where(x => x.CompanyId == companyId && x.DateTime == dateTime);
+        totalRecords = result.Count();
+        return result.Skip(skip).Take(pageSize);
     }
 
 }
