@@ -25,11 +25,11 @@ namespace GovernancePortal.Service.Implementation
             {
                 var userId = _httpContextAccessor.HttpContext.User.FindFirst(JwtRegisteredClaimNames.Jti).Value;
                 var companyId = _httpContextAccessor.HttpContext.Request.Headers["companyId"];
-                var role = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value; 
-                var imageId = _httpContextAccessor.HttpContext.User.FindFirst("imageId")?.Value ?? " ";
-                var email = _httpContextAccessor.HttpContext.User.FindFirst("email").Value;
-                var firstName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value;
-                var lastName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname).Value;
+                var role = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Role).Value ?? "";
+                var imageId = _httpContextAccessor.HttpContext.User.FindFirst("profilePic").Value ?? "";
+                var email = _httpContextAccessor.HttpContext.User.FindFirst("email").Value ?? "";
+                var firstName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.GivenName).Value ?? "";
+                var lastName = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Surname).Value ?? "";
 
                 var user = new UserModel()
                 {
