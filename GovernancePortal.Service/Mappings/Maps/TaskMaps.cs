@@ -47,15 +47,23 @@ namespace GovernancePortal.Service.Mappings.Maps
             return returnModel;
         }
 
-        public TaskModel InMap(string companyId, TaskPOST task, TaskModel existingTask = null)
+        public TaskModel InMap(UserModel user, TaskPOST task, TaskModel existingTask = null)
         {
             if (existingTask == null)
                 existingTask = new TaskModel();
 
             existingTask.Title = task.Title;
-            existingTask.CompanyId = companyId;
+            existingTask.CompanyId = user.CompanyId;
             existingTask.Description = task.Description;
+            existingTask.CreatedBy = user.Id;
+            existingTask.CreatorImageId = user.ImageId;
+            existingTask.CreatorName = user.FirstName + user.LastName;
             existingTask.TimeDue = task.TimeDue;
+            if (task.isMeetingRelated)
+            {
+                existingTask.MeetingId = task.meetingId;
+                existingTask.IsMeetingRelated = true;
+            }
             existingTask.Items = InMap(existingTask, task.Items);
             existingTask.Participants = InMap(existingTask, task.Participants);
             return existingTask;

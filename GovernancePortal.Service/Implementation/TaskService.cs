@@ -1,4 +1,5 @@
 ﻿using GovernancePortal.Core.General;
+using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.TaskManagement;
 using GovernancePortal.Data;
 using GovernancePortal.Service.ClientModels.Exceptions;
@@ -89,6 +90,39 @@ namespace GovernancePortal.Service.Implementation
 
             return response;
         }
+
+        public async Task<Pagination<TaskListGET>> GetTasks(int? status, PageQuery pageQuery)
+        {
+            var user = GetLoggedInUser();
+            _logger.LogInformation($"Inside get tasks list, task status: {status}");
+            //filter by task status
+            var taskStatus = status != null 
+                ? (Enum.IsDefined(typeof(TaskStatus), status) 
+                    ? (TaskStatus)status : throw new Exception("Wrong status passed as query parameter"))
+                : TaskStatus.NotStarted;
+            var retrievedTasks = (taskStatus == null)
+            ? _unit.Tasks.GetTaskList(user.CompanyId, pageQuery.PageNumber,
+            pageQuery.PageSize, out var totalRecords)
+            : _unit.Tasks.GetTaskListByStatus(taskStatus, user.CompanyId,
+            pageQuery.PageNumber, pageQuery.PageSize, out totalRecords);
+
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
+            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
+            var response = new Pagination<TaskListGET>
+            {
+                Data = taskList,
+                PageNumber = pageQuery.PageNumber,
+                PageSize = pageQuery.PageSize,
+                TotalRecords = totalRecords,
+                Message = "Retrieved successfully",
+                IsSuccessful = true,
+                StatusCode = HttpStatusCode.OK.ToString()
+            };
+            _logger.LogInformation("get tasks successful: {response}", response);
+
+            return response;
+        }
+
         public async Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery)
         {
             var person = GetLoggedInUser();
@@ -196,12 +230,44 @@ namespace GovernancePortal.Service.Implementation
             return response;
         }
 
+        public async Task<Pagination<TaskListGET>> GetUserTasks(int? status, PageQuery pageQuery)
+        {
+            var user = GetLoggedInUser();
+            _logger.LogInformation($"Inside get user tasks list, task status: {status}");
+            //filter by task status
+            var taskStatus = status != null
+                ? (Enum.IsDefined(typeof(TaskStatus), status)
+                    ? (TaskStatus)status : throw new Exception("Wrong status passed as query parameter"))
+                : TaskStatus.NotStarted;
+            var retrievedTasks = (taskStatus == null)
+            ? _unit.Tasks.GetTaskListByUserId(user.Id, user.CompanyId, pageQuery.PageNumber,
+            pageQuery.PageSize, out var totalRecords)
+            : _unit.Tasks.GetUserTaskListByStatus(taskStatus,user.Id, user.CompanyId,
+            pageQuery.PageNumber, pageQuery.PageSize, out totalRecords);
+
+            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
+            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
+            var response = new Pagination<TaskListGET>
+            {
+                Data = taskList,
+                PageNumber = pageQuery.PageNumber,
+                PageSize = pageQuery.PageSize,
+                TotalRecords = totalRecords,
+                Message = "Retrieved successfully",
+                IsSuccessful = true,
+                StatusCode = HttpStatusCode.OK.ToString()
+            };
+            _logger.LogInformation("get user tasks by status successful: {response}", response);
+
+            return response;
+        }
+
         public async Task<Response> CreateTask(TaskPOST task)
         {
-            var person = GetLoggedInUser();
-            var newTask = _taskMaps.InMap(person.CompanyId, task);
+            var user = GetLoggedInUser();
+            var newTask = _taskMaps.InMap(user, task);
             newTask.Status = Core.General.TaskStatus.NotStarted;
-            await _unit.Tasks.Add(newTask, person);
+            await _unit.Tasks.Add(newTask, user);
             _unit.SaveToDB();
             var response = new Response()
             {
@@ -239,7 +305,7 @@ namespace GovernancePortal.Service.Implementation
             var loggedInUser = GetLoggedInUser();
             var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
             if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
-            existingTask = _taskMaps.InMap(loggedInUser.CompanyId, task, existingTask);
+            existingTask = _taskMaps.InMap(loggedInUser, task, existingTask);
             _unit.SaveToDB();
             var response = new Response()
             {

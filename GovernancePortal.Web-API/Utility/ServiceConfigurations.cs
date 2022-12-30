@@ -33,17 +33,17 @@ public static class ServiceConfigurations
                              .Build();
                   }));
         services.AddHttpContextAccessor();
-        
+
 
         services.AddDbContext<PortalContext>(opt =>
                opt.UseSqlServer(EnvironmentVariables.ConnectionString,
                   x => x.MigrationsAssembly("CorporateUniverse.EF"))
                   .EnableSensitiveDataLogging());
 
-        /*services.AddDbContext<PortalContext>(opt =>
-            opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
-                    x => x.MigrationsAssembly("GovernancePortal.EF"))
-                .EnableSensitiveDataLogging());*/
+        //services.AddDbContext<PortalContext>(opt =>
+        //    opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+        //            x => x.MigrationsAssembly("GovernancePortal.EF"))
+        //        .EnableSensitiveDataLogging());
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>

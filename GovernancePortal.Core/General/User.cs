@@ -14,6 +14,7 @@ namespace GovernancePortal.Core.General
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Role { get; set; }
+        public string ImageId { get; set; }
         public bool IsEnterpriseUser { get; set; }
         public bool IsPortfolioUser { get; set; }
         public bool IsStandardUser { get; set; }
