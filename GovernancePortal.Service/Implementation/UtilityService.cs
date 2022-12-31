@@ -3,12 +3,8 @@ using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GovernancePortal.Service.Implementation
 {
@@ -40,6 +36,7 @@ namespace GovernancePortal.Service.Implementation
                     LastName = lastName,
                     Role = role
                 };
+                Global.User = user;
                 return user;
             }
             catch (Exception ex)
