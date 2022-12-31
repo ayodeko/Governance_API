@@ -26,8 +26,8 @@ public static class ResolutionEndPoints
                 resolutionServices.GetVotingDetails(resolutionId)).RequireAuthorization();
         
         app.MapGet("api/Resolution/VotingList",
-            ([FromServices] IResolutionServices resolutionServices, PageQuery pageQuery) =>
-                resolutionServices.GetVotingList(pageQuery)).RequireAuthorization();
+            ([FromServices] IResolutionServices resolutionServices,string? userId, string? searchString, DateTime? dateTime, PageQuery pageQuery) =>
+                resolutionServices.GetVotingList(userId, searchString, dateTime, pageQuery)).RequireAuthorization();
 
         app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToVoting",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, LinkedMeetingIdPOST meetingIdPost) =>
@@ -63,8 +63,8 @@ public static class ResolutionEndPoints
                 resolutionServices.GetPollingDetails(resolutionId)).RequireAuthorization();
         
         app.MapGet("api/Resolution/PollingList",
-            ([FromServices] IResolutionServices resolutionServices, PageQuery pageQuery) =>
-                resolutionServices.GetPollingList(pageQuery)).RequireAuthorization();
+            ([FromServices] IResolutionServices resolutionServices, string? userId, string? searchString, DateTime? dateTime, PageQuery pageQuery) =>
+                resolutionServices.GetPollingList(userId, searchString, dateTime, pageQuery)).RequireAuthorization();
         
         app.MapPost("api/Resolution/{resolutionId}/ChangePollIsAnonymous",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, IsAllowAnonymousPOST isAnonymous) =>
