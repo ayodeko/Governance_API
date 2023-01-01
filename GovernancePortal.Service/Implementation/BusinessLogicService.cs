@@ -38,7 +38,7 @@ public class BusinessLogicService : IBusinessLogic
         return Task.FromResult<bool>(default);
     }
 
-    public async Task<bool> SendBulkMailByUserIdsAsync(string message, List<string> userIds,
+    public async Task<bool> SendBulkMailByUserIdsAsync(string subject, string message, List<string> userIds,
         CancellationToken token = default)
     {
         _logger.LogInformation("About to send bulk mails to userIds");
@@ -55,7 +55,7 @@ public class BusinessLogicService : IBusinessLogic
         }
         _logger.LogInformation("Emails for sending notifications retrieved");
 
-        return await SendBulkMailByEmailAsync("BodAdmin", message, emails, token);
+        return await SendBulkMailByEmailAsync(subject, message, emails, token);
     }
 
     public async Task<bool> SendBulkMailByEmailAsync(string subject, string message, List<string> emails,
