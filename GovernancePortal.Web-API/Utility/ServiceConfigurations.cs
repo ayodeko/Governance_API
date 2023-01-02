@@ -5,147 +5,92 @@ using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.Resolutions;
 using GovernancePortal.Core.Utilities;
 using GovernancePortal.EF;
+using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.Validators.Meeting;
 using GovernancePortal.Service.Validators.Resolution;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Converters;
 
 namespace GovernancePortal.Web_API.Utility;
 
 public static class ServiceConfigurations
 {
+    
     public static void ConfigureGovernancePortalServices(this IServiceCollection services, IConfiguration Configuration)
     {
         services.AddTransient<IValidator<Meeting>, MeetingValidator>();
         services.AddTransient<IValidator<VotingUser>, VotingUserValidator>();
         services.AddCors(options => options.AddPolicy("*",
-            builder =>
-            {
-                builder.SetIsOriginAllowedToAllowWildcardSubdomains()
-                    .WithOrigins("*")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .Build();
-            }));
+                  builder =>
+                  {
+                      builder.SetIsOriginAllowedToAllowWildcardSubdomains()
+                             .WithOrigins("*")
+                             .AllowAnyMethod()
+                             .AllowAnyHeader()
+                             .Build();
+                  }));
         services.AddHttpContextAccessor();
 
 
         services.AddDbContext<PortalContext>(opt =>
-            opt.UseSqlServer(EnvironmentVariables.ConnectionString,
-                    x => x.MigrationsAssembly("CorporateUniverse.EF"))
-                .EnableSensitiveDataLogging());
+               opt.UseSqlServer(EnvironmentVariables.ConnectionString,
+                  x => x.MigrationsAssembly("CorporateUniverse.EF"))
+                  .EnableSensitiveDataLogging());
 
-        /*services.AddDbContext<PortalContext>(opt =>
-            opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
-                    x => x.MigrationsAssembly("GovernancePortal.EF"))
-                .EnableSensitiveDataLogging());*/
+        //services.AddDbContext<PortalContext>(opt =>
+        //    opt.UseSqlServer(Configuration.GetConnectionString("DbConnection"),
+        //            x => x.MigrationsAssembly("GovernancePortal.EF"))
+        //        .EnableSensitiveDataLogging());
 
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "BodAdmin API Governance Portal", Version = "v1" });
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Description =
-                    "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
-            });
-            c.AddSecurityDefinition("CompanyId", new OpenApiSecurityScheme
-            {
-                Description = "Header for specifying the company identifier",
-                Name = "CompanyId",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
-            });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Id = "Bearer",
-                            Type = ReferenceType.SecurityScheme
-                        }
-                    },
-                    new List<string>()
-                },
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "CompanyId"
-                        }
-                    },
-                    new List<string>()
-                }
-            });
         });
         services.ConfigureServiceForAuthentication_Authorization(Configuration);
+
     }
 
-    public static void ConfigureServiceForAuthentication_Authorization(this IServiceCollection services,
-        IConfiguration Configuration)
+    public static void ConfigureServiceForAuthentication_Authorization(this IServiceCollection services, IConfiguration Configuration)
     {
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
         services.AddAuthentication(o =>
+        {
+            o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(o =>
+        {
+            o.RequireHttpsMetadata = false;
+            o.SaveToken = true;
+            o.TokenValidationParameters = new TokenValidationParameters()
             {
-                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(o =>
-            {
-                o.RequireHttpsMetadata = false;
-                o.SaveToken = true;
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = EnvironmentVariables.BODADMINIssuer,
-                    ValidAudience = EnvironmentVariables.BODADMINAudience,
-                    IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvironmentVariables.BODADMINSecretKey))
-                };
-            }).AddCookie("cookie");
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = EnvironmentVariables.BODADMINIssuer,
+                ValidAudience = EnvironmentVariables.BODADMINAudience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(EnvironmentVariables.BODADMINSecretKey))
+            };
+
+        }).AddCookie("cookie");
 
         services.AddHttpContextAccessor();
 
-        services.AddAuthorization(options =>
-        {
-            options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .RequireAuthenticatedUser()
-                .Build();
-        });
+        services.AddAuthorization();
     }
 
     public static void UseGovernancePortalServices(this WebApplication app)
     {
-        app.Use(async (context, next) =>
-        {
-            if (context.Request.Path == "/" || context.Request.Path.Value == "")
-            {
-                context.Response.Redirect("/swagger");
-            }
-            else
-            {
-                await next();
-            }
-        });
         app.UseSwagger();
-        app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "BodAdmin_Api_Governance_Portal v1"); });
+        app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BodAdmin_Api_Governance_Portal v1"));
         app.UseAuthentication();
         app.UseAuthorization();
+
     }
 }

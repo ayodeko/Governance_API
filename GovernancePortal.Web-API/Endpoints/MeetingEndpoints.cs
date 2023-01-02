@@ -17,7 +17,6 @@ using GovernancePortal.Service.Mappings.IMaps;
 using GovernancePortal.Service.Mappings.Maps;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace GovernancePortal.Web_API.Endpoints;
@@ -33,67 +32,67 @@ public static class MeetingEndpoints
         
         app.MapPost("api/Meeting/Create",
             ([FromServices] IMeetingService meetingService, CreateMeetingPOST createMeetingPost) =>
-                meetingService.CreateMeeting(createMeetingPost));
+                meetingService.CreateMeeting(createMeetingPost)).RequireAuthorization();
                 
         app.MapPost("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingPOST updateMeetingPost) =>
-            meetingService.UpdateMeetingDetails(meetingId, updateMeetingPost));
+            meetingService.UpdateMeetingDetails(meetingId, updateMeetingPost)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/AddAttendees", ([FromServices] IMeetingService meetingService,
                 string meetingId, AddAttendeesPOST updateMeetingAttendeesPost) =>
-            meetingService.AddAttendees(meetingId, updateMeetingAttendeesPost));
+            meetingService.AddAttendees(meetingId, updateMeetingAttendeesPost)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/Attendees/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateAttendingUsersPOST updateMeetingAttendeesPost) =>
-            meetingService.UpdateAttendingUsers(meetingId, updateMeetingAttendeesPost));
+            meetingService.UpdateAttendingUsers(meetingId, updateMeetingAttendeesPost)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/AgendaItems/Update", ([FromServices] IMeetingService meetingService,
                string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST) =>
-            meetingService.UpdateAgendaItems(meetingId, updateMeetingAgendaItemPOST));
+            meetingService.UpdateAgendaItems(meetingId, updateMeetingAgendaItemPOST)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/AgendaItems/FullUpdate", ([FromServices] IMeetingService meetingService,
                string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST) =>
-            meetingService.FullUpdateAgendaItems(meetingId, updateMeetingAgendaItemPOST));
+            meetingService.FullUpdateAgendaItems(meetingId, updateMeetingAgendaItemPOST)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingNoticePOST updateMeetingMinutesPOST) =>
-            meetingService.UpdateNotice(meetingId, updateMeetingMinutesPOST));
+            meetingService.UpdateNotice(meetingId, updateMeetingMinutesPOST)).RequireAuthorization();
         #endregion
         
         #region Get Update Data for meeting
         app.MapGet("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingUpdateData(meetingId));
+            meetingService.GetMeetingUpdateData(meetingId)).RequireAuthorization();
         
         
         app.MapGet("api/Meeting/{meetingId}/Attendees/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingAttendeesUpdateData(meetingId));
+            meetingService.GetMeetingAttendeesUpdateData(meetingId)).RequireAuthorization();
         
         app.MapGet("api/Meeting/{meetingId}/AgendaItems/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingAgendaItemsUpdateData(meetingId));
+            meetingService.GetMeetingAgendaItemsUpdateData(meetingId)).RequireAuthorization();
         
         app.MapGet("api/Meeting/{meetingId}/AgendaItems/FullUpdate", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingAgendaItemsFullUpdateData(meetingId));
+            meetingService.GetMeetingAgendaItemsFullUpdateData(meetingId)).RequireAuthorization();
         
         app.MapGet("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingNoticeUpdateData(meetingId));
+            meetingService.GetMeetingNoticeUpdateData(meetingId)).RequireAuthorization();
 
         #endregion
 
         #region  Retrieve Meeting Details, Meetings
-        app.MapGet("api/Meeting/List", [Authorize]
+        app.MapGet("api/Meeting/List",
             ([FromServices] IMeetingService meetingService, int? meetingType, string? userId, string? searchString, DateTime? dateTime, PageQuery pageQuery) =>
-                meetingService.GetAllMeetingList(meetingType, userId, searchString, dateTime, pageQuery));
+                meetingService.GetAllMeetingList(meetingType, userId, searchString, dateTime, pageQuery)).RequireAuthorization();
         app.MapGet("api/Meeting/UserMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, PageQuery pageQuery) =>
-            meetingService.GetUserMeetingList(pageQuery, meetingType));
+            meetingService.GetUserMeetingList(pageQuery, meetingType)).RequireAuthorization();
         app.MapGet("api/Meeting/SearchMeetings", ([FromServices] IMeetingService meetingService, int? meetingType, string? userId, string searchMeetingsString, PageQuery pageQuery) =>
-            meetingService.SearchMeetings(searchMeetingsString, meetingType, userId));
+            meetingService.SearchMeetings(searchMeetingsString, meetingType, userId)).RequireAuthorization();
         app.MapGet("api/Meeting/SearchMeetingsByDate", ([FromServices] IMeetingService meetingService, int? meetingType, string? userId, DateTime dateTime, PageQuery pageQuery) =>
-            meetingService.SearchMeetingsByDate(dateTime, meetingType, userId, pageQuery));
+            meetingService.SearchMeetingsByDate(dateTime, meetingType, userId, pageQuery)).RequireAuthorization();
 
         #endregion
 
@@ -116,19 +115,19 @@ public static class MeetingEndpoints
 
         app.MapGet("api/Meeting/{meetingId}/Minutes", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingMinutes(meetingId));
+            meetingService.GetMeetingMinutes(meetingId)).RequireAuthorization();
         app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingMinutesUpdateData(meetingId));
+            meetingService.GetMeetingMinutesUpdateData(meetingId)).RequireAuthorization();
         app.MapPost("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
               string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
-          meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST));
+          meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST)).RequireAuthorization();
         app.MapPost("api/Meeting/{meetingId}/AddMinutes", ([FromServices] IMeetingService meetingService,
                 string meetingId, AddMinutePOST data) =>
-            meetingService.AddMinutes(meetingId, data));
+            meetingService.AddMinutes(meetingId, data)).RequireAuthorization();
         app.MapPost("api/Meeting/{meetingId}/UploadMinutes", ([FromServices] IMeetingService meetingService,
                string meetingId, UploadMinutePOST data) =>
-           meetingService.UploadMinutes(meetingId, data));
+           meetingService.UploadMinutes(meetingId, data)).RequireAuthorization();
 
         #endregion
 
@@ -136,35 +135,35 @@ public static class MeetingEndpoints
 
         app.MapPost("api/Meeting/{meetingId}/Attendance/GenerateCode", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, CancellationToken token) =>
-            meetingService.GenerateAttendanceCode(meetingId, token));
+            meetingService.GenerateAttendanceCode(meetingId, token)).RequireAuthorization();
         
         app.MapGet("api/Meeting/{meetingId}/Attendance/RetrieveGeneratedCode", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, CancellationToken token) =>
-            meetingService.RetrieveGeneratedAttendanceCode(meetingId, token));
+            meetingService.RetrieveGeneratedAttendanceCode(meetingId, token)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/Attendance/SendCodeToAll", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, CancellationToken token) =>
-            meetingService.SendAttendanceCodeToAll(meetingId, token));
+            meetingService.SendAttendanceCodeToAll(meetingId, token)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/Attendance/SendCodeToUser/{userId}", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, string userId, CancellationToken token) =>
-            meetingService.SendAttendanceCodeToUser(meetingId, userId, token)); 
+            meetingService.SendAttendanceCodeToUser(meetingId, userId, token)).RequireAuthorization(); 
         
         app.MapPost("api/Meeting/{meetingId}/Attendance/RemindAll", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, CancellationToken token) =>
-            meetingService.NotifyAllToMarkAttendance(meetingId, token));
+            meetingService.NotifyAllToMarkAttendance(meetingId, token)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/Attendance/RemindUser/{userId}", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, string userId, CancellationToken token) =>
-            meetingService.NotifyUserToMarkAttendance(meetingId, userId, token));
+            meetingService.NotifyUserToMarkAttendance(meetingId, userId, token)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/Attendance/MarkAttendance/{userId}", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, string userId, string attendanceCode, CancellationToken token) =>
-            meetingService.MarkAttendance(meetingId, userId, attendanceCode, token));
+            meetingService.MarkAttendance(meetingId, userId, attendanceCode, token)).RequireAuthorization();
         
         app.MapGet("api/Meeting/{meetingId}/Attendance/RetrieveAttendanceDetails", ([FromServices] IAttendanceServices meetingService,
                 string meetingId, CancellationToken token) =>
-            meetingService.GetAttendanceDetails(meetingId, token));
+            meetingService.GetAttendanceDetails(meetingId, token)).RequireAuthorization();
 
         #endregion
 
