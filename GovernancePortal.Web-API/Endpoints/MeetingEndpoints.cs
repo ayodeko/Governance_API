@@ -58,10 +58,6 @@ public static class MeetingEndpoints
         app.MapPost("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingNoticePOST updateMeetingMinutesPOST) =>
             meetingService.UpdateNotice(meetingId, updateMeetingMinutesPOST));
-        
-        app.MapPost("api/Meeting/{meetingId}/SendMailToAllAttendees", ([FromServices] IMeetingService meetingService,
-                string meetingId, MailDetails mailDetails, CancellationToken token) =>
-            meetingService.SendMailToAllAttendees(meetingId, mailDetails, token));
         #endregion
         
         #region Get Update Data for meeting

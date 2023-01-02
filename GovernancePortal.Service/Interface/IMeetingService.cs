@@ -1,7 +1,6 @@
 ﻿    using System;
 using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
+using System.Threading.Tasks;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
@@ -19,7 +18,6 @@ public interface IMeetingService
     Task<Response> UpdateMeetingPack(string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST);
     Task<Response> UpdateMinutes(string meetingId, UpdateMeetingMinutesPOST updateMinutesPOST);
     Task<Response> UpdateNotice(string meetingId, UpdateMeetingNoticePOST updateMinutesPOST);
-    Task<Response> SendMailToAllAttendees(string meetingId, MailDetails mailDetails, CancellationToken token);
     
     
    

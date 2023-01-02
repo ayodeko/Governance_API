@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using GovernancePortal.Core.General;
@@ -29,11 +28,10 @@ public class MeetingServices : IMeetingService
     private IUnitOfWork _unit;
     private readonly IValidator<Meeting> _meetingValidator;
     private readonly IUtilityService _utilityService;
-    private readonly IBusinessLogic _logic;
 
  
 
-    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps, IUtilityService utility, IBusinessLogic logic)
+    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps, IUtilityService utility)
     {
         _meetingMapses = meetingMapses;
         _logger = logger;
@@ -41,7 +39,6 @@ public class MeetingServices : IMeetingService
         _meetingValidator = meetingValidator;
         _resolutionMaps = resolutionMaps;
         _utilityService = utility;
-        _logic = logic;
     }
     UserModel GetLoggedUser()
     {
@@ -462,26 +459,6 @@ public class MeetingServices : IMeetingService
             //Venue = existingMeeting.Venue,
             MeetingDate = existingMeeting.DateTime
         };
-    
-    public async Task<Response> SendMailToAllAttendees(string meetingId, MailDetails mailDetails, CancellationToken token)
-    {
-        var loggedInUser = GetLoggedUser();
-        var meeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
-        if (meeting == null || meeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with Id: {meetingId} not found");
-        _logger.LogInformation($"Mail about to be sent: {mailDetails}");
-        if (string.IsNullOrEmpty(mailDetails?.body))
-            throw new BadRequestException("Mail body cannot be null, check again and retry");
-        var userIds = meeting.Attendees.Where(x => x.IsPresent == false).Select(x => x.UserId).ToList();
-        var status = await _logic.SendBulkMailByUserIdsAsync(mailDetails?.subject ?? "", mailDetails.body, userIds, token);
-        var response = new Response
-        {
-            Data = status,
-            Message = status ? "Successfully sent code" : "Failed to send code" ,
-            StatusCode = HttpStatusCode.Created.ToString(),
-            IsSuccessful = status
-        };
-        return response;
-    }
 
     public async Task<Pagination<MeetingListGET>> GetAllMeetingList(int? meetingType, string userId, string searchString, DateTime? dateTime, PageQuery pageQuery)
     {
