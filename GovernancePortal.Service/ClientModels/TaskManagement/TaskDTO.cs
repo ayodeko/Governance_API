@@ -16,6 +16,9 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
         public DateTime? TimeDue { get; set; }
         public bool isMeetingRelated { get; set; }
         public string meetingId { get; set; }
+        public string CreatedBy { get; set; }
+        public string CreatorName { get; set; }
+        public string CreatorImageId { get; set; }
 
     }
 

@@ -21,27 +21,76 @@ namespace GovernancePortal.EF.Repository
         {
 
         }
-        public List<TaskModel> GetTaskList(string companyId, int pageNumber, int pageSize, out int totalRecords)
+        public List<TaskModel> GetTaskList(string companyId, TaskStatus? status, string userId, string searchString, int pageNumber, int pageSize, out int totalRecords)
         {
-            int skip = (pageNumber - 1) * pageSize;
-            var tasks = _context.Set<TaskModel>().Where(x => x.CompanyId.Equals(companyId))
-                .Include(x=>x.Items).Include(y=>y.Participants)
-                       .Skip(skip)
-                       .Take(pageSize)
-                       .ToList();
-            totalRecords = tasks.Count();
-            return tasks;
+            var skip = (pageNumber - 1) * pageSize;
+            var result = new List<TaskModel>();
+
+            if(status != null && status == TaskStatus.Due)
+            {
+                result = (_context.Set<TaskModel>()
+                 .Include(x => x.Items).Include(y => y.Participants)
+               .Where(y => Microsoft.EntityFrameworkCore.EF.Functions.DateDiffMinute(DateTime.Now, y.TimeDue) <= 0)
+               .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
+               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.Any(c => c.UserId == userId))
+               .Where(x => x.CompanyId.Equals(companyId)))
+
+               .OrderByDescending(X => X.DateCreated).Skip(skip)
+                      .Take(pageSize)
+                      .ToList();
+            }
+            else
+            {
+                result = (_context.Set<TaskModel>()
+                 .Include(x => x.Items).Include(y => y.Participants)
+               .Where(x => status == null || x.Status == status)
+               .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
+               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.Any(c => c.UserId == userId))
+               .Where(x => x.CompanyId.Equals(companyId)))
+
+               .OrderByDescending(X => X.DateCreated).Skip(skip)
+                      .Take(pageSize)
+                      .ToList();
+            }
+
+           
+
+            totalRecords = result.Count();
+            return result;
+
         }
-        public List<TaskModel> GetTaskListBySearch(string title, string companyId, int pageNumber, int pageSize, out int totalRecords)
+        public List<TaskModel> GetTaskListBySearch(string companyId, TaskStatus? status, string userId, string searchString, int pageNumber, int pageSize, out int totalRecords)
         {
-            int skip = (pageNumber - 1) * pageSize;
-            var tasks = _context.Set<TaskModel>().Where(x => x.CompanyId.Equals(companyId) && x.Title.Contains(title))
-                .Include(x=>x.Items).Include(y=>y.Participants)
-                       .Skip(skip)
-                       .Take(pageSize)
-                       .ToList();
-            totalRecords = tasks.Count();
-            return tasks;
+            var skip = (pageNumber - 1) * pageSize;
+            var result = new List<TaskModel>();
+
+            if (status != null && status == TaskStatus.Due)
+            {
+                result = (_context.Set<TaskModel>()
+                 .Include(x => x.Items).Include(y => y.Participants)
+               .Where(y => Microsoft.EntityFrameworkCore.EF.Functions.DateDiffMinute(DateTime.Now, y.TimeDue) <= 0)
+               .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
+               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.Any(c => c.UserId == userId))
+               .Where(x => x.CompanyId.Equals(companyId)))
+               .OrderByDescending(X => X.DateCreated).Skip(skip)
+                      .Take(pageSize)
+                      .ToList();
+            }
+            else
+            {
+                result = (_context.Set<TaskModel>()
+                 .Include(x => x.Items).Include(y => y.Participants)
+               .Where(x => status == null || x.Status == status)
+               .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
+               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.Any(c => c.UserId == userId))
+               .Where(x => x.CompanyId.Equals(companyId)))
+               .OrderByDescending(X => X.DateCreated).Skip(skip)
+                      .Take(pageSize)
+                      .ToList();
+            }
+
+            totalRecords = result.Count();
+            return result;
         }
 
         public List<TaskModel> GetTaskListByStatus(TaskStatus status, string companyId, int pageNumber, int pageSize, out int totalRecords)
