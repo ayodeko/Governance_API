@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -139,10 +140,10 @@ public class ResolutionServices : IResolutionServices
         return response;
     }
 
-    public Task<Response> GetVotingList(PageQuery pageQuery)
+    public Task<Response> GetVotingList(string userId, string searchString, DateTime? dateTime,PageQuery pageQuery)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = _unit.Votings.GetVoting_VotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
+        var retrievedVoting = _unit.Votings.GetVoting_VotersList(person.CompanyId, userId, searchString, dateTime, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
         var response = new Response()
         {
             Data = retrievedVoting,
@@ -316,10 +317,10 @@ public class ResolutionServices : IResolutionServices
         return response;
     }
 
-    public Task<Response> GetPollingList(PageQuery pageQuery)
+    public Task<Response> GetPollingList(string userId, string searchString, DateTime? dateTime, PageQuery pageQuery)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = _unit.Polls.GetPoll_PollVotersList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
+        var retrievedVoting = _unit.Polls.GetPoll_PollVotersList(person.CompanyId, userId, searchString, dateTime, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords).ToList();
         var response = new Response()
         {
             Data = retrievedVoting,

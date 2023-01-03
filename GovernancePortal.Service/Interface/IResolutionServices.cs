@@ -19,7 +19,7 @@ public interface IResolutionServices
     Task<Response> LinkMeetingToPoll(string resolutionId, LinkedMeetingIdPOST meetingId);
     Task<Response> GetLinkedMeetingByVotingId(string resolutionId);
     Task<Response> GetLinkedMeetingByPollId(string resolutionId);
-    Task<Response> GetVotingList(PageQuery pageQuery);
+    Task<Response> GetVotingList(string userId, string searchString, DateTime? dateTime, PageQuery pageQuery);
     Task<Response> SearchVotingByTitle(string searchMeetingsString, PageQuery pageQuery);
     
     
@@ -27,7 +27,7 @@ public interface IResolutionServices
     Task<Response> CreatePolling(CreatePollingPOST createPollingPOST);
     Task<Response> PollVote(string resolutionId, string userId, PollVotePOST votePost);
     Task<Response> GetPollingDetails(string resolutionId);
-    Task<Response> GetPollingList(PageQuery pageQuery);
+    Task<Response> GetPollingList(string userId, string searchString, DateTime? dateTime, PageQuery pageQuery);
     Task<Response> CreatePastPoll(CreatePastPollPOST createPastPollPost);
     Task<Response> SearchPollByTitle(string searchMeetingsString);
     Task<Response> ChangePollIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);

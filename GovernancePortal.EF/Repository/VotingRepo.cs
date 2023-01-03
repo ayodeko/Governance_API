@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GovernancePortal.Core.Resolutions;
@@ -28,11 +29,14 @@ public class VotingRepo : GenericRepo<Voting>, IVotingRepo
             .FirstOrDefaultAsync(x => x.Id == resolutionId && x.CompanyId == companyId);
     }
 
-    public IEnumerable<Voting> GetVoting_VotersList(string companyId, int pageNumber, int pageSize, out int totalRecords)
+    public IEnumerable<Voting> GetVoting_VotersList(string companyId, string userId, string searchString, DateTime? dateTime, int pageNumber, int pageSize, out int totalRecords)
     {
         var skip = (pageNumber - 1) * pageSize;
         var votingList = _context.Set<Voting>()
             .Include(x => x.Voters)
+            .Where(x => dateTime == null || x.DateTime == dateTime )
+            .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
+            .Where(x => string.IsNullOrEmpty(userId) || x.Voters.Any(c => c.UserId == userId))
             .Where(x => x.CompanyId == companyId)
             .OrderByDescending(X =>X.DateTime);
         totalRecords = votingList.Count();

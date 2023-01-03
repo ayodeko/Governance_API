@@ -111,6 +111,7 @@ public class MeetingBaseDto
     public MeetingStatus Status { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
+    public string CreatedBy { get; set; }
 }
 
 public class CreateMeetingPOST
@@ -160,6 +161,7 @@ public class UpdateMeetingGET
     public MeetingType Type { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
+    public string CreatedBy { get; set; }
 }
 
 public class UpdateMeetingPOST
