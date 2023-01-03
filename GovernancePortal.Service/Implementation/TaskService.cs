@@ -45,66 +45,19 @@ namespace GovernancePortal.Service.Implementation
             return user;
         }
 
-        public async Task<Pagination<TaskListGET>> GetTaskList(PageQuery pageQuery)
-        {
-            var person = GetLoggedInUser();
-            _logger.LogInformation($"Inside get tasks");
-
-            var retrievedTasks =  _unit.Tasks.GetTaskList(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
-            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
-            var response = new Pagination<TaskListGET>
-            {
-                Data = taskList,
-                PageNumber = pageQuery.PageNumber,
-                PageSize = pageQuery.PageSize,
-                TotalRecords = totalRecords,
-                Message = "Retrieved successfully",
-                IsSuccessful = true,
-                StatusCode = HttpStatusCode.OK.ToString()
-            };
-            _logger.LogInformation("get tasks successful: {response}", response);
-
-            return response;
-        }
-
-        public async Task<Pagination<TaskListGET>> GetTaskListBySearch(string title, PageQuery pageQuery)
-        {
-            var person = GetLoggedInUser();
-            _logger.LogInformation($"Inside get tasks");
-
-            var retrievedTasks =  _unit.Tasks.GetTaskListBySearch(title, person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
-            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
-            var response = new Pagination<TaskListGET>
-            {
-                Data = taskList,
-                PageNumber = pageQuery.PageNumber,
-                PageSize = pageQuery.PageSize,
-                TotalRecords = totalRecords,
-                Message = "Retrieved successfully",
-                IsSuccessful = true,
-                StatusCode = HttpStatusCode.OK.ToString()
-            };
-            _logger.LogInformation("get tasks successful: {response}", response);
-
-            return response;
-        }
-
-        public async Task<Pagination<TaskListGET>> GetTasks(int? status, PageQuery pageQuery)
+        public async Task<Pagination<TaskListGET>> GetTaskList(int? status, string userId, string searchString, PageQuery pageQuery)
         {
             var user = GetLoggedInUser();
-            _logger.LogInformation($"Inside get tasks list, task status: {status}");
-            //filter by task status
-            var taskStatus = status != null 
-                ? (Enum.IsDefined(typeof(TaskStatus), status) 
+            _logger.LogInformation($"Inside get tasks");
+
+            //filter by task status, userId, search string
+            var taskStatus = status != null
+                ? (Enum.IsDefined(typeof(TaskStatus), status)
                     ? (TaskStatus)status : throw new Exception("Wrong status passed as query parameter"))
                 : TaskStatus.NotStarted;
-            var retrievedTasks = (taskStatus == null)
-            ? _unit.Tasks.GetTaskList(user.CompanyId, pageQuery.PageNumber,
-            pageQuery.PageSize, out var totalRecords)
-            : _unit.Tasks.GetTaskListByStatus(taskStatus, user.CompanyId,
-            pageQuery.PageNumber, pageQuery.PageSize, out totalRecords);
+            var retrievedTasks = _unit.Tasks.GetTaskList(user.CompanyId, status == null ? null: taskStatus, userId, searchString, pageQuery.PageNumber,
+            pageQuery.PageSize, out var totalRecords);
+           
 
             if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
@@ -122,13 +75,17 @@ namespace GovernancePortal.Service.Implementation
 
             return response;
         }
-
-        public async Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery)
+        public async Task<Pagination<TaskListGET>> GetTaskListBySearch(int? status, string userId, string searchString, PageQuery pageQuery)
         {
             var person = GetLoggedInUser();
-            _logger.LogInformation($"Inside get not started tasks");
+            _logger.LogInformation($"Inside search tasks");
 
-            var retrievedTasks = _unit.Tasks.GetNotStartedTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
+            var taskStatus = status != null
+            ? (Enum.IsDefined(typeof(TaskStatus), status)
+                ? (TaskStatus)status : throw new Exception("Wrong status passed as query parameter"))
+            : TaskStatus.NotStarted;
+
+            var retrievedTasks = _unit.Tasks.GetTaskListBySearch(person.CompanyId, status == null ? null : taskStatus, userId, searchString, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
             if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
             var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
             var response = new Pagination<TaskListGET>
@@ -141,73 +98,11 @@ namespace GovernancePortal.Service.Implementation
                 IsSuccessful = true,
                 StatusCode = HttpStatusCode.OK.ToString()
             };
-            _logger.LogInformation("get not started tasks successful: {response}", response);
+            _logger.LogInformation("search tasks successful: {response}", response);
 
             return response;
         }
-        public async Task<Pagination<TaskListGET>> GetOngoingTasks(PageQuery pageQuery)
-        {
-            var person = GetLoggedInUser();
-            _logger.LogInformation($"Inside get ongoing tasks");
-            var retrievedTasks = _unit.Tasks.GetOngoingTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
-            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
-            var response = new Pagination<TaskListGET>
-            {
-                Data = taskList,
-                PageNumber = pageQuery.PageNumber,
-                PageSize = pageQuery.PageSize,
-                TotalRecords = totalRecords,
-                Message = "Retrieved successfully",
-                IsSuccessful = true,
-                StatusCode = HttpStatusCode.OK.ToString()
-            };
-            _logger.LogInformation("get user ongoing successful: {response}", response);
-
-            return response;
-        }
-        public async Task<Pagination<TaskListGET>> GetCompletedTasks(PageQuery pageQuery)
-        {
-            var person = GetLoggedInUser();
-            _logger.LogInformation($"Inside get completed tasks");
-            var retrievedTasks = _unit.Tasks.GetCompletedTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
-            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
-            var response = new Pagination<TaskListGET>
-            {
-                Data = taskList,
-                PageNumber = pageQuery.PageNumber,
-                PageSize = pageQuery.PageSize,
-                TotalRecords = totalRecords,
-                Message = "Retrieved successfully",
-                IsSuccessful = true,
-                StatusCode = HttpStatusCode.OK.ToString()
-            };
-            _logger.LogInformation("get user completed successful: {response}", response);
-
-            return response;
-        }
-        public async Task<Pagination<TaskListGET>> GetDueTasks(PageQuery pageQuery)
-        {
-            var person = GetLoggedInUser();
-            _logger.LogInformation($"Inside get due tasks");
-            var retrievedTasks = _unit.Tasks.GetDueTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
-            if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
-            var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
-            var response = new Pagination<TaskListGET>
-            {
-                Data = taskList,
-                PageNumber = pageQuery.PageNumber,
-                PageSize = pageQuery.PageSize,
-                TotalRecords = totalRecords,
-                Message = "Retrieved successfully",
-                IsSuccessful = true,
-                StatusCode = HttpStatusCode.OK.ToString()
-            };
-            _logger.LogInformation("get due tasks successful: {response}", response);
-
-            return response;
-        }
+  
         public async Task<Pagination<TaskListGET>> GetUserTasks(PageQuery pageQuery)
         {
             var person = GetLoggedInUser();
@@ -283,7 +178,7 @@ namespace GovernancePortal.Service.Implementation
         public async Task<Response> GetTaskData(string taskId)
         {
             var loggedInUser = GetLoggedInUser();
-            _logger.LogInformation($"Inside get tasks for taskId: {taskId}");
+            _logger.LogInformation($"Inside get task details for taskId: {taskId}");
             var existingTask = await _unit.Tasks.GetTaskData(taskId, loggedInUser.CompanyId);
             if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
             var outMeeting = _taskMaps.OutMap(existingTask, new TaskGET());
@@ -371,7 +266,93 @@ namespace GovernancePortal.Service.Implementation
             };
             _logger.LogInformation("add task item successful: {response}", response);
             return response;
-
         }
+
+
+        //public async Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery)
+        //{
+        //    var person = GetLoggedInUser();
+        //    _logger.LogInformation($"Inside get not started tasks");
+
+        //    var retrievedTasks = _unit.Tasks.GetNotStartedTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
+        //    if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
+        //    var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
+        //    var response = new Pagination<TaskListGET>
+        //    {
+        //        Data = taskList,
+        //        PageNumber = pageQuery.PageNumber,
+        //        PageSize = pageQuery.PageSize,
+        //        TotalRecords = totalRecords,
+        //        Message = "Retrieved successfully",
+        //        IsSuccessful = true,
+        //        StatusCode = HttpStatusCode.OK.ToString()
+        //    };
+        //    _logger.LogInformation("get not started tasks successful: {response}", response);
+
+        //    return response;
+        //}
+        //public async Task<Pagination<TaskListGET>> GetOngoingTasks(PageQuery pageQuery)
+        //{
+        //    var person = GetLoggedInUser();
+        //    _logger.LogInformation($"Inside get ongoing tasks");
+        //    var retrievedTasks = _unit.Tasks.GetOngoingTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
+        //    if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
+        //    var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
+        //    var response = new Pagination<TaskListGET>
+        //    {
+        //        Data = taskList,
+        //        PageNumber = pageQuery.PageNumber,
+        //        PageSize = pageQuery.PageSize,
+        //        TotalRecords = totalRecords,
+        //        Message = "Retrieved successfully",
+        //        IsSuccessful = true,
+        //        StatusCode = HttpStatusCode.OK.ToString()
+        //    };
+        //    _logger.LogInformation("get user ongoing successful: {response}", response);
+
+        //    return response;
+        //}
+        //public async Task<Pagination<TaskListGET>> GetCompletedTasks(PageQuery pageQuery)
+        //{
+        //    var person = GetLoggedInUser();
+        //    _logger.LogInformation($"Inside get completed tasks");
+        //    var retrievedTasks = _unit.Tasks.GetCompletedTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
+        //    if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
+        //    var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
+        //    var response = new Pagination<TaskListGET>
+        //    {
+        //        Data = taskList,
+        //        PageNumber = pageQuery.PageNumber,
+        //        PageSize = pageQuery.PageSize,
+        //        TotalRecords = totalRecords,
+        //        Message = "Retrieved successfully",
+        //        IsSuccessful = true,
+        //        StatusCode = HttpStatusCode.OK.ToString()
+        //    };
+        //    _logger.LogInformation("get user completed successful: {response}", response);
+
+        //    return response;
+        //}
+        //public async Task<Pagination<TaskListGET>> GetDueTasks(PageQuery pageQuery)
+        //{
+        //    var person = GetLoggedInUser();
+        //    _logger.LogInformation($"Inside get due tasks");
+        //    var retrievedTasks = _unit.Tasks.GetDueTasks(person.CompanyId, pageQuery.PageNumber, pageQuery.PageSize, out var totalRecords);
+        //    if (retrievedTasks == null || !retrievedTasks.Any()) retrievedTasks = null;
+        //    var taskList = _taskMaps.OutMap(retrievedTasks, new List<TaskListGET>());
+        //    var response = new Pagination<TaskListGET>
+        //    {
+        //        Data = taskList,
+        //        PageNumber = pageQuery.PageNumber,
+        //        PageSize = pageQuery.PageSize,
+        //        TotalRecords = totalRecords,
+        //        Message = "Retrieved successfully",
+        //        IsSuccessful = true,
+        //        StatusCode = HttpStatusCode.OK.ToString()
+        //    };
+        //    _logger.LogInformation("get due tasks successful: {response}", response);
+
+        //    return response;
+        //}
     }
 }

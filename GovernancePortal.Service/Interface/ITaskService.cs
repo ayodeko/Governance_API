@@ -11,14 +11,9 @@ namespace GovernancePortal.Service.Interface
 {
     public interface ITaskService
     {
-        Task<Pagination<TaskListGET>> GetTaskList(PageQuery pageQuery);
-        Task<Pagination<TaskListGET>> GetTaskListBySearch(string title, PageQuery pageQuery);
-        Task<Pagination<TaskListGET>> GetTasks(int? meetingType, PageQuery pageQuery);
-      
-        Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery);
-        Task<Pagination<TaskListGET>> GetOngoingTasks(PageQuery pageQuery);
-        Task<Pagination<TaskListGET>> GetCompletedTasks(PageQuery pageQuery);
-        Task<Pagination<TaskListGET>> GetDueTasks(PageQuery pageQuery);
+        Task<Pagination<TaskListGET>> GetTaskList(int? status, string userId, string searchString, PageQuery pageQuery);
+        Task<Pagination<TaskListGET>> GetTaskListBySearch(int? status, string userId, string searchString, PageQuery pageQuery);
+        
         Task<Pagination<TaskListGET>> GetUserTasks(PageQuery pageQuery);
         Task<Pagination<TaskListGET>> GetUserTasks(int? status, PageQuery pageQuery);
 
@@ -31,6 +26,15 @@ namespace GovernancePortal.Service.Interface
         
         
         Task<Response> AddTaskItemDocument(AddDocumentToTaskItemDTO task, string taskId);
+
+
+        //Task<Pagination<TaskListGET>> GetTasks(int? taskStatus, PageQuery pageQuery);
+
+        //Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery);
+        //Task<Pagination<TaskListGET>> GetOngoingTasks(PageQuery pageQuery);
+        //Task<Pagination<TaskListGET>> GetCompletedTasks(PageQuery pageQuery);
+        //Task<Pagination<TaskListGET>> GetDueTasks(PageQuery pageQuery);
+
 
 
 

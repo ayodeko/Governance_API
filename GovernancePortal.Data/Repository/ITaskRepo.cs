@@ -11,10 +11,10 @@ namespace GovernancePortal.Data.Repository
 {
     public interface ITaskRepo : IGenericRepo<TaskModel>
     {
-        List<TaskModel> GetTaskList(string companyId, int pageNumber, int pageSize, out int totalRecords);
+        List<TaskModel> GetTaskList(string companyId, TaskStatus? status, string userId, string searchString, int pageNumber, int pageSize, out int totalRecords);
         List<TaskModel> GetTaskListByStatus(TaskStatus status, string companyId, int pageNumber, int pageSize, out int totalRecords);
 
-        List<TaskModel> GetTaskListBySearch(string title, string companyId, int pageNumber, int pageSize, out int totalRecords);
+        List<TaskModel> GetTaskListBySearch(string companyId, TaskStatus? status, string userId, string searchString, int pageNumber, int pageSize, out int totalRecords);
         List<TaskModel> GetNotStartedTasks(string companyId, int pageNumber, int pageSize, out int totalRecords);
         List<TaskModel> GetOngoingTasks(string companyId, int pageNumber, int pageSize, out int totalRecords);
         List<TaskModel> GetCompletedTasks(string companyId, int pageNumber, int pageSize, out int totalRecords);
