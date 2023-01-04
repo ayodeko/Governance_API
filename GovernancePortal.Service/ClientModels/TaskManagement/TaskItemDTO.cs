@@ -17,16 +17,17 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
         public bool IsActive { get; set; }
         public TaskItemStatus Status { get; set; }
         public DateTime? DateCreated { get; set; }
-        public List<AttachmentIdentityDTO> Attachments { get; set; }
     }
 
     public class TaskItemPOST : TaskItemDTO
     {
+        public List<AttachmentPostDTO> Attachments { get; set; }
 
     }
 
     public class TaskItemGET : TaskItemDTO
     {
+        public List<AttachmentIdentityDTO> Attachments { get; set; }
 
     }
 }

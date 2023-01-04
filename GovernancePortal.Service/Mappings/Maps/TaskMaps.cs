@@ -92,6 +92,7 @@ namespace GovernancePortal.Service.Mappings.Maps
             taskItem.IsActive = item.IsActive;
             taskItem.DocumentUpload = item.DocumentUpload;
             taskItem.Status = item.Status;
+            taskItem.Attachments = InMap(existingTask.Id, item.Attachments);
             return taskItem;
     }
 
@@ -174,10 +175,10 @@ namespace GovernancePortal.Service.Mappings.Maps
             }
 
             //remove all non persistent values
-            foreach (var item in invalidAttachments)
-            {
-                attachments.Remove(item);
-            }
+            //foreach (var item in invalidAttachments)
+            //{
+            //    attachments.Remove(item);
+            //}
 
             return newAttachments;
         }
