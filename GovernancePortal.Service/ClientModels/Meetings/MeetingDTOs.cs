@@ -86,7 +86,7 @@ public class UpdateMeetingNoticePOST
     public DateTime SendNoticeDate { get; set; }
 }
 
-
+public record MailDetails(string subject, string body);
 
 
 

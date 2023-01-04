@@ -82,7 +82,7 @@ public class AttendanceService : IAttendanceServices
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"Retrieved attendance code for meeting {meetingId} is null or empty");
         var userIds = meeting.Attendees.Where(x => x.IsPresent == false).Select(x => x.UserId).ToList();
-        var status = await _logic.SendBulkMailByUserIdsAsync(code, userIds, token);
+        var status = await _logic.SendBulkMailByUserIdsAsync("Bod Admin",code, userIds, token);
         var response = new Response
         {
             Data = status,
