@@ -82,7 +82,10 @@ namespace GovernancePortal.Service.Mappings.Maps
         private TaskItem InMap(TaskModel existingTask, TaskItemPOST item, TaskItem taskItem = null)
         {
             if (taskItem == null)
+            {
                 taskItem = new TaskItem();
+                taskItem.DateCreated = DateTime.Now;
+            }
 
             taskItem.TaskId = existingTask.Id;
             taskItem.Title = item.Title;

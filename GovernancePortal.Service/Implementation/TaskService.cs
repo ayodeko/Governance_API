@@ -162,6 +162,7 @@ namespace GovernancePortal.Service.Implementation
             var user = GetLoggedInUser();
             var newTask = _taskMaps.InMap(user, task);
             newTask.Status = Core.General.TaskStatus.NotStarted;
+
             await _unit.Tasks.Add(newTask, user);
             _unit.SaveToDB();
             var response = new Response()
@@ -255,7 +256,10 @@ namespace GovernancePortal.Service.Implementation
             existingTask.Status = existingTask.Status == TaskStatus.Completed ? TaskStatus.Completed: TaskStatus.Ongoing;
             foreach (var item in existingTask.Items)
             {
-                if (item.Id == input.TaskItemId) item.Attachments = taskItem.Attachments;
+                if (item.Id == input.TaskItemId)
+                {
+                    item.Attachments.Add(taskItem.Attachments[0]);
+                }
             }
             _unit.SaveToDB();
             var response = new Response()

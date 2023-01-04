@@ -173,7 +173,7 @@ namespace GovernancePortal.EF.Repository
         }
         public async Task<TaskModel> GetTaskData(string taskId, string companyId)
         {
-            return (await _context.Set<TaskModel>().Include(x=>x.Participants).Include(x=>x.Items).ThenInclude(y=>y.Attachments)
+            return (await _context.Set<TaskModel>().Include(x=>x.Participants).Include(x=>x.Items).ThenInclude(y=>y.Attachments).OrderByDescending(X => X.DateCreated)
                 .FirstOrDefaultAsync(x => x.Id.Equals(taskId) && x.CompanyId.Equals(companyId)))!;
         }
 
