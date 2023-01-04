@@ -16,6 +16,7 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
         public bool DocumentUpload { get; set; }
         public bool IsActive { get; set; }
         public TaskItemStatus Status { get; set; }
+        public DateTime? DateCreated { get; set; }
         public List<AttachmentIdentityDTO> Attachments { get; set; }
     }
 

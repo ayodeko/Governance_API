@@ -19,5 +19,6 @@ namespace GovernancePortal.Core.TaskManagement
 		public bool IsActive { get; set; }
 		public TaskItemStatus Status { get; set; }
 		public List<TaskAttachment> Attachments { get; set; }
+		public DateTime? DateCreated { get; set; }
 	}
 }
