@@ -32,7 +32,6 @@ namespace GovernancePortal.Core.Meetings
         public bool IsAttendanceTaken { get; set; }
         public bool IsMinutesPublished { get; set; }
         public bool IsMeetingPackDownloadable { get; set; }
-        public bool IsMeetingPackPublished { get; set; }
 
         public MeetingFrequency Frequency { get; set; }
         public MeetingMedium Medium { get; set; }
