@@ -80,7 +80,10 @@ public static class MeetingEndpoints
         app.MapGet("api/Meeting/{meetingId}/Notice/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
             meetingService.GetMeetingNoticeUpdateData(meetingId)).RequireAuthorization();
-
+        
+        app.MapPost("api/Meeting/{meetingId}/SendMailToAllAttendees", ([FromServices] IMeetingService meetingService,
+                string meetingId, MailDetails mailDetails, CancellationToken token) =>
+            meetingService.SendMailToAllAttendees(meetingId, mailDetails, token));
         #endregion
 
         #region  Retrieve Meeting Details, Meetings
