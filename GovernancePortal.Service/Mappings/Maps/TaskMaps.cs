@@ -49,8 +49,11 @@ namespace GovernancePortal.Service.Mappings.Maps
 
         public TaskModel InMap(UserModel user, TaskPOST task, TaskModel existingTask = null)
         {
+            bool isUpdate = false;
             if (existingTask == null)
+            {
                 existingTask = new TaskModel();
+            }
 
             existingTask.Title = task.Title;
             existingTask.CompanyId = user.CompanyId;
@@ -64,8 +67,8 @@ namespace GovernancePortal.Service.Mappings.Maps
                 existingTask.MeetingId = task.meetingId;
                 existingTask.IsMeetingRelated = true;
             }
-            existingTask.Items = InMap(existingTask, task.Items);
-            existingTask.Participants = InMap(existingTask, task.Participants);
+            existingTask.Items.AddRange(InMap(existingTask, task.Items));
+                existingTask.Participants = InMap(existingTask, task.Participants);
             return existingTask;
         }
 
@@ -74,12 +77,17 @@ namespace GovernancePortal.Service.Mappings.Maps
             var destinations = new List<TaskItem>();
             foreach (var source in items)
             {
-                destinations.Add(InMap(existingTask, source));
+                var taskItem = existingTask.Items.Where(x => x.Id == source.Id).FirstOrDefault();
+                if(taskItem is null)
+                {
+                    destinations.Add(InMap(existingTask, source));
+
+                }
             }
             return destinations;
         }
 
-        private TaskItem InMap(TaskModel existingTask, TaskItemPOST item, TaskItem taskItem = null)
+        public TaskItem InMap(TaskModel existingTask, TaskItemPOST item, TaskItem taskItem = null)
         {
             if (taskItem == null)
             {
@@ -92,7 +100,7 @@ namespace GovernancePortal.Service.Mappings.Maps
             taskItem.IsActive = item.IsActive;
             taskItem.DocumentUpload = item.DocumentUpload;
             taskItem.Status = item.Status;
-            taskItem.Attachments = InMap(existingTask.Id, item.Attachments);
+            taskItem.Attachments = InMap(taskItem.Id, item.Attachments);
             return taskItem;
     }
 
@@ -164,6 +172,7 @@ namespace GovernancePortal.Service.Mappings.Maps
         }
         public List<TaskAttachment> InMap(string catgeoryId, List<AttachmentPostDTO> attachments)
         {
+            if (attachments == null) return new List<TaskAttachment>();
             var newAttachments = new List<TaskAttachment>();
             var invalidAttachments = new List<AttachmentPostDTO>();
             foreach (var attachment in attachments)
