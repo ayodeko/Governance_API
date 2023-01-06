@@ -176,6 +176,11 @@ namespace GovernancePortal.EF.Repository
             return (await _context.Set<TaskModel>().Include(x=>x.Participants).Include(x=>x.Items).ThenInclude(y=>y.Attachments).OrderByDescending(X => X.DateCreated)
                 .FirstOrDefaultAsync(x => x.Id.Equals(taskId) && x.CompanyId.Equals(companyId)))!;
         }
+        public async Task<TaskItem> GetTaskItemData(string taskItemId, string taskId)
+        {
+            return (await _context.Set<TaskItem>().Include(x => x.Attachments)
+                .FirstOrDefaultAsync(x => x.Id.Equals(taskItemId) && x.TaskId.Equals(taskId)))!;
+        }
 
         public async Task<AttendingUser> GetAttendingUsers(string meetingId, string companyId, CancellationToken token)
         {

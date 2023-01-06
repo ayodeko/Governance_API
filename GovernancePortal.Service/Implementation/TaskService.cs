@@ -1,4 +1,5 @@
-﻿using GovernancePortal.Core.General;
+﻿using Amazon.Auth.AccessControlPolicy;
+using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Core.TaskManagement;
 using GovernancePortal.Data;
@@ -203,6 +204,19 @@ namespace GovernancePortal.Service.Implementation
             if (existingTask is null || existingTask.IsDeleted) throw new NotFoundException($"Task with ID: {taskId} not found");
             existingTask = _taskMaps.InMap(loggedInUser, task, existingTask);
             _unit.SaveToDB();
+
+            //update relational Models (taskitems)
+            foreach (var item in task.Items)
+            {
+                var taskItem = existingTask.Items.Where(x => x.Id == item.Id).FirstOrDefault();
+                if (taskItem is not null)
+                {
+                    var existingTaskItem = await _unit.Tasks.GetTaskItemData(taskItem.Id, taskId);
+                    existingTaskItem = _taskMaps.InMap(existingTask, item, existingTaskItem);
+                    _unit.SaveToDB();
+                }
+            }
+
             var response = new Response()
             {
                 Data = existingTask,
@@ -215,7 +229,7 @@ namespace GovernancePortal.Service.Implementation
             return response;
 
         }
-
+   
         public async Task<Response> CompleteTaskItem(CompleteTaskDTO input, string taskId)
         {
             int completedtskCount = 0;
