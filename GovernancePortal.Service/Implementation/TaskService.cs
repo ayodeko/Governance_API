@@ -51,6 +51,7 @@ namespace GovernancePortal.Service.Implementation
             var user = GetLoggedInUser();
             _logger.LogInformation($"Inside get tasks");
 
+
             //filter by task status, userId, search string
             var taskStatus = status != null
                 ? (Enum.IsDefined(typeof(TaskStatus), status)
