@@ -27,7 +27,7 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
 
     public class TaskItemGET : TaskItemDTO
     {
-        public List<AttachmentIdentityDTO> Attachments { get; set; }
+        public List<AttatchmentGetDTO> Attachments { get; set; }
 
     }
 }
