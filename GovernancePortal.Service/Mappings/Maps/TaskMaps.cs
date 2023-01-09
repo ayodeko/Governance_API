@@ -205,11 +205,11 @@ namespace GovernancePortal.Service.Mappings.Maps
             //attachment2.CompanyId = user.CompanyId;
             //attachment2.CreatedBy = user.Id;
             attachment2.CategoryId = categoryId;
-            attachment2.Title = attachment1.Title;
-            attachment2.FileId = attachment1.Identity.FileId;
-            attachment2.FileName = attachment1.Identity.FileName;
-            attachment2.FileSize = attachment1.Identity.FileSize;
-            attachment2.FileType = attachment1.Identity.FileType;
+            attachment2.Title = string.IsNullOrEmpty(attachment1.Title) ?  attachment1.Title : "";
+            attachment2.FileId = string.IsNullOrEmpty(attachment1.Identity.FileId) ? attachment1.Identity.FileId : "";
+            attachment2.FileName = string.IsNullOrEmpty(attachment1.Identity.FileName) ? attachment1.Identity.FileName : "";
+            attachment2.FileSize = string.IsNullOrEmpty(attachment1.Identity.FileSize) ? attachment1.Identity.FileSize : "";
+            attachment2.FileType = string.IsNullOrEmpty(attachment1.Identity.FileType) ?  attachment1.Identity.FileType : "";;
 
             return attachment2;
         }
