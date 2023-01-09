@@ -141,25 +141,26 @@ namespace GovernancePortal.Service.Mappings.Maps
             {
                 var toAdd = _autoMapper.Map<TaskItemGET>(item);
                 var doc = item.Attachments;
-                toAdd.Attachments = OutMap(doc, new List<AttachmentIdentityDTO>());
+                toAdd.Attachments = OutMap(doc, new List<AttatchmentGetDTO>());
                 destination.Add(toAdd);
             }
             return destination;
         }
-        private List<AttachmentIdentityDTO> OutMap(List<TaskAttachment> source, List<AttachmentIdentityDTO> destination)
+        private List<AttatchmentGetDTO> OutMap(List<TaskAttachment> source, List<AttatchmentGetDTO> destination)
         {
             foreach (var item in source)
             {
-                destination.Add(OutMap(item, new AttachmentIdentityDTO())); 
+                destination.Add(OutMap(item, new AttatchmentGetDTO())); 
             }
             return destination;
         }
-        private AttachmentIdentityDTO OutMap(TaskAttachment source, AttachmentIdentityDTO destinations)
+        private AttatchmentGetDTO OutMap(TaskAttachment source, AttatchmentGetDTO destinations)
         {
             if (source != null) {
-                destinations.FileId = source.FileId;
-                destinations.FileName = source.FileName;
-                destinations.FileSize = source.FileSize;
+                destinations.Title = source.Title;
+                destinations.Identity.FileId = source.FileId;
+                destinations.Identity.FileName = source.FileName;
+                destinations.Identity.FileSize = source.FileSize;
             }
             return destinations;
         }
