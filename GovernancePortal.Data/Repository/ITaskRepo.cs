@@ -22,6 +22,7 @@ namespace GovernancePortal.Data.Repository
         List<TaskModel> GetUserTaskListByStatus(TaskStatus status, string personId, string companyId, int pageNumber, int pageSize, out int totalRecords);
 
         Task<TaskModel> GetTaskData(string taskId, string companyId);
+        Task<TaskItem> GetTaskItemData(string taskItemId, string taskId);
         List<TaskModel> GetDueTasks(string companyId, int pageNumber, int pageSize, out int totalRecords);
     }
 }
