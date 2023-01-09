@@ -161,9 +161,12 @@ namespace GovernancePortal.Service.Mappings.Maps
         {
             if (source != null) {
                 destinations.Title = source.Title;
-                destinations.Identity.FileId = source.FileId;
-                destinations.Identity.FileName = source.FileName;
-                destinations.Identity.FileSize = source.FileSize;
+                destinations.Identity = new AttachmentIdentityDTO()
+                {
+                    FileId = source.FileId,
+                    FileName = source.FileName,
+                    FileSize = source.FileSize
+                };
             }
             return destinations;
         }
@@ -205,11 +208,12 @@ namespace GovernancePortal.Service.Mappings.Maps
             //attachment2.CompanyId = user.CompanyId;
             //attachment2.CreatedBy = user.Id;
             attachment2.CategoryId = categoryId;
-            attachment2.Title = string.IsNullOrEmpty(attachment1.Title) ?  attachment1.Title : "";
-            attachment2.FileId = string.IsNullOrEmpty(attachment1.Identity.FileId) ? attachment1.Identity.FileId : "";
-            attachment2.FileName = string.IsNullOrEmpty(attachment1.Identity.FileName) ? attachment1.Identity.FileName : "";
-            attachment2.FileSize = string.IsNullOrEmpty(attachment1.Identity.FileSize) ? attachment1.Identity.FileSize : "";
-            attachment2.FileType = string.IsNullOrEmpty(attachment1.Identity.FileType) ?  attachment1.Identity.FileType : "";;
+            var test = string.IsNullOrEmpty(attachment1.Title);
+            attachment2.Title = !string.IsNullOrEmpty(attachment1.Title) ?  attachment1.Title : "";
+            attachment2.FileId = !string.IsNullOrEmpty(attachment1.Identity.FileId) ? attachment1.Identity.FileId : "";
+            attachment2.FileName = !string.IsNullOrEmpty(attachment1.Identity.FileName) ? attachment1.Identity.FileName : "";
+            attachment2.FileSize = !string.IsNullOrEmpty(attachment1.Identity.FileSize) ? attachment1.Identity.FileSize : "";
+            attachment2.FileType = !string.IsNullOrEmpty(attachment1.Identity.FileType) ?  attachment1.Identity.FileType : "";;
 
             return attachment2;
         }
