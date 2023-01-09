@@ -25,7 +25,10 @@ namespace GovernancePortal.Service.Mappings.Maps
             CreateMap<TaskItem, TaskItemPOST>();
             CreateMap<TaskParticipant, TaskPersonGET>();
             CreateMap<TaskParticipant, TaskPersonPOST>();
+            CreateMap<TaskAttachment, AttachmentPostDTO>();
+            CreateMap<TaskAttachment, AttatchmentGetDTO>();
             CreateMap<TaskAttachment, AttachmentIdentityDTO>();
+
         }
     }
 
