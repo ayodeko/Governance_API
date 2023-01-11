@@ -132,6 +132,7 @@ public class MeetingMaps : IMeetingMaps
         meeting.ChairPersonUserId = updateMeetingPost.ChairPersonUserId;
         meeting.IsMeetingPackDownloadable = updateMeetingPost.IsMeetingPackDownloadable;
         meeting.IsMeetingPackPublished = updateMeetingPost.IsMeetingPackPublished;
+        meeting.IsPast = updateMeetingPost.IsPast;
         return meeting;
     }
     public List<AttendingUser> InMap(List<AttendingUserPOST> updateMeetingAttendeesPost, Meeting meeting)

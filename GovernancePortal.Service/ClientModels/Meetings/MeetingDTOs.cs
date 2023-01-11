@@ -154,6 +154,7 @@ public class UpdateMeetingGET
     public string Description { get; set; }
     public bool IsMeetingPackDownloadable { get; set; }
     public bool IsMeetingPackPublished { get; set; }
+    public bool IsPast { get; set; }
     public string Venue { get; set; }
     public string Link { get; set; }
     public string SecretaryUserId { get; set; }
@@ -172,6 +173,7 @@ public class UpdateMeetingPOST
     public string Description { get; set; }
     public bool IsMeetingPackDownloadable { get; set; }
     public bool IsMeetingPackPublished { get; set; }
+    public bool IsPast { get; set; }
     public string Venue { get; set; }
     public string Link { get; set; }
     public string SecretaryUserId { get; set; }
