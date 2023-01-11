@@ -103,6 +103,7 @@ public class MeetingBaseDto
     public bool IsMinutesPublished { get; set; }
     public bool IsMeetingPackDownloadable { get; set; }
     public bool IsMeetingPackPublished { get; set; }
+    public bool IsPast { get; set; }
     public string ChairPersonId { get; set; }
     public string SecretaryId { get; set; }
         
