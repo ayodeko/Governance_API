@@ -25,7 +25,10 @@ namespace GovernancePortal.Service.Mappings.Maps
             CreateMap<TaskItem, TaskItemPOST>();
             CreateMap<TaskParticipant, TaskPersonGET>();
             CreateMap<TaskParticipant, TaskPersonPOST>();
+            CreateMap<TaskAttachment, AttachmentPostDTO>();
+            CreateMap<TaskAttachment, AttatchmentGetDTO>();
             CreateMap<TaskAttachment, AttachmentIdentityDTO>();
+
         }
     }
 
@@ -141,25 +144,29 @@ namespace GovernancePortal.Service.Mappings.Maps
             {
                 var toAdd = _autoMapper.Map<TaskItemGET>(item);
                 var doc = item.Attachments;
-                toAdd.Attachments = OutMap(doc, new List<AttachmentIdentityDTO>());
+                toAdd.Attachments = OutMap(doc, new List<AttatchmentGetDTO>());
                 destination.Add(toAdd);
             }
             return destination;
         }
-        private List<AttachmentIdentityDTO> OutMap(List<TaskAttachment> source, List<AttachmentIdentityDTO> destination)
+        private List<AttatchmentGetDTO> OutMap(List<TaskAttachment> source, List<AttatchmentGetDTO> destination)
         {
             foreach (var item in source)
             {
-                destination.Add(OutMap(item, new AttachmentIdentityDTO())); 
+                destination.Add(OutMap(item, new AttatchmentGetDTO())); 
             }
             return destination;
         }
-        private AttachmentIdentityDTO OutMap(TaskAttachment source, AttachmentIdentityDTO destinations)
+        private AttatchmentGetDTO OutMap(TaskAttachment source, AttatchmentGetDTO destinations)
         {
             if (source != null) {
-                destinations.FileId = source.FileId;
-                destinations.FileName = source.FileName;
-                destinations.FileSize = source.FileSize;
+                destinations.Title = source.Title;
+                destinations.Identity = new AttachmentIdentityDTO()
+                {
+                    FileId = source.FileId,
+                    FileName = source.FileName,
+                    FileSize = source.FileSize
+                };
             }
             return destinations;
         }
@@ -201,11 +208,12 @@ namespace GovernancePortal.Service.Mappings.Maps
             //attachment2.CompanyId = user.CompanyId;
             //attachment2.CreatedBy = user.Id;
             attachment2.CategoryId = categoryId;
-            attachment2.Title = attachment1.Title;
-            attachment2.FileId = attachment1.Identity.FileId;
-            attachment2.FileName = attachment1.Identity.FileName;
-            attachment2.FileSize = attachment1.Identity.FileSize;
-            attachment2.FileType = attachment1.Identity.FileType;
+            var test = string.IsNullOrEmpty(attachment1.Title);
+            attachment2.Title = !string.IsNullOrEmpty(attachment1.Title) ?  attachment1.Title : "";
+            attachment2.FileId = !string.IsNullOrEmpty(attachment1.Identity.FileId) ? attachment1.Identity.FileId : "";
+            attachment2.FileName = !string.IsNullOrEmpty(attachment1.Identity.FileName) ? attachment1.Identity.FileName : "";
+            attachment2.FileSize = !string.IsNullOrEmpty(attachment1.Identity.FileSize) ? attachment1.Identity.FileSize : "";
+            attachment2.FileType = !string.IsNullOrEmpty(attachment1.Identity.FileType) ?  attachment1.Identity.FileType : "";;
 
             return attachment2;
         }
