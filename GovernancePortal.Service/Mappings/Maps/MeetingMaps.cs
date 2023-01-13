@@ -61,6 +61,7 @@ public class MeetingMaps : IMeetingMaps
         Type = source.Type,
         Frequency = source.Frequency,
         Medium = source.Medium,
+        IsPast = source.IsPast,
         
     };
 

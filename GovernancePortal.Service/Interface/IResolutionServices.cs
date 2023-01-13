@@ -49,6 +49,8 @@ public class CreateVotingPOST
     public string Summary { get; set; }
     public bool IsAnonymous { get; set; }
     public DateTime DateTime { get; set; }
+    
+    public bool IsPast { get; set; }
     public List<VotingUserPOST> Voters { get; set; }
 }
 

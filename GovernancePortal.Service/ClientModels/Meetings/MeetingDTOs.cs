@@ -128,6 +128,8 @@ public class CreateMeetingPOST
     public MeetingType Type { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
+    
+    public bool IsPast { get; set; }
 }
 
 public class MeetingPOST : MeetingBaseDto

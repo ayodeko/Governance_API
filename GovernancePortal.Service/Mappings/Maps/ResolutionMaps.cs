@@ -36,6 +36,7 @@ public class ResolutionMaps : IResolutionMaps
             Title = createVotingPost.Title,
             Summary = createVotingPost.Summary,
             IsAnonymous = createVotingPost.IsAnonymous,
+            IsPast = createVotingPost.IsPast,
             DateTime = createVotingPost.DateTime,
             };
         newVoting.Voters = createVotingPost.Voters.Select(x => InMap(x, newVoting)).ToList();
