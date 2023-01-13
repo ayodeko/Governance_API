@@ -13,7 +13,7 @@ namespace GovernancePortal.EF.Migrations
 {
     [DbContext(typeof(PortalContext))]
     [Migration("20230113090135_add_is_past_to_Voting")]
-    partial class dd_is_past_to_Voting
+    partial class add_is_past_to_Voting
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
