@@ -14,6 +14,18 @@ public class Meeting_Resolution
     public string ResolutionId { get; set; }
     public ResolutionType ResolutionType { get; set; }
 }
+public class Task_Resolution
+{
+    public Task_Resolution()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
+    public string Id { get; set; }
+    public string CompanyId { get; set; }
+    public string TaskId { get; set; }
+    public string ResolutionId { get; set; }
+    public ResolutionType ResolutionType { get; set; }
+}
 
 public enum ResolutionType
 {

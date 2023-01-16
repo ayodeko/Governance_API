@@ -83,5 +83,32 @@ namespace GovernancePortal.EF.Repository
             }
         }
     
+        public async Task AddTask_Resolution(string taskId, string resolutionId, string companyId)
+        {
+            var retrievedMeeting_Resolution = await _context.Set<Task_Resolution>()
+                .FirstOrDefaultAsync(x => x.TaskId == taskId && x.ResolutionId == resolutionId);
+            if (retrievedMeeting_Resolution == null)
+            {
+                await _context.Set<Task_Resolution>().AddAsync(new Task_Resolution()
+                {
+                    TaskId = taskId,
+                    ResolutionId = resolutionId,
+                    CompanyId = companyId
+                });
+            }
+            else
+            {
+                throw new Exception(
+                    $"Bridge connection for taskId: {taskId} and resolutionId: {resolutionId} already exists");
+            }
+        }
+        
+        
+        public async Task<Task_Resolution> RetrieveTaskByResolutionId(string resolutionId, string companyId)
+        {
+            return await _context.Set<Task_Resolution>()
+                .FirstOrDefaultAsync(x => x.ResolutionId == resolutionId && x.CompanyId == companyId);
+        }
+    
     }
 }

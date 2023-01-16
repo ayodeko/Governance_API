@@ -17,6 +17,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using GovernancePortal.Data.Repository;
 using TaskStatus = GovernancePortal.Core.General.TaskStatus;
 
 
@@ -28,16 +29,18 @@ namespace GovernancePortal.Service.Implementation
         private IHttpContextAccessor _context;
         private readonly ITaskMaps _taskMaps;
         private readonly IUnitOfWork _unit;
+        private readonly IBridgeRepo _bridgeRepo;
         private ILogger _logger;
         private readonly IUtilityService _utilityService;
 
-        public TaskService(IHttpContextAccessor context, ITaskMaps tasksMaps, IUnitOfWork unit, ILogger logger, IUtilityService utilityService)
+        public TaskService(IHttpContextAccessor context, ITaskMaps tasksMaps, IUnitOfWork unit, IBridgeRepo bridgeRepo , ILogger logger, IUtilityService utilityService)
         {
             _taskMaps = tasksMaps;
             _unit = unit;
             _context = context;
             _logger = logger;
             _utilityService = utilityService;
+            _bridgeRepo = bridgeRepo;
         }
 
         UserModel GetLoggedInUser()
@@ -281,6 +284,94 @@ namespace GovernancePortal.Service.Implementation
             return response;
         }
 
+        
+    public async Task<Response> LinkTaskToVoting(string resolutionId, LinkedTaskIdPOST meetingId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+        var getTask = await _unit.Tasks.GetTaskData(meetingId.LinkedTaskId, person.CompanyId);
+        if (getTask == null || getTask.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Meeting with ID: {meetingId.LinkedTaskId} not found");
+        await _bridgeRepo.AddTask_Resolution(meetingId.LinkedTaskId, resolutionId, person.CompanyId);
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Task Successfully linked",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    public async Task<Response> LinkTaskToPoll(string resolutionId, LinkedTaskIdPOST meetingId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+        var getTask = await _unit.Tasks.GetTaskData(meetingId.LinkedTaskId, person.CompanyId);
+        if (getTask == null || getTask.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Meeting with ID: {meetingId.LinkedTaskId} not found");
+        await _bridgeRepo.AddTask_Resolution(meetingId.LinkedTaskId, resolutionId, person.CompanyId);
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Task Successfully linked",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    
+     
+    public async Task<Response> GetLinkedTaskByVotingId(string resolutionId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+
+        var bridge = await _bridgeRepo.RetrieveTaskByResolutionId(resolutionId, person.CompanyId);
+        if (bridge == null)
+            throw new NotFoundException(
+                $"No relationship between resolution Id : {resolutionId} and any other meeting found");
+        var response = new Response()
+        {
+            Data = new LinkedTaskIdPOST(bridge.TaskId),
+            Exception = null,
+            Message = "Successful",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    
+    public async Task<Response> GetLinkedTaskByPollId(string resolutionId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedPolling = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedPolling == null || retrievedPolling.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+
+        var bridge = await _bridgeRepo.RetrieveTaskByResolutionId(resolutionId, person.CompanyId);
+        if (bridge == null)
+            throw new NotFoundException(
+                $"Not relationship between resolution Id : {resolutionId} and any other meeting found");
+        var response = new Response()
+        {
+            Data = new LinkedTaskIdPOST(bridge.TaskId),
+            Exception = null,
+            Message = "Successful",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
 
         //public async Task<Pagination<TaskListGET>> GetNotStartedTasks(PageQuery pageQuery)
         //{

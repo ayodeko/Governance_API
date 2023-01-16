@@ -56,6 +56,7 @@ public class CreateVotingPOST
 
 public record IsAllowAnonymousPOST (bool IsAllowAnonymous);
 public record LinkedMeetingIdPOST (string LinkedMeetingId);
+public record LinkedTaskIdPOST (string LinkedTaskId);
 public class VotingUserPOST
 {
     public string UserId { get; set; }

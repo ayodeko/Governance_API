@@ -29,6 +29,22 @@ namespace GovernancePortal.Web_API.Endpoints
                 => taskServices.CompleteTaskItem(input, taskId)).RequireAuthorization();
             app.MapPost("api/TaskMgt/{taskId}/AddDocument", ([FromServices] ITaskService taskServices, AddDocumentToTaskItemDTO input, string taskId)
                 => taskServices.AddTaskItemDocument(input, taskId)).RequireAuthorization();
+            
+            app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToVoting",
+                ([FromServices] ITaskService resolutionServices, string resolutionId, LinkedTaskIdPOST meetingIdPost) =>
+                    resolutionServices.LinkTaskToVoting(resolutionId, meetingIdPost)).RequireAuthorization();
+            
+            app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByVotingId",
+                ([FromServices] ITaskService resolutionServices, string resolutionId) =>
+                    resolutionServices.GetLinkedTaskByVotingId(resolutionId)).RequireAuthorization();
+
+            app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToPoll",
+                ([FromServices] ITaskService resolutionServices, string resolutionId, LinkedTaskIdPOST meetingIdPost) =>
+                    resolutionServices.LinkTaskToPoll(resolutionId, meetingIdPost)).RequireAuthorization();
+        
+            app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByPollId",
+                ([FromServices] ITaskService resolutionServices, string resolutionId) =>
+                    resolutionServices.GetLinkedTaskByPollId(resolutionId)).RequireAuthorization();
 
 
             return app;

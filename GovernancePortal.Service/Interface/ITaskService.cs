@@ -26,6 +26,10 @@ namespace GovernancePortal.Service.Interface
         
         
         Task<Response> AddTaskItemDocument(AddDocumentToTaskItemDTO task, string taskId);
+        Task<Response> LinkTaskToVoting(string resolutionId, LinkedTaskIdPOST meetingId);
+        Task<Response> LinkTaskToPoll(string resolutionId, LinkedTaskIdPOST meetingId);
+        Task<Response> GetLinkedTaskByVotingId(string resolutionId);
+        Task<Response> GetLinkedTaskByPollId(string resolutionId);
 
 
         //Task<Pagination<TaskListGET>> GetTasks(int? taskStatus, PageQuery pageQuery);
