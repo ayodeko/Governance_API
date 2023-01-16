@@ -31,6 +31,8 @@ public interface IResolutionServices
     Task<Response> CreatePastPoll(CreatePastPollPOST createPastPollPost);
     Task<Response> SearchPollByTitle(string searchMeetingsString);
     Task<Response> ChangePollIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous);
+    Task<Response> EndPoll(string resolutionId);
+    Task<Response> EndVote(string resolutionId);
 }
 
 public class VotingDetailsGET
@@ -41,6 +43,9 @@ public class VotingDetailsGET
     public bool IsAnonymous { get; set; }
     public bool IsVotingEnded { get; set; }
     public DateTime DateTime { get; set; }
+    public ResolutionStatus ResolutionStatus { get; set; }
+    public bool IsPast { get; set; }
+    
     public List<VotingUser> Voters { get; set; }
 }
 public class CreateVotingPOST
@@ -71,6 +76,7 @@ public class VotingUserGET
     public string VotingId { get; set; }
     public  VotingStance Stance { get; set; }
     public string StanceReason { get; set; }
+    public bool HasVoted { get; set; }
 }
 public class VotePOST
 {

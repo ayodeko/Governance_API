@@ -70,6 +70,14 @@ public static class ResolutionEndPoints
             ([FromServices] IResolutionServices resolutionServices, string resolutionId, IsAllowAnonymousPOST isAnonymous) =>
                 resolutionServices.ChangePollIsAnonymousAsync(resolutionId, isAnonymous)).RequireAuthorization();
         
+        app.MapPost("api/Resolution/{resolutionId}/EndPoll",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
+                resolutionServices.EndPoll(resolutionId)).RequireAuthorization();
+        
+        app.MapPost("api/Resolution/{resolutionId}/EndVote",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
+                resolutionServices.EndVote(resolutionId)).RequireAuthorization();
+        
         
         app.MapGet("api/Resolution/SearchVotingByTitle", ([FromServices] IResolutionServices resolutionServices, string searchMeetingsString, PageQuery pageQuery) =>
             resolutionServices.SearchVotingByTitle(searchMeetingsString, pageQuery)).RequireAuthorization();

@@ -16,7 +16,7 @@ public class Voting : BaseModel, ICompanyModel
     public string Summary { get; set; }
     public bool IsAnonymous { get; set; }
     public bool IsPast { get; set; }
-    public bool IsVotingEnded { get; set; }
+    public ResolutionStatus ResolutionStatus { get; set; }
     public DateTime DateTime { get; set; }
     public List<VotingUser> Voters { get; set; }
 }
@@ -27,11 +27,13 @@ public class VotingUser : BaseModel
     {
         Id = Guid.NewGuid().ToString();
         Stance = VotingStance.Abstain;
+        HasVoted = false;
     }
     public string Id { get; set; }
     public string UserId { get; set; }
     public string VotingId { get; set; }
     public  VotingStance Stance { get; set; }
+    public bool HasVoted { get; set; }
     public string StanceReason { get; set; }
 }
 

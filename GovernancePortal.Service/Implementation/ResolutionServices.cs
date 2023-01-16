@@ -78,6 +78,27 @@ public class ResolutionServices : IResolutionServices
         };
         return response;
     }
+    
+    
+    public async Task<Response> EndVote(string resolutionId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Votings.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"No resolution found  with Id: {resolutionId}");
+        retrievedVoting.ResolutionStatus = ResolutionStatus.Completed;
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Poll Ended",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    
     public async Task<Response> ChangePollIsAnonymousAsync(string resolutionId, IsAllowAnonymousPOST isAnonymous)
     {
         var person = GetLoggedInUser();
@@ -96,6 +117,24 @@ public class ResolutionServices : IResolutionServices
         };
         return response;
     }
+    public async Task<Response> EndPoll(string resolutionId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"No resolution found  with Id: {resolutionId}");
+        retrievedVoting.ResolutionStatus = ResolutionStatus.Completed;
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Poll Ended",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
 
     public async Task<Response> VoteAsync(string resolutionId, string userId, VotePOST votePost)
     {
@@ -108,6 +147,7 @@ public class ResolutionServices : IResolutionServices
             throw new NotFoundException($"Voter with UserID: {userId} not found");
         voter.Stance = votePost.Stance;
         voter.StanceReason = votePost.StanceReason;
+        voter.HasVoted = true;
         await _votingUserValidator.ValidateAndThrowAsync(voter);
         _unit.SaveToDB();
 
