@@ -26,7 +26,7 @@ namespace GovernancePortal.EF.Repository
             var skip = (pageNumber - 1) * pageSize;
             var result = new List<TaskModel>();
 
-            if(status != null && status == TaskStatus.Due)
+            if(status is TaskStatus.Due)
             {
                 result = (_context.Set<TaskModel>()
                  .Include(x => x.Items).Include(y => y.Participants)

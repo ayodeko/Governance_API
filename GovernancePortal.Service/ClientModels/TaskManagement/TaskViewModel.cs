@@ -15,6 +15,7 @@ namespace GovernancePortal.Service.ClientModels.TaskManagement
 		public string CreatorName { get; set; }
         public string CreatorImageId { get; set; }
         public string ImageId { get; set; }
+        public TaskStatus Status { get; set; }
 		public List<TaskItem> Items { get; set; }
 		public List<TaskParticipant> Participants { get; set; }
 		public DateTime? TimeDue { get; set; }
