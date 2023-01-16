@@ -30,19 +30,19 @@ namespace GovernancePortal.Web_API.Endpoints
             app.MapPost("api/TaskMgt/{taskId}/AddDocument", ([FromServices] ITaskService taskServices, AddDocumentToTaskItemDTO input, string taskId)
                 => taskServices.AddTaskItemDocument(input, taskId)).RequireAuthorization();
             
-            app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToVoting",
+            app.MapPost("api/Resolution/{resolutionId}/LinkTaskToVoting",
                 ([FromServices] ITaskService resolutionServices, string resolutionId, LinkedTaskIdPOST meetingIdPost) =>
                     resolutionServices.LinkTaskToVoting(resolutionId, meetingIdPost)).RequireAuthorization();
             
-            app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByVotingId",
+            app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedTaskByVotingId",
                 ([FromServices] ITaskService resolutionServices, string resolutionId) =>
                     resolutionServices.GetLinkedTaskByVotingId(resolutionId)).RequireAuthorization();
 
-            app.MapPost("api/Resolution/{resolutionId}/LinkToMeetingToPoll",
+            app.MapPost("api/Resolution/{resolutionId}/LinkTaskToPoll",
                 ([FromServices] ITaskService resolutionServices, string resolutionId, LinkedTaskIdPOST meetingIdPost) =>
                     resolutionServices.LinkTaskToPoll(resolutionId, meetingIdPost)).RequireAuthorization();
         
-            app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedMeetingByPollId",
+            app.MapGet("api/Resolution/{resolutionId}/RetrieveLinkedTaskByPollId",
                 ([FromServices] ITaskService resolutionServices, string resolutionId) =>
                     resolutionServices.GetLinkedTaskByPollId(resolutionId)).RequireAuthorization();
 
