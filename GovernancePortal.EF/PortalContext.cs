@@ -37,6 +37,7 @@ namespace GovernancePortal.EF
         public DbSet<NoticeMeeting> Notices { get; set; }
         public DbSet<MeetingPackItemUser> MeetingPackItemUsers { get; set; }
         public DbSet<Meeting_Resolution> Meeting_Resolutions { get; set; }
+        public DbSet<Task_Resolution> Task_Resolutions { get; set; }
         public DbSet<Voting> Votings { get; set; }
         public DbSet<Poll> Polls { get; set; }
         
