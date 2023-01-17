@@ -109,6 +109,33 @@ namespace GovernancePortal.EF.Repository
             return await _context.Set<Task_Resolution>()
                 .FirstOrDefaultAsync(x => x.ResolutionId == resolutionId && x.CompanyId == companyId);
         }
+        
+        
+        
+        public async Task AddMeeting_Task(string meetingId, string taskId, string companyId)
+        {
+            var retrievedMeeting_Task = await _context.Set<Meeting_Task>()
+                .FirstOrDefaultAsync(x => x.MeetingId == meetingId && x.TaskId == taskId);
+            if (retrievedMeeting_Task == null)
+            {
+                await _context.Set<Meeting_Task>().AddAsync(new Meeting_Task()
+                {
+                    MeetingId = meetingId,
+                    TaskId = taskId,
+                    CompanyId = companyId
+                });
+            }
+            else
+            {
+                throw new Exception(
+                    $"Bridge connection already of meetingId: {meetingId} and taskId: {taskId} already exists");
+            }
+        }
     
+        public async Task<Meeting_Task> RetrieveTaskByMeetingId(string meetingId, string companyId)
+        {
+            return await _context.Set<Meeting_Task>()
+                .FirstOrDefaultAsync(x => x.MeetingId == meetingId && x.CompanyId == companyId);
+        }
     }
 }

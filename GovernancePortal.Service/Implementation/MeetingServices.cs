@@ -9,6 +9,7 @@ using FluentValidation;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Data;
+using GovernancePortal.Data.Repository;
 using GovernancePortal.EF.Repository;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
@@ -28,12 +29,13 @@ public class MeetingServices : IMeetingService
     private IResolutionMaps _resolutionMaps;
     private IUnitOfWork _unit;
     private readonly IValidator<Meeting> _meetingValidator;
+    private readonly IBridgeRepo _bridgeRepo;
     private readonly IUtilityService _utilityService;
     private readonly IBusinessLogic _logic;
 
  
 
-    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps, IUtilityService utility, IBusinessLogic logic)
+    public MeetingServices(IMeetingMaps meetingMapses, ILogger logger, IUnitOfWork unitOfWork, IBridgeRepo bridgeRepo, IValidator<Meeting> meetingValidator, IResolutionMaps resolutionMaps, IUtilityService utility, IBusinessLogic logic)
     {
         _meetingMapses = meetingMapses;
         _logger = logger;
@@ -42,6 +44,7 @@ public class MeetingServices : IMeetingService
         _resolutionMaps = resolutionMaps;
         _utilityService = utility;
         _logic = logic;
+        _bridgeRepo = bridgeRepo;
     }
     UserModel GetLoggedUser()
     {
@@ -746,6 +749,50 @@ public class MeetingServices : IMeetingService
             IsSuccessful = true
         };
         _logger.LogInformation("Get Minutes successful: {response}", response);
+        return response;
+    }
+    
+    public async Task<Response> LinkMeetingToTask(string meetingId, string taskId)
+    {
+        var person = GetLoggedUser();
+        var retrievedMeeting = await _unit.Meetings.GetMeeting(meetingId, person.CompanyId);
+        if (retrievedMeeting == null || retrievedMeeting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var existingTask = await _unit.Tasks.GetTaskData(taskId, person.CompanyId);
+        if (existingTask == null || existingTask.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Meeting with ID: {taskId} not found");
+        await _bridgeRepo.AddMeeting_Task(meetingId, taskId, person.CompanyId);
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedMeeting,
+            Exception = null,
+            Message = "Meeting Successfully linked to task",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    
+    public async Task<Response> RetrieveTaskByMeetingId(string meetingId)
+    {
+        var person = GetLoggedUser();
+        var retrievedMeeting = await _unit.Meetings.GetMeeting(meetingId, person.CompanyId);
+        if (retrievedMeeting == null || retrievedMeeting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var bridge = await _bridgeRepo.RetrieveTaskByResolutionId(meetingId, person.CompanyId);
+        if (bridge == null)
+            throw new NotFoundException(
+                $"No relationship between meeting Id : {meetingId} and any other meeting found");
+        var response = new Response()
+        {
+            Data = bridge.TaskId,
+            Exception = null,
+            Message = "Successful",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
         return response;
     }
 

@@ -50,4 +50,6 @@ public interface IMeetingService
 
     Task<Response> GetPollsByMeetingId(string meetingId);
     Task<Response> GetVotingByMeetingId(string meetingId);
+    Task<Response> LinkMeetingToTask(string meetingId, string taskId);
+    Task<Response> RetrieveTaskByMeetingId(string meetingId);
 }

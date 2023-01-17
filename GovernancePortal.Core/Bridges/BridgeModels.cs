@@ -32,3 +32,15 @@ public enum ResolutionType
     Vote,
     Poll
 }
+
+public class Meeting_Task
+{
+    public Meeting_Task()
+    {
+        Id = Guid.NewGuid().ToString();
+    }
+    public string Id { get; set; }
+    public string CompanyId { get; set; }
+    public string MeetingId { get; set; }
+    public string TaskId { get; set; }
+}

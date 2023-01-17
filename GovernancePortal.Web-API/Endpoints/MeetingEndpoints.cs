@@ -182,6 +182,18 @@ public static class MeetingEndpoints
 
         #endregion
 
+        #region TASK
+
+        app.MapPost("api/Resolution/{meetingId}/LinkToMeetingToTask",
+            ([FromServices] IMeetingService meetingServices, string meetingId, string taskId) =>
+                meetingServices.LinkMeetingToTask(meetingId, taskId)).RequireAuthorization();
+        
+        app.MapGet("api/Resolution/{meetingId}/RetrieveLinkedTaskByMeetingId",
+            ([FromServices] IMeetingService meetingServices, string meetingId) =>
+                meetingServices.RetrieveTaskByMeetingId(meetingId)).RequireAuthorization();
+
+        #endregion
+
 
         #region Stub Endpoints
 
