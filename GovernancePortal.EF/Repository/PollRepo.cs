@@ -19,6 +19,7 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
         return await _context.Set<Poll>()
             .Include(x => x.PollItems)
             .Include(x => x.PollUsers)
+            .ThenInclude(x => x.PollVotes)
             .Include(x => x.PastPollItems)
             .FirstOrDefaultAsync(x => x.Id == resolutionId && x.CompanyId == companyId);
     }
@@ -29,12 +30,13 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
         var votingList = _context.Set<Poll>()
             .Include(x => x.PollItems)
             .Include(x => x.PollUsers)
+            .ThenInclude(x => x.PollVotes)
             .Include(x => x.PastPollItems)
             .Where(x => dateTime == null || x.DateTIme == dateTime )
             .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
             .Where(x => string.IsNullOrEmpty(userId) || x.PollUsers.Any(c => c.UserId == userId))
             .Where(x => x.CompanyId == companyId)
-            .OrderByDescending(X =>X.DateTIme);
+            .OrderByDescending(X =>X.DateCreated);
         totalRecords = votingList.Count();
         return votingList.Skip(skip)
             .Take(pageSize)!;
@@ -48,7 +50,7 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
             .Include(x => x.PollUsers)
             .Include(x => x.PastPollItems)
             .Where(x => x.CompanyId == companyId && x.Title.Contains(title))
-            .OrderByDescending(X =>X.DateTIme);
+            .OrderByDescending(X =>X.DateCreated);
         return reslt;
     }
 }

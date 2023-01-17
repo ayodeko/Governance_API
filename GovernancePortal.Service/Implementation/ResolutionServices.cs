@@ -319,10 +319,10 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> PollVote(string resolutionId, string userId, PollVotePOST votePost)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = await _unit.Polls.GetPoll_PollVotersAsync(resolutionId, person.CompanyId);
-        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+        var retrievedPoll = await _unit.Polls.GetPoll_PollVotersAsync(resolutionId, person.CompanyId);
+        if (retrievedPoll == null || retrievedPoll.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
-        var pollVoter = retrievedVoting?.PollUsers?.FirstOrDefault(x => x.UserId == userId);
+        var pollVoter = retrievedPoll?.PollUsers?.FirstOrDefault(x => x.UserId == userId);
         if (pollVoter == null)
             throw new NotFoundException($"Voter with UserID: {userId} not found");
         var pollVoteList = pollVoter.PollVotes ?? new List<PollItemVote>();
@@ -331,7 +331,7 @@ public class ResolutionServices : IResolutionServices
 
         var response = new Response()
         {
-            Data = retrievedVoting,
+            Data = retrievedPoll,
             Exception = null,
             Message = "Voting successful",
             IsSuccessful = true,

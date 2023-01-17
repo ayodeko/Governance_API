@@ -105,11 +105,11 @@ public class ResolutionMaps : IResolutionMaps
 
     private PollItemVote InMap(string userId, string pollItemId, List<PollItemVote> preexistingPollItemVotes)
     {
-        var alreadyVoted = preexistingPollItemVotes.FirstOrDefault(x => x.PollItemId == pollItemId && x.PollUserId == userId);
+        var alreadyVoted = preexistingPollItemVotes.FirstOrDefault(x => x.PollItemId == pollItemId && x.UserId == userId);
         return alreadyVoted ?? new PollItemVote()
         {
             PollItemId = pollItemId,
-            PollUserId = userId
+            UserId = userId
         };
     }
 

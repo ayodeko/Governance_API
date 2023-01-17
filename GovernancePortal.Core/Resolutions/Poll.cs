@@ -76,5 +76,5 @@ public class PollItemVote
     }
     public string Id { get; set; }
     public string PollItemId { get; set; }
-    public string PollUserId { get; set; }
+    public string UserId { get; set; }
 }

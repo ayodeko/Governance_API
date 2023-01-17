@@ -38,7 +38,7 @@ public class VotingRepo : GenericRepo<Voting>, IVotingRepo
             .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
             .Where(x => string.IsNullOrEmpty(userId) || x.Voters.Any(c => c.UserId == userId))
             .Where(x => x.CompanyId == companyId)
-            .OrderByDescending(X =>X.DateTime);
+            .OrderByDescending(X =>X.DateCreated);
         totalRecords = votingList.Count();
         return votingList.Skip(skip)
             .Take(pageSize)!;
@@ -50,7 +50,7 @@ public class VotingRepo : GenericRepo<Voting>, IVotingRepo
         var votingList = _context.Set<Voting>()
             .Include(x => x.Voters)
             .Where(x => x.CompanyId == companyId && x.Title.Contains(title))
-            .OrderByDescending(X =>X.DateTime);
+            .OrderByDescending(X =>X.DateCreated);
         totalRecords = votingList.Count();
         return votingList.Skip(skip)
             .Take(pageSize)!;
