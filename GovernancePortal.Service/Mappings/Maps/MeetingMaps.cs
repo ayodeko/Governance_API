@@ -128,6 +128,8 @@ public class MeetingMaps : IMeetingMaps
         meeting.Frequency = updateMeetingPost.Frequency;
         meeting.Link = updateMeetingPost.Link;
         meeting.Venue = updateMeetingPost.Venue;
+        meeting.IsAttendanceSaved = updateMeetingPost.IsAttendanceSaved;
+        meeting.IsAttendanceTaken = updateMeetingPost.IsAttendanceTaken;
         meeting.DateTime = updateMeetingPost.DateTime;
         meeting.SecretaryUserId = updateMeetingPost.SecretaryUserId;
         meeting.ChairPersonUserId = updateMeetingPost.ChairPersonUserId;
