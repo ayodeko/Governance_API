@@ -148,6 +148,12 @@ public class ResolutionServices : IResolutionServices
         voter.Stance = votePost.Stance;
         voter.StanceReason = votePost.StanceReason;
         voter.HasVoted = true;
+        
+        if (retrievedVoting.ResolutionStatus != ResolutionStatus.Progress)
+        {
+            retrievedVoting.ResolutionStatus = ResolutionStatus.Progress;
+        }
+        
         await _votingUserValidator.ValidateAndThrowAsync(voter);
         _unit.SaveToDB();
 
@@ -327,6 +333,12 @@ public class ResolutionServices : IResolutionServices
             throw new NotFoundException($"Voter with UserID: {userId} not found");
         var pollVoteList = pollVoter.PollVotes ?? new List<PollItemVote>();
         pollVoter.PollVotes = _resolutionMaps.InMap(votePost, pollVoteList);
+         
+        if (retrievedPoll.ResolutionStatus != ResolutionStatus.Progress)
+        {
+            retrievedPoll.ResolutionStatus = ResolutionStatus.Progress;
+        }
+
         _unit.SaveToDB();
 
         var response = new Response()
