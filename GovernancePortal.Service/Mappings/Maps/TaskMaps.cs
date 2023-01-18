@@ -123,7 +123,7 @@ namespace GovernancePortal.Service.Mappings.Maps
                 taskPerson = new TaskParticipant();
 
             taskPerson.TaskId = existingTask.Id;
-            taskPerson.UserId = person.Id;
+            taskPerson.UserId = person.UserId;
             taskPerson.FirstName = person.FirstName;
             taskPerson.LastName = person.LastName;
             taskPerson.ImageId = person.ImageId;    
