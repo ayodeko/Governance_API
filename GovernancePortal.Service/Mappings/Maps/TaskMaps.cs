@@ -117,11 +117,11 @@ namespace GovernancePortal.Service.Mappings.Maps
             return destinations;
         }
 
-        private TaskParticipant InMap(TaskModel existingTask, TaskPersonPOST person, TaskParticipant taskPerson = null)
+        private TaskParticipant InMap(TaskModel existingTask, TaskPersonPOST person)
         {
-            if (taskPerson == null)
-                taskPerson = new TaskParticipant();
-
+            var taskPerson = existingTask.Participants.FirstOrDefault(x => x.Id == person.Id);
+            taskPerson ??= new TaskParticipant();
+            
             taskPerson.TaskId = existingTask.Id;
             taskPerson.UserId = person.UserId;
             taskPerson.FirstName = person.FirstName;
