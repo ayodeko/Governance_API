@@ -23,12 +23,12 @@ public class BusinessLogicService : IBusinessLogic
         Configuration = _Configuration;
         _logger = logger;
     }
-    public Task<bool> SendNotificationToSingleUser(string notificationMessage, string userId, CancellationToken token = default)
+    public Task<bool> SendNotificationToSingleUser(string notificationMessage, string redirectUrl, string userId, CancellationToken token = default)
     {
         return Task.FromResult<bool>(default);
     }
 
-    public Task<bool> SendNotificationToBulkUser(string notificationMessage, List<string> userIds, CancellationToken token = default)
+    public Task<bool> SendNotificationToBulkUser(string notificationMessage, string redirectUrl,  List<string> userIds, CancellationToken token = default)
     {
         return Task.FromResult<bool>(default);
     }

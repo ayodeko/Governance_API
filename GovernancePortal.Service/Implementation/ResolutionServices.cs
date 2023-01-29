@@ -47,6 +47,7 @@ public class ResolutionServices : IResolutionServices
     {
         var person = GetLoggedInUser();
         var voting = _resolutionMaps.InMap(createVotingPOST);
+        voting.ResolutionStatus = ResolutionStatus.Progress;
         await _unit.Votings.Add(voting, person);
         _unit.SaveToDB();
         var response = new Response()
@@ -290,12 +291,14 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> CreatePolling(CreatePollingPOST createPollingPOST)
     {
         var person = GetLoggedInUser();
-        var voting = _resolutionMaps.InMap(createPollingPOST);
-        await _unit.Polls.Add(voting, person);
+        var polling = _resolutionMaps.InMap(createPollingPOST);
+        polling.ResolutionStatus = ResolutionStatus.Progress;
+        await _unit.Polls.Add(polling, person);
+        
         _unit.SaveToDB();
         var response = new Response()
         {
-            Data = voting,
+            Data = polling,
             Exception = null,
             Message = "Voting successfully created",
             IsSuccessful = true,

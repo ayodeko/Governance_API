@@ -126,7 +126,7 @@ public class AttendanceService : IAttendanceServices
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"Retrieved attendance code for meeting {meetingId} is null or empty");
         var userIds = meeting.Attendees.Where(x => x.IsPresent == false).Select(x => x.UserId).ToList();
-        var status = await _logic.SendNotificationToBulkUser($"Kindly be reminded to mark your attendance for meeting: {meeting.Title}", userIds, token);
+        var status = await _logic.SendNotificationToBulkUser($"Kindly be reminded to mark your attendance for meeting: {meeting.Title}", "", userIds, token);
         var response = new Response
         {
             Data = status,
@@ -146,7 +146,7 @@ public class AttendanceService : IAttendanceServices
         if (string.IsNullOrEmpty(code))
             throw new NotFoundException($"Retrieved attendance code for meeting {meetingId} is null or empty");
         var retrievedUserId = meeting.Attendees.FirstOrDefault(x => x.UserId == userId);
-        var status = await _logic.SendNotificationToSingleUser($"Kindly be reminded to mark your attendance for meeting: {meeting.Title}", userId, token);
+        var status = await _logic.SendNotificationToSingleUser($"Kindly be reminded to mark your attendance for meeting: {meeting.Title}", "", userId, token);
         var response = new Response
         {
             Data = status,
