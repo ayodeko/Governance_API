@@ -24,6 +24,7 @@ public class Poll : BaseModel, ICompanyModel
     public List<PastPollItem> PastPollItems { get; set; }
     public int PastPollParticipantAmount { get; set; }
     public bool IsPastPoll { get; set; }
+    public bool IsLinkedToMeeting { get; set; }
     public ResolutionStatus ResolutionStatus { get; set; }
 }
 

@@ -13,7 +13,7 @@ public interface IMeetingMaps
     Meeting InMap(UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting);
     Meeting InMap(FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost, List<MeetingAgendaItem> agendaItems, Meeting meeting);
     Meeting InMap(UpdateMeetingPackPOST updateMeetingPackPost, Meeting existingMeeting);
-    Meeting InMap(UpdateMeetingMinutesPOST updateMinutesPost, Meeting existingMeeting);
+    Meeting InMap(List<UpdateMeetingMinutesPOST> updateMinutesGET, Meeting existingMeeting);
     MeetingListGET OutMap(Meeting existingMeeting, MeetingListGET meetingList);
     List<MeetingListGET> OutMap(List<Meeting> existingMeeting);
     List<AttendingUser> InMap(List<AttendingUserPOST> updateMeetingAttendeesPost, Meeting meeting);
@@ -24,6 +24,7 @@ public interface IMeetingMaps
     UpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost);
     FullUpdateMeetingAgendaItemPOST OutMap(Meeting existingMeeting, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPost);
     List<UpdateMeetingPackItemPOST> OutMap(Meeting existingMeeting, List<UpdateMeetingPackItemPOST> updateMeetingAgendaItemPOST);
+    List<UpdateMeetingMinutesGET> OutMap(Meeting existingMeeting, List<UpdateMeetingMinutesGET> updateMeetingAgendaItemPOST);
     MeetingGET OutMap(Meeting existingMeeting, MeetingGET updateMeetingAttendingUserPost);
     UpdateMeetingGET OutMap(Meeting existingMeeting);
     UpdateMeetingNoticePOST OutMap(NoticeMeeting existingNoticeMeeting, UpdateMeetingNoticePOST updateMeetingAttendingUserPost);

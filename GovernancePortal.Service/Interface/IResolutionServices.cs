@@ -45,6 +45,7 @@ public class VotingDetailsGET
     public DateTime DateTime { get; set; }
     public ResolutionStatus ResolutionStatus { get; set; }
     public bool IsPast { get; set; }
+    public bool IsLinkedToMeeting { get; set; }
     
     public List<VotingUser> Voters { get; set; }
 }

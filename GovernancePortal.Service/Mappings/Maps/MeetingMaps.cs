@@ -5,6 +5,7 @@ using Amazon.Runtime;
 using AutoMapper;
 using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
+using GovernancePortal.EF.Migrations;
 using GovernancePortal.Service.ClientModels.Exceptions;
 using GovernancePortal.Service.ClientModels.General;
 using GovernancePortal.Service.ClientModels.Meetings;
@@ -76,6 +77,10 @@ public class MeetingMaps : IMeetingMaps
             res.Title = existingMeeting.Items?.FirstOrDefault(y => y.Id == res.MeetingAgendaItemId)?.Title;
             return res;
         }).ToList();
+
+    public List<UpdateMeetingMinutesGET> OutMap(Meeting existingMeeting,
+        List<UpdateMeetingMinutesGET> updateMeetingNoticePosts) =>
+        existingMeeting.Minutes.Select(x => _autoMapper.Map(x, new UpdateMeetingMinutesGET())).ToList();
 
     public MeetingGET OutMap(Meeting existingMeeting, MeetingGET meetingGet) => _autoMapper.Map(existingMeeting, meetingGet);
 
@@ -385,8 +390,21 @@ public class MeetingMaps : IMeetingMaps
 
     #region Minutes Maps
 
-    public Meeting InMap(UpdateMeetingMinutesPOST updateMinutesPost, Meeting existingMeeting)
+    public Meeting InMap(List<UpdateMeetingMinutesPOST> updateMinutesPOST, Meeting existingMeeting)
     {
+        var minuteList = new List<Minute>();
+        foreach (var x in updateMinutesPOST)
+        {
+            var minute = existingMeeting.Minutes.FirstOrDefault(y => y.Id == x.Id) ?? new Minute();
+            minute.MinuteText = x.MinuteText;
+            minute.Attachment = x.Attachment;
+            minute.CompanyId = existingMeeting.CompanyId;
+            minute.MeetingId = existingMeeting.Id;
+            minute.IsApproved = x.IsApproved;
+            minuteList.Add(minute);
+        };
+        
+        
         return existingMeeting;
     }
 

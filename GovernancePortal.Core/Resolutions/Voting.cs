@@ -16,6 +16,7 @@ public class Voting : BaseModel, ICompanyModel
     public string Summary { get; set; }
     public bool IsAnonymous { get; set; }
     public bool IsPast { get; set; }
+    public bool IsLinkedToMeeting { get; set; }
     public ResolutionStatus ResolutionStatus { get; set; }
     public DateTime DateTime { get; set; }
     public List<VotingUser> Voters { get; set; }

@@ -211,6 +211,7 @@ public class ResolutionServices : IResolutionServices
         if (getMeeting == null || getMeeting.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Meeting with ID: {meetingId.LinkedMeetingId} not found");
         await _bridgeRepo.AddMeeting_Resolution(meetingId.LinkedMeetingId, resolutionId, person.CompanyId);
+        retrievedVoting.IsLinkedToMeeting = true;
         _unit.SaveToDB();
         var response = new Response()
         {
@@ -225,17 +226,18 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> LinkMeetingToPoll(string resolutionId, LinkedMeetingIdPOST meetingId)
     {
         var person = GetLoggedInUser();
-        var retrievedVoting = await _unit.Polls.FindById(resolutionId, person.CompanyId);
-        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+        var retrievedPoll = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        if (retrievedPoll == null || retrievedPoll.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
         var getMeeting = await _unit.Meetings.GetMeeting(meetingId.LinkedMeetingId, person.CompanyId);
         if (getMeeting == null || getMeeting.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Meeting with ID: {meetingId.LinkedMeetingId} not found");
         await _bridgeRepo.AddMeeting_Resolution(meetingId.LinkedMeetingId, resolutionId, person.CompanyId);
+        retrievedPoll.IsLinkedToMeeting = true;
         _unit.SaveToDB();
         var response = new Response()
         {
-            Data = retrievedVoting,
+            Data = retrievedPoll,
             Exception = null,
             Message = "Meeting Successfully linked",
             IsSuccessful = true,

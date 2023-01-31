@@ -121,9 +121,9 @@ public static class MeetingEndpoints
             meetingService.GetMeetingMinutes(meetingId)).RequireAuthorization();
         app.MapGet("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId) =>
-            meetingService.GetMeetingMinutesUpdateData(meetingId)).RequireAuthorization();
+            meetingService.GetMeetingMinutesUpdateData(meetingId));
         app.MapPost("api/Meeting/{meetingId}/Minutes/Update", ([FromServices] IMeetingService meetingService,
-              string meetingId, UpdateMeetingMinutesPOST updateMeetingMinutesPOST) =>
+              string meetingId, List<UpdateMeetingMinutesPOST> updateMeetingMinutesPOST) =>
           meetingService.UpdateMinutes(meetingId, updateMeetingMinutesPOST)).RequireAuthorization();
         app.MapPost("api/Meeting/{meetingId}/AddMinutes", ([FromServices] IMeetingService meetingService,
                 string meetingId, AddMinutePOST data) =>

@@ -589,10 +589,42 @@ public class MeetingServices : IMeetingService
 
     //public async Task<Response> GetMeetingDetails()
     //minutes
-    public Task<Response> GetMeetingMinutesUpdateData(string meetingId)
+    public async Task<Response> GetMeetingMinutesUpdateData(string meetingId)
     {
 
-        throw new NotImplementedException();
+        var loggedInUser = GetLoggedUser();
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Attendees_Notice(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        List<UpdateMeetingMinutesGET> outMeetingNotice = default;
+        if (existingMeeting.Notice is null || existingMeeting.Notice.IsDeleted)
+        {
+            outMeetingNotice = GenerateNewMeetingMinutesData(existingMeeting);
+        }
+        else
+        {
+            outMeetingNotice = _meetingMapses.OutMap(existingMeeting, new List<UpdateMeetingMinutesGET>());
+            outMeetingNotice.AddRange(GenerateNewMeetingMinutesData(existingMeeting));
+            
+        }
+        var response = new Response
+        {
+            Data = outMeetingNotice,
+            Message = "Successful",
+            StatusCode = HttpStatusCode.OK.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Get Meeting Notice Update Data successful: {response}", response);
+        return response;
+    }
+    
+    public List<UpdateMeetingMinutesGET> GenerateNewMeetingMinutesData(Meeting existingMeeting)
+    {
+        var unCommittedMinutes = existingMeeting.Items.Where(x => existingMeeting.Minutes.All(y => y.AgendaItemId != x.Id));
+        return unCommittedMinutes.Select(item => new UpdateMeetingMinutesGET()
+            {
+                AgendaItem = item, AgendaItemId = item.Id, MeetingId = existingMeeting.Id, CompanyId = existingMeeting.CompanyId,
+            })
+            .ToList();
     }
 
     public async Task<Response> GetResolutionIds(string meetingId)
@@ -664,14 +696,14 @@ public class MeetingServices : IMeetingService
     //    _logger.LogInformation("Get Meeting Pack Update Data successful: {response}", response);
     //    return response;
     //}
-    public async Task<Response> UpdateMinutes(string meetingId, UpdateMeetingMinutesPOST updateMinutesPOST)
+    public async Task<Response> UpdateMinutes(string meetingId, List<UpdateMeetingMinutesPOST> updateMinutesPost)
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Minutes for {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_MeetingPack(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
-        var meeting = _meetingMapses.InMap(updateMinutesPOST, existingMeeting);
+        var meeting = _meetingMapses.InMap(updateMinutesPost, existingMeeting);
         existingMeeting.Minutes = meeting.Minutes;
         _unit.SaveToDB();
 

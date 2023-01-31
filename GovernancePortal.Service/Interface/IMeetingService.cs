@@ -17,7 +17,7 @@ public interface IMeetingService
     Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
     Task<Response> FullUpdateAgendaItems(string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
     Task<Response> UpdateMeetingPack(string meetingId, UpdateMeetingPackPOST updateMeetingPackPOST);
-    Task<Response> UpdateMinutes(string meetingId, UpdateMeetingMinutesPOST updateMinutesPOST);
+    Task<Response> UpdateMinutes(string meetingId, List<UpdateMeetingMinutesPOST> updateMinutesPost);
     Task<Response> UpdateNotice(string meetingId, UpdateMeetingNoticePOST updateMinutesPOST);
     Task<Response> SendMailToAllAttendees(string meetingId, MailDetails mailDetails, CancellationToken token);
     
