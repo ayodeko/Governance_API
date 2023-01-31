@@ -403,8 +403,8 @@ public class MeetingMaps : IMeetingMaps
             minute.IsApproved = x.IsApproved;
             minuteList.Add(minute);
         };
-        
-        
+
+        existingMeeting.Minutes = minuteList;
         return existingMeeting;
     }
 
