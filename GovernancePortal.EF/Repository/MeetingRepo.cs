@@ -97,6 +97,14 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .Include(z => z.Notice)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
     }
+    public async Task<Meeting> GetMeeting_AgendaItems_Attendees_Minutes(string meetingId, string companyId)
+    {
+        return await _context.Set<Meeting>()
+            .Include(x => x.Items)
+            .Include(y => y.Attendees)
+            .Include(z => z.Minutes)
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId));
+    }
     
     public async Task<Meeting> GetMeeting_AgendaItems_MeetingPack(string meetingId, string companyId)
     {

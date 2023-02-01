@@ -593,7 +593,7 @@ public class MeetingServices : IMeetingService
     {
 
         var loggedInUser = GetLoggedUser();
-        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Attendees_Notice(meetingId, loggedInUser.CompanyId);
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Attendees_Minutes(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         List<UpdateMeetingMinutesGET> outMeetingNotice = default;
         if (existingMeeting.Notice is null || existingMeeting.Notice.IsDeleted)
