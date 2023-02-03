@@ -27,6 +27,7 @@ public interface IMeetingRepo : IGenericRepo<Meeting>
     IEnumerable<Meeting> GetMeetingListByMeetingTypeAndUserId(MeetingType meetingType, string userId, string companyId, int pageNumber, int pageSize,
         out int totalRecords);
     Task<Meeting> GetMeeting_Minutes(string meetingId, string companyId);
+    Task<Meeting> GetMeeting_Minute(string meetingId, string companyId);
     IEnumerable<Meeting> GetMeetingListByUserId(string userId, MeetingType? meetingType, string companyId, int pageNumber, int pageSize,
         out int totalRecords);
     IEnumerable<Meeting> GetMeetingList(string companyId, MeetingType? meetingType, string userId, string searchString, DateTime? DateTime, int pageNumber, int pageSize,

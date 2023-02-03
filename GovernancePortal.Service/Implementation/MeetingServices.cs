@@ -745,8 +745,8 @@ public class MeetingServices : IMeetingService
         var existingMeeting = await _unit.Meetings.GetMeeting(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
-        var meeting = _meetingMapses.InMap(data, existingMeeting);
-        existingMeeting.Minutes = meeting.Minutes;
+        var minute = _meetingMapses.InMap(data, existingMeeting);
+        existingMeeting.StandAloneMinute = minute;
         _unit.SaveToDB();
         var response = new Response
         {
@@ -776,6 +776,24 @@ public class MeetingServices : IMeetingService
         var response = new Response
         {
             Data = minutes,
+            Message = "Successful",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Get Minutes successful: {response}", response);
+        return response;
+    }
+    
+    public async Task<Response> GetUploadedMinutes(string meetingId)
+    {
+
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside get Minutes for meeting with id: {meetingId}");
+        var existingMeeting = await _unit.Meetings.GetMeeting_Minute(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        var response = new Response
+        {
+            Data = existingMeeting.StandAloneMinute,
             Message = "Successful",
             StatusCode = HttpStatusCode.Created.ToString(),
             IsSuccessful = true

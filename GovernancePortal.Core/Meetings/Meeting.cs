@@ -45,6 +45,7 @@ namespace GovernancePortal.Core.Meetings
         public List<MeetingAgendaItem> Items { get; set; }
         public List<MeetingPackItem> Packs { get; set; }
         public List<Minute> Minutes { get; set; }
+        public StandAloneMinute StandAloneMinute { get; set; }
         public MeetingAttendance Attendance { get; set; }
         public NoticeMeeting Notice { get; set; }
         public string MeetingPackId { get; set; }

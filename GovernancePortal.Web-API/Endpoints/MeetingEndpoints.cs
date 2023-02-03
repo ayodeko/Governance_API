@@ -131,6 +131,9 @@ public static class MeetingEndpoints
         app.MapPost("api/Meeting/{meetingId}/UploadMinutes", ([FromServices] IMeetingService meetingService,
                string meetingId, UploadMinutePOST data) =>
            meetingService.UploadMinutes(meetingId, data)).RequireAuthorization();
+        app.MapGet("api/Meeting/{meetingId}/RetrieveUploadedMinutes", ([FromServices] IMeetingService meetingService,
+               string meetingId) =>
+           meetingService.GetUploadedMinutes(meetingId)).RequireAuthorization();
 
         #endregion
 

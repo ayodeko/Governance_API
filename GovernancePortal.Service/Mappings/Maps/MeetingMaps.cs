@@ -34,6 +34,7 @@ public class MeetingsAutoMapper : Profile
         CreateMap<MeetingPackItem, UpdateMeetingPackItemPOST>();
         CreateMap<MeetingPackItemUser, MeetingPackUserPOST>();
         CreateMap<Minute, MinuteGET>();
+        CreateMap<Minute, UploadMinutePOST>();
         //CreateMap<MeetingAgendaItem, BaseAgendaItemGET>();  
         //CreateMap<MeetingModel, MeetingListGET>().ForMember(x => x.AttendanceId, option => option.MapFrom(y => y.Attendance.Id));
     }
@@ -435,29 +436,21 @@ public class MeetingMaps : IMeetingMaps
         destination.AgendaItemId = source.AgendaItemId;
         return destination;
     }
-    public Meeting InMap(UploadMinutePOST source, Meeting destination)
-    {
-        var minute = InMap(source, destination, new Minute());
-        destination.Minutes.Add(minute);
-        return destination; 
-    }
 
-    public Minute InMap(UploadMinutePOST source, Meeting existingMeeting, Minute destination = null)
+    public StandAloneMinute InMap(UploadMinutePOST source, Meeting existingMeeting)
     {
-        if (destination is null)
-            destination = new Minute();
-
-        destination.MeetingId = existingMeeting.Id;
-        destination.AgendaItemId = source.AgendaItemId;
-        destination.Attachment = InMap(source.Attachment,existingMeeting, destination.Attachment);
+        var destination = new StandAloneMinute
+        {
+            MeetingId = existingMeeting.Id,
+            Attachment = InMap(source.Attachment,existingMeeting)
+        };
 
         return destination;
     }
 
-    private Attachment InMap(AttachmentPostDTO source, Meeting existingMeeting, Attachment destination = null)
+    private Attachment InMap(AttachmentPostDTO source, Meeting existingMeeting)
     {
-        if (destination == null)
-            destination = new Attachment();
+        var destination = new Attachment();
 
         if (source.Identity == null) throw new BadRequestException("Document must have an attachment");
 
@@ -487,6 +480,11 @@ public class MeetingMaps : IMeetingMaps
     public List<MinuteGET> OutMap(List<Minute> source, MinuteGET destination)
     {
         var returnModel = _autoMapper.Map<List<MinuteGET>>(source.ToList());
+        return returnModel;
+    }
+    public List<UploadMinutePOST> OutMap(List<Minute> source, UploadMinutePOST destination)
+    {
+        var returnModel = _autoMapper.Map<List<UploadMinutePOST>>(source.ToList());
         return returnModel;
     }
 

@@ -18,4 +18,20 @@ namespace GovernancePortal.Core.Meetings
         public bool IsApproved { get; set; }
         public Attachment Attachment { get; set; }
     }
+    public class StandAloneMinute
+    {
+        public StandAloneMinute()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+        public string Id { get; set; }
+        public string MeetingId { get; set; }
+        public string CompanyId { get; set; }
+        public MeetingAgendaItem AgendaItem { get; set; }
+        public string AgendaItemId { get; set; }
+        public string MinuteText { get; set; }
+        public bool IsApproved { get; set; }
+        public Attachment Attachment { get; set; }
+    }
+    
 }

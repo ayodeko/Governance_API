@@ -23,6 +23,13 @@ public class PollRepo : GenericRepo<Poll>, IPollRepo
             .Include(x => x.PastPollItems)
             .FirstOrDefaultAsync(x => x.Id == resolutionId && x.CompanyId == companyId);
     }
+    public async Task<Poll> GetPoll(string resolutionId, string companyId)
+    {
+        return await _context.Set<Poll>()
+            .Include(x => x.PollItems)
+            .Include(x => x.PastPollItems)
+            .FirstOrDefaultAsync(x => x.Id == resolutionId && x.CompanyId == companyId);
+    }
 
     public IEnumerable<Poll> GetPoll_PollVotersList(string companyId, string userId, string searchString, DateTime? dateTime, int pageNumber, int pageSize, out int totalRecords)
     {

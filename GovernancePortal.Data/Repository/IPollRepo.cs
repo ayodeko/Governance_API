@@ -7,6 +7,7 @@ namespace GovernancePortal.Data.Repository;
 
 public interface IPollRepo : IGenericRepo<Poll>
 {
+    Task<Poll> GetPoll(string resolutionId, string companyId);
     Task<Poll> GetPoll_PollVotersAsync(string resolutionId, string companyId);
     IEnumerable<Poll> GetPoll_PollVotersList(string companyId, string userId, string searchString, DateTime? dateTime, int pageNumber, int pageSize,
         out int totalRecords);

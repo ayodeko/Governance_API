@@ -48,6 +48,7 @@ public class ResolutionServices : IResolutionServices
         var person = GetLoggedInUser();
         var voting = _resolutionMaps.InMap(createVotingPOST);
         voting.ResolutionStatus = ResolutionStatus.Progress;
+        if (voting.IsPast) voting.ResolutionStatus = ResolutionStatus.Completed;
         await _unit.Votings.Add(voting, person);
         _unit.SaveToDB();
         var response = new Response()
@@ -271,7 +272,7 @@ public class ResolutionServices : IResolutionServices
     public async Task<Response> GetLinkedMeetingByPollId(string resolutionId)
     {
         var person = GetLoggedInUser();
-        var retrievedPolling = await _unit.Polls.FindById(resolutionId, person.CompanyId);
+        var retrievedPolling = await _unit.Polls.GetPoll(resolutionId, person.CompanyId);
         if (retrievedPolling == null || retrievedPolling.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
 

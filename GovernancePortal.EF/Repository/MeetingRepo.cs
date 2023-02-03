@@ -144,6 +144,12 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .Include(x => x.Minutes).ThenInclude(x=>x.AgendaItem)
             .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
     }
+    public async Task<Meeting> GetMeeting_Minute(string meetingId, string companyId)
+    {
+        return (await _context.Set<Meeting>()
+            .Include(x => x.StandAloneMinute).ThenInclude(x=>x.Attachment)
+            .FirstOrDefaultAsync(x => x.Id.Equals(meetingId) && x.CompanyId.Equals(companyId)))!;
+    }
 
     public IEnumerable<Meeting> GetMeetingListByMeetingType(MeetingType type, string companyId, int pageNumber, int pageSize,
         out int totalRecords)

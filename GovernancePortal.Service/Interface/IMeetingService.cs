@@ -44,6 +44,7 @@ public interface IMeetingService
     //minute
     Task<Response> AddMinutes(string meetingId, AddMinutePOST data);
     Task<Response> UploadMinutes(string meetingId, UploadMinutePOST data);
+    Task<Response> GetUploadedMinutes(string meetingId);
     Task<Response> GetMeetingMinutes(string meetingId);
     Task<Response> GetMeetingMinutesUpdateData(string meetingId);
     Task<Response> GetResolutionIds(string meetingId);

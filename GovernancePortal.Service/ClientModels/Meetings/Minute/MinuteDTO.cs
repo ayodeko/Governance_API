@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GovernancePortal.Core.General;
 
 namespace GovernancePortal.Service.ClientModels.Meetings.Minute
 {
@@ -40,7 +41,6 @@ namespace GovernancePortal.Service.ClientModels.Meetings.Minute
     }
     public class UploadMinutePOST : UploadMinuteDTO
     {
-        public string AgendaItemId { get; set; }
     }
     public class UploadMinuteGET : UploadMinuteDTO
     {
@@ -53,7 +53,7 @@ namespace GovernancePortal.Service.ClientModels.Meetings.Minute
         public string MinuteText { get; set; }
         public string AgendaItemId { get; set; }
         public FullAgendaItemPOST AgendaItem { get; set; }
-        //public Attachment Attachment { get; set; }
+        public Attachment Attachment { get; set; }
 
     }
 
