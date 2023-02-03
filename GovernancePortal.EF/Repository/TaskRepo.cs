@@ -11,6 +11,7 @@ using TaskStatus = GovernancePortal.Core.General.TaskStatus;
 using EF = Microsoft.EntityFrameworkCore.EF;
 using GovernancePortal.Core.Meetings;
 using System.Threading;
+using GovernancePortal.Core.General;
 
 namespace GovernancePortal.EF.Repository
 {
@@ -39,13 +40,26 @@ namespace GovernancePortal.EF.Repository
                       .Take(pageSize)
                       .ToList();
             }
+            else if (status is TaskStatus.Ongoing)
+            {
+                result = (_context.Set<TaskModel>()
+                        .Include(x => x.Items).Include(y => y.Participants)
+                        .Where(x => status == null || (x.Items.Any(i => i.Status == (TaskItemStatus)TaskStatus.Completed) && x.Items.Any(i => i.Status != (TaskItemStatus)TaskStatus.Completed)))
+                        .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
+                        .Where(x => string.IsNullOrEmpty(userId) || x.Participants.All(c => c.UserId == userId))
+                        .Where(x => x.CompanyId.Equals(companyId)))
+
+                    .OrderByDescending(X => X.DateCreated).Skip(skip)
+                    .Take(pageSize)
+                    .ToList();
+            }
             else
             {
                 result = (_context.Set<TaskModel>()
                  .Include(x => x.Items).Include(y => y.Participants)
-               .Where(x => status == null || x.Status == status)
+               .Where(x => status == null || x.Items.Any(y => y.Status == (TaskItemStatus)status))
                .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
-               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.Any(c => c.UserId == userId))
+               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.All(c => c.UserId == userId))
                .Where(x => x.CompanyId.Equals(companyId)))
 
                .OrderByDescending(X => X.DateCreated).Skip(skip)
