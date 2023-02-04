@@ -57,7 +57,7 @@ namespace GovernancePortal.EF.Repository
             {
                 result = (_context.Set<TaskModel>()
                  .Include(x => x.Items).Include(y => y.Participants)
-               .Where(x => status == null || x.Items.Any(y => y.Status == (TaskItemStatus)status))
+               .Where(x => status == null || x.Items.All(y => y.Status == (TaskItemStatus)status))
                .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
                .Where(x => string.IsNullOrEmpty(userId) || x.Participants.All(c => c.UserId == userId))
                .Where(x => x.CompanyId.Equals(companyId)))
