@@ -271,7 +271,9 @@ namespace GovernancePortal.Service.Implementation
             var taskItem = existingTask.Items.FirstOrDefault(x => x.Id == input.TaskItemId);
             if (taskItem is null) throw new NotFoundException($"Task item with ID: {input.TaskItemId} not found");
             taskItem = _taskMaps.InMap( input, taskItem);
-            existingTask.Status = existingTask.Status == TaskStatus.Completed ? TaskStatus.Completed: TaskStatus.Ongoing;
+            taskItem.Status = taskItem.Status == TaskItemStatus.Completed
+                ? TaskItemStatus.Completed
+                : TaskItemStatus.Ongoing;
             
             _unit.SaveToDB();
             var response = new Response()
