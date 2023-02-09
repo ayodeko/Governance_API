@@ -315,6 +315,7 @@ public class ResolutionServices : IResolutionServices
         var person = GetLoggedInUser();
         var poll = _resolutionMaps.InMap(createPastPollPOST);
         poll.IsPastPoll = true;
+        poll.ResolutionStatus = ResolutionStatus.Completed;
         await _unit.Polls.Add(poll, person);
         _unit.SaveToDB();
         var response = new Response()
