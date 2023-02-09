@@ -595,20 +595,20 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Attendees_Minutes(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
-        List<UpdateMeetingMinutesGET> outMeetingNotice = default;
-        if (existingMeeting.Notice is null || existingMeeting.Notice.IsDeleted)
+        List<UpdateMeetingMinutesGET> outMeetingMinutes = default;
+        if (existingMeeting.Minutes is null || !existingMeeting.Minutes.Any())
         {
-            outMeetingNotice = GenerateNewMeetingMinutesData(existingMeeting);
+            outMeetingMinutes = GenerateNewMeetingMinutesData(existingMeeting);
         }
         else
         {
-            outMeetingNotice = _meetingMapses.OutMap(existingMeeting, new List<UpdateMeetingMinutesGET>());
-            outMeetingNotice.AddRange(GenerateNewMeetingMinutesData(existingMeeting));
+            outMeetingMinutes = _meetingMapses.OutMap(existingMeeting, new List<UpdateMeetingMinutesGET>());
+            outMeetingMinutes.AddRange(GenerateNewMeetingMinutesData(existingMeeting));
             
         }
         var response = new Response
         {
-            Data = outMeetingNotice,
+            Data = outMeetingMinutes,
             Message = "Successful",
             StatusCode = HttpStatusCode.OK.ToString(),
             IsSuccessful = true
@@ -700,7 +700,7 @@ public class MeetingServices : IMeetingService
     {
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside update Minutes for {meetingId}");
-        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_MeetingPack(meetingId, loggedInUser.CompanyId);
+        var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Attendees_Minutes(meetingId, loggedInUser.CompanyId);
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
         var meeting = _meetingMapses.InMap(updateMinutesPost, existingMeeting);
@@ -831,7 +831,7 @@ public class MeetingServices : IMeetingService
         if (retrievedMeeting == null || retrievedMeeting.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
-        var bridge = await _bridgeRepo.RetrieveTaskByResolutionId(meetingId, person.CompanyId);
+        var bridge = await _bridgeRepo.RetrieveTaskByMeetingId(meetingId, person.CompanyId);
         if (bridge == null)
             throw new NotFoundException(
                 $"No relationship between meeting Id : {meetingId} and any other meeting found");

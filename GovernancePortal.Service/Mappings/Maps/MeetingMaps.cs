@@ -164,6 +164,7 @@ public class MeetingMaps : IMeetingMaps
         result.Name = updateMeetingAttendeesPost.Name;
         result.AttendeePosition = updateMeetingAttendeesPost.AttendeePosition;
         result.IsGuest = updateMeetingAttendeesPost.IsGuest;
+        result.IsPresent = updateMeetingAttendeesPost.IsPresent;
         result.MeetingId = meeting.Id;
         result.CompanyId = meeting.CompanyId;
         return result;
@@ -205,6 +206,7 @@ public class MeetingMaps : IMeetingMaps
         agendaItem.CompanyId = meeting?.CompanyId;
         agendaItem.Title = agendaItemPost.Title;
         agendaItem.Number = agendaItemPost.Number;
+        agendaItem.ActionRequired = agendaItemPost.ActionRequired;
         agendaItem.SubItems = InMap(agendaItemPost.SubItems, agendaItems, meeting);
         return agendaItem;
     }
@@ -257,6 +259,7 @@ public class MeetingMaps : IMeetingMaps
         agendaItem.PresenterUserId = agendaItemPost.PresenterUserId;
         agendaItem.Description = agendaItemPost.Description;
         agendaItem.Duration = agendaItemPost.Duration;
+        agendaItem.ActionRequired = agendaItemPost.ActionRequired;
         agendaItem.CoCreators = agendaItemPost.CoCreators
             ?.Where(x => !string.IsNullOrEmpty(x.UserId)).Select(x =>
             {
@@ -314,6 +317,7 @@ public class MeetingMaps : IMeetingMaps
         agendaItem.PresenterUserId = agendaItemPost.PresenterUserId;
         agendaItem.Description = agendaItemPost.Description;
         agendaItem.Duration = agendaItemPost.Duration;
+        agendaItem.ActionRequired = agendaItemPost.ActionRequired;
         agendaItem.SubItems = InMap(agendaItemPost.SubItems, agendaItems, meeting);
         return agendaItem;
     }
@@ -420,15 +424,14 @@ public class MeetingMaps : IMeetingMaps
         
         foreach(var item in source.items)
         {
-            returnModel.Add(InMap(item, existingMeeting, new Minute()));
+            returnModel.Add(InMap(item, existingMeeting));
         }
         return returnModel;
     }
 
-    public Minute InMap(AddMinuteDTO source, Meeting existingMeeting, Minute destination = null)
+    public Minute InMap(AddMinuteDTO source, Meeting existingMeeting)
     {
-        if (destination is null)
-            destination = new Minute();
+        var destination = existingMeeting.Minutes.FirstOrDefault(x => x.Id == source.Id) ?? new Minute();
 
         destination.MinuteText = source.MinuteText;
         destination.MeetingId = existingMeeting.Id;

@@ -244,6 +244,7 @@ public class AgendaItemPOST
     public int Number { get; set; }
     public string Title { get; set; }
     public List<AgendaItemPOST> SubItems { get; set; }
+    public ActionRequired ActionRequired { get; set; }
 }
 public class FullAgendaItemPOST
 {
