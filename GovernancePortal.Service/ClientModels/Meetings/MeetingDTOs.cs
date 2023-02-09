@@ -141,6 +141,7 @@ public class CreateMeetingPOST
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
+    public MinutesStatus MinutesStatus { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
     
@@ -203,6 +204,7 @@ public class UpdateMeetingPOST
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
+    public MinutesStatus MinutesStatus { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
 }

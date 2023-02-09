@@ -64,6 +64,7 @@ public class MeetingMaps : IMeetingMaps
         Frequency = source.Frequency,
         Medium = source.Medium,
         IsPast = source.IsPast,
+        MinutesStatus = source.MinutesStatus
         
     };
 
@@ -142,6 +143,7 @@ public class MeetingMaps : IMeetingMaps
         meeting.IsMeetingPackDownloadable = updateMeetingPost.IsMeetingPackDownloadable;
         meeting.IsMeetingPackPublished = updateMeetingPost.IsMeetingPackPublished;
         meeting.IsPast = updateMeetingPost.IsPast;
+        meeting.MinutesStatus = updateMeetingPost.MinutesStatus;
         return meeting;
     }
     public List<AttendingUser> InMap(List<AttendingUserPOST> updateMeetingAttendeesPost, Meeting meeting)
