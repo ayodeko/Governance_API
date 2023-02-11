@@ -183,6 +183,7 @@ public class UpdateMeetingGET
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
+    public MinutesStatus MinutesStatus { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
     public string CreatedBy { get; set; }
