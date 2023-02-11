@@ -237,6 +237,7 @@ public class AddAttendeesListPOST
     public string UserId { get; set; }
     public string Name { get; set; }
     public AttendeePosition AttendeePosition { get; set; }
+    public bool IsPresent { get; set; }
 }
 
 public class AgendaItemPOST

@@ -111,7 +111,7 @@ public class MeetingServices : IMeetingService
         addAttendeesPost.Attendees = addAttendeesPost.Attendees.DistinctBy(x => x.UserId).ToList();
         var attendingUserPosts = addAttendeesPost.Attendees.Select(x => new AttendingUserPOST()
         {
-            UserId = x.UserId, Name = x.Name, AttendeePosition = x.AttendeePosition
+            UserId = x.UserId, Name = x.Name, AttendeePosition = x.AttendeePosition, IsPresent = x.IsPresent
         }).ToList();
         var attendingUsers = _meetingMapses.InMap(attendingUserPosts, existingMeeting);
         existingMeeting.Attendees = attendingUsers;
