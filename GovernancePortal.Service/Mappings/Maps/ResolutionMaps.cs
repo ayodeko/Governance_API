@@ -48,7 +48,9 @@ public class ResolutionMaps : IResolutionMaps
         var votingUser = new VotingUser
         {
             UserId = votingUserPost.UserId,
-            VotingId = voting.Id
+            VotingId = voting.Id,
+            Stance = votingUserPost.Stance,
+            StanceReason = votingUserPost.StanceReason
         };
         return votingUser;
     }

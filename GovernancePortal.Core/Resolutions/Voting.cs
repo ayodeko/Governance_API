@@ -42,5 +42,6 @@ public enum VotingStance
 {
     Abstain = 0,
     For = 1,
-    Against = 2
+    Against = 2,
+    NotParticipated = 3
 }
