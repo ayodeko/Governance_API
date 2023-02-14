@@ -40,6 +40,7 @@ namespace GovernancePortal.Core.Meetings
         public MeetingType Type { get; set; }
         public MeetingStatus Status { get; set; }
         public MinutesStatus MinutesStatus { get; set; }
+        public NoticesStatus NoticesStatus { get; set; }
         public DateTime DateTime { get; set; }
         public int Duration { get; set; }
         public List<AttendingUser> Attendees { get; set; }
@@ -66,6 +67,12 @@ namespace GovernancePortal.Core.Meetings
         Taken = 1,
         SentForApproval = 2,
         Approved = 3
+    }
+    public enum NoticesStatus
+    {
+        Default = 0,
+        Drafts = 1,
+        Sent = 2
     }
 
     public enum MeetingFrequency
