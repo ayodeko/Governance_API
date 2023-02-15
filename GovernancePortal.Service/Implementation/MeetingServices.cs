@@ -300,7 +300,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get meetings for meetingId: {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting);
         var response = new Response
         {
