@@ -92,7 +92,29 @@ public class MeetingServices : IMeetingService
             StatusCode = HttpStatusCode.Created.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("UpdateAttendees successful: {response}", response);
+        _logger.LogInformation("update meeting successful: {response}", response);
+        return response;
+    }
+    public async Task<Response> DeleteMeetingDetails(string meetingId)
+    {
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside delete meeting for Id {meetingId}");
+        var existingMeeting = await _unit.Meetings.FindById(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+
+        existingMeeting.IsDeleted = true;
+        existingMeeting.ModelStatus = ModelStatus.Deleted;
+        _unit.SaveToDB();
+        
+        var response = new Response
+        {
+            Data = existingMeeting,
+            Message = "Meeting deleted successfully",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Delete meeting successful: {response}", response);
         return response;
     }
     public async Task<Response> AddAttendees(string meetingId, AddAttendeesPOST addAttendeesPost)
@@ -126,7 +148,7 @@ public class MeetingServices : IMeetingService
             StatusCode = HttpStatusCode.Created.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("UpdateAttendees successful: {response}", response);
+        _logger.LogInformation("AddAttendees successful: {response}", response);
         return response;
     }
     
@@ -224,7 +246,7 @@ public class MeetingServices : IMeetingService
             StatusCode = HttpStatusCode.Created.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("UpdateAgendaItems successful: {response}", response);
+        _logger.LogInformation("UpdateFullAgendaItems successful: {response}", response);
         return response;
     }
 
@@ -340,7 +362,7 @@ public class MeetingServices : IMeetingService
             StatusCode = HttpStatusCode.OK.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("Get Meeting Agenda Items Update Data successful: {response}", response);
+        _logger.LogInformation("Get Meeting Agenda Items Full Update Data successful: {response}", response);
         return response;
     }
 
@@ -393,7 +415,7 @@ public class MeetingServices : IMeetingService
             StatusCode = HttpStatusCode.OK.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("Get Meeting Pack Update Data successful: {response}", response);
+        _logger.LogInformation("Get Meeting Pack Data successful: {response}", response);
         return response;
     }
 
@@ -527,7 +549,7 @@ public class MeetingServices : IMeetingService
             Message = "Successful",
             StatusCode = HttpStatusCode.OK.ToString()
         };
-        _logger.LogInformation("Get Meeting Pack Update Data successful: {response}", response);
+        _logger.LogInformation("GetUserMeetingList successful: {response}", response);
         return response;
     }
     
@@ -613,7 +635,7 @@ public class MeetingServices : IMeetingService
             StatusCode = HttpStatusCode.OK.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("Get Meeting Notice Update Data successful: {response}", response);
+        _logger.LogInformation("Get Meeting Minute Update Data successful: {response}", response);
         return response;
     }
     
@@ -746,6 +768,7 @@ public class MeetingServices : IMeetingService
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
         var minute = _meetingMapses.InMap(data, existingMeeting);
+        minute.IsUploaded = true;
         existingMeeting.StandAloneMinute = minute;
         _unit.SaveToDB();
         var response = new Response
@@ -798,7 +821,7 @@ public class MeetingServices : IMeetingService
             StatusCode = HttpStatusCode.Created.ToString(),
             IsSuccessful = true
         };
-        _logger.LogInformation("Get Minutes successful: {response}", response);
+        _logger.LogInformation("Get Upload Minutes successful: {response}", response);
         return response;
     }
     

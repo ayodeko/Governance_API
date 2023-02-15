@@ -13,6 +13,7 @@ public interface IMeetingService
 {
     Task<Response> CreateMeeting(CreateMeetingPOST createMeetingPOST);
     Task<Response> UpdateMeetingDetails(string meetingId, UpdateMeetingPOST createMeetingPOST);
+    Task<Response> DeleteMeetingDetails(string meetingId);
     Task<Response> UpdateAttendingUsers(string meetingId, UpdateAttendingUsersPOST updateAttendingUsersPost);
     Task<Response> UpdateAgendaItems(string meetingId, UpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);
     Task<Response> FullUpdateAgendaItems(string meetingId, FullUpdateMeetingAgendaItemPOST updateMeetingAgendaItemPOST);

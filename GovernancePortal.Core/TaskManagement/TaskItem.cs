@@ -12,6 +12,7 @@ namespace GovernancePortal.Core.TaskManagement
 			Id = Guid.NewGuid().ToString();
 			Attachments = new List<TaskAttachment>();
 			IsActive = true;
+			DateCreated = DateTime.Now;
 		}
 		public string Id { get; set; }
 		public string TaskId { get; set; }

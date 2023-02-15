@@ -209,18 +209,6 @@ namespace GovernancePortal.Service.Implementation
             existingTask = _taskMaps.InMap(loggedInUser, task, existingTask);
             _unit.SaveToDB();
 
-            //update relational Models (taskitems)
-            foreach (var item in task.Items)
-            {
-                var taskItem = existingTask.Items.Where(x => x.Id == item.Id).FirstOrDefault();
-                if (taskItem is not null)
-                {
-                    var existingTaskItem = await _unit.Tasks.GetTaskItemData(taskItem.Id, taskId);
-                    existingTaskItem = _taskMaps.InMap(existingTask, item, existingTaskItem);
-                    _unit.SaveToDB();
-                }
-            }
-
             var response = new Response()
             {
                 Data = existingTask,

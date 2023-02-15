@@ -70,33 +70,19 @@ namespace GovernancePortal.Service.Mappings.Maps
                 existingTask.MeetingId = task.meetingId;
                 existingTask.IsMeetingRelated = true;
             }
-            existingTask.Items.AddRange(InMap(existingTask, task.Items));
+            existingTask.Items = InMap(existingTask, task.Items);
                 existingTask.Participants = InMap(existingTask, task.Participants);
             return existingTask;
         }
 
         private List<TaskItem> InMap(TaskModel existingTask, List<TaskItemPOST> items)
         {
-            var destinations = new List<TaskItem>();
-            foreach (var source in items)
-            {
-                var taskItem = existingTask.Items.Where(x => x.Id == source.Id).FirstOrDefault();
-                if(taskItem is null)
-                {
-                    destinations.Add(InMap(existingTask, source));
-
-                }
-            }
-            return destinations;
+            return items.Select(source => InMap(existingTask, source)).ToList();
         }
 
-        public TaskItem InMap(TaskModel existingTask, TaskItemPOST item, TaskItem taskItem = null)
+        public TaskItem InMap(TaskModel existingTask, TaskItemPOST item)
         {
-            if (taskItem == null)
-            {
-                taskItem = new TaskItem();
-                taskItem.DateCreated = DateTime.Now;
-            }
+            var taskItem = existingTask.Items.FirstOrDefault(x => x.Id == item.Id) ?? new TaskItem();
 
             taskItem.TaskId = existingTask.Id;
             taskItem.Title = item.Title;

@@ -68,6 +68,7 @@ public class UpdateMeetingMinutesGET
     public string AgendaItemId { get; set; }
     public string MinuteText { get; set; }
     public bool IsApproved { get; set; }
+    public bool IsUploaded { get; set; }
     public Attachment Attachment { get; set; }
 }
 public class UpdateMeetingMinutesPOST
@@ -126,6 +127,7 @@ public class MeetingBaseDto
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
     public MeetingStatus Status { get; set; }
+    public NoticesStatus NoticesStatus { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
     public string CreatedBy { get; set; }
@@ -185,6 +187,7 @@ public class UpdateMeetingGET
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
     public MinutesStatus MinutesStatus { get; set; }
+    public NoticesStatus NoticesStatus { get; set; }
     public int Duration { get; set; }
     public DateTime DateTime { get; set; }
     public string CreatedBy { get; set; }

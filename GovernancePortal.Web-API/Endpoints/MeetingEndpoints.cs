@@ -37,6 +37,10 @@ public static class MeetingEndpoints
         app.MapPost("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
                 string meetingId, UpdateMeetingPOST updateMeetingPost) =>
             meetingService.UpdateMeetingDetails(meetingId, updateMeetingPost)).RequireAuthorization();
+                
+        app.MapDelete("api/Meeting/{meetingId}/Update", ([FromServices] IMeetingService meetingService,
+                string meetingId) =>
+            meetingService.DeleteMeetingDetails(meetingId)).RequireAuthorization();
         
         app.MapPost("api/Meeting/{meetingId}/AddAttendees", ([FromServices] IMeetingService meetingService,
                 string meetingId, AddAttendeesPOST updateMeetingAttendeesPost) =>
