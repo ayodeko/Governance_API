@@ -318,7 +318,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get Meeting_Attendees update data for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_Attendees(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting, new UpdateAttendingUsersPOST());
         var response = new Response
         {
@@ -336,7 +336,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get Meeting_AgendaItems update data for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting, new UpdateMeetingAgendaItemPOST());
         var response = new Response
         {
@@ -354,7 +354,7 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation($"Inside get Meeting_AgendaItems update data for meeting {meetingId}");
         var existingMeeting = await _unit.Meetings.GetMeeting_AgendaItems_Relationships(meetingId, loggedInUser.CompanyId);
-        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+        if (existingMeeting is null || existingMeeting.ModelStatus == ModelStatus.Deleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         var outMeeting = _meetingMapses.OutMap(existingMeeting, new FullUpdateMeetingAgendaItemPOST());
         var response = new Response
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using GovernancePortal.Core.General;
 using GovernancePortal.Core.Meetings;
 using GovernancePortal.Data.Repository;
 using Microsoft.EntityFrameworkCore;
@@ -200,6 +201,7 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .Where(x => string.IsNullOrEmpty(userId) || x.Attendees.Any(c => c.UserId == userId))
             .Where(x => string.IsNullOrEmpty(userId) || x.CreatedBy == userId)
             .Where(x => x.CompanyId.Equals(companyId) ))
+            .Where(x => x.ModelStatus != ModelStatus.Deleted)
             .OrderByDescending(X =>X.DateTime);
             //.Where(x => x.CompanyId.Equals(companyId) && x.Attendees.Any(y => y.UserId == "f176b897-84a1-465f-6b1f-08dae3c6e6fc")));
         totalRecords = result.Count();
