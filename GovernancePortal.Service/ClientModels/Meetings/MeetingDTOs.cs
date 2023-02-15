@@ -100,6 +100,7 @@ public class UpdateMeetingNoticePOST
     public Attachment Signature { get; set; }
     public DateTime NoticeDate { get; set; }
     public DateTime SendNoticeDate { get; set; }
+    public NoticesStatus NoticesStatus { get; set; }
 }
 
 public record MailDetails(string subject, string body);

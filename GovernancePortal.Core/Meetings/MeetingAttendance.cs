@@ -29,6 +29,7 @@ namespace GovernancePortal.Core.Meetings
         public bool IsPresent { get; set; }
         public bool IsGuest { get; set; }
         public bool IsMinuteApproved { get; set; }
+        public bool IsRestricted { get; set; }
 
         public string Name { get; set; }
         public AttendeePosition AttendeePosition { get; set; }

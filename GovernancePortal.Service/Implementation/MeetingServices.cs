@@ -280,6 +280,7 @@ public class MeetingServices : IMeetingService
         if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
         
         existingMeeting = _meetingMapses.InMap(updateNoticePOST, existingMeeting);
+        existingMeeting.NoticesStatus = updateNoticePOST.NoticesStatus;
         
         _unit.SaveToDB();
         
