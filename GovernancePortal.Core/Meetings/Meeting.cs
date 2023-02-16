@@ -86,7 +86,7 @@ namespace GovernancePortal.Core.Meetings
     }
     public enum MeetingStatus
     {
-        Edited = 0, NoticeSent = 1
+        Edited = 0, Ended = 3
     }
     
 }

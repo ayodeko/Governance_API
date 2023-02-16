@@ -140,6 +140,7 @@ public class CreateMeetingPOST
     public string Description { get; set; }
     public string Venue { get; set; }
     public string Link { get; set; }
+    public MeetingStatus Status { get; set; }
         
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
@@ -184,6 +185,7 @@ public class UpdateMeetingGET
     public string Link { get; set; }
     public string SecretaryUserId { get; set; }
     public string ChairPersonUserId { get; set; }
+    public MeetingStatus Status { get; set; }
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }
@@ -207,6 +209,7 @@ public class UpdateMeetingPOST
     public string Link { get; set; }
     public string SecretaryUserId { get; set; }
     public string ChairPersonUserId { get; set; }
+    public MeetingStatus Status { get; set; }
     public MeetingFrequency Frequency { get; set; }
     public MeetingMedium Medium { get; set; }
     public MeetingType Type { get; set; }

@@ -66,7 +66,8 @@ public class MeetingMaps : IMeetingMaps
         Medium = source.Medium,
         IsPast = source.IsPast,
         MinutesStatus = source.MinutesStatus,
-        NoticesStatus = source.NoticesStatus
+        NoticesStatus = source.NoticesStatus, 
+        Status = source.Status
         
     };
 
@@ -147,6 +148,7 @@ public class MeetingMaps : IMeetingMaps
         meeting.IsPast = updateMeetingPost.IsPast;
         meeting.MinutesStatus = updateMeetingPost.MinutesStatus;
         meeting.NoticesStatus = updateMeetingPost.NoticesStatus;
+        meeting.Status = updateMeetingPost.Status;
         return meeting;
     }
     public List<AttendingUser> InMap(List<AttendingUserPOST> updateMeetingAttendeesPost, Meeting meeting)
