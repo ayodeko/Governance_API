@@ -199,7 +199,6 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .Where(x => dateTime == null || x.DateTime == dateTime )
             .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
             .Where(x => string.IsNullOrEmpty(userId) || x.Attendees.Any(c => c.UserId == userId))
-            .Where(x => string.IsNullOrEmpty(userId) || x.CreatedBy == userId)
             .Where(x => x.CompanyId.Equals(companyId) ))
             .Where(x => x.ModelStatus != ModelStatus.Deleted)
             .OrderByDescending(X =>X.DateTime);
