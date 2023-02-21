@@ -132,10 +132,11 @@ namespace GovernancePortal.EF.Repository
             }
         }
     
-        public async Task<Meeting_Task> RetrieveTaskByMeetingId(string meetingId, string companyId)
+        public IEnumerable<string> RetrieveTaskIdsByMeetingId(string meetingId, string companyId)
         {
-            return await _context.Set<Meeting_Task>()
-                .FirstOrDefaultAsync(x => x.MeetingId == meetingId && x.CompanyId == companyId);
+            return _context.Set<Meeting_Task>()
+                .Where(x => x.MeetingId == meetingId && x.CompanyId == companyId)
+                .Select(x => x.TaskId);
         }
     }
 }

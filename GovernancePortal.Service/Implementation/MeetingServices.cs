@@ -859,13 +859,13 @@ public class MeetingServices : IMeetingService
         if (retrievedMeeting == null || retrievedMeeting.ModelStatus == ModelStatus.Deleted)
             throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
-        var bridge = await _bridgeRepo.RetrieveTaskByMeetingId(meetingId, person.CompanyId);
-        if (bridge == null)
+        var taskIds = _bridgeRepo.RetrieveTaskIdsByMeetingId(meetingId, person.CompanyId);
+        if (taskIds == null || !taskIds.Any())
             throw new NotFoundException(
                 $"No relationship between meeting Id : {meetingId} and any other meeting found");
         var response = new Response()
         {
-            Data = bridge.TaskId,
+            Data = taskIds,
             Exception = null,
             Message = "Successful",
             IsSuccessful = true,
