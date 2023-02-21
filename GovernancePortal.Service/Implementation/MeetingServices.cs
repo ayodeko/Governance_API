@@ -860,9 +860,6 @@ public class MeetingServices : IMeetingService
             throw new NotFoundException($"Meeting with ID: {meetingId} not found");
 
         var taskIds = _bridgeRepo.RetrieveTaskIdsByMeetingId(meetingId, person.CompanyId);
-        if (taskIds == null || !taskIds.Any())
-            throw new NotFoundException(
-                $"No relationship between meeting Id : {meetingId} and any other meeting found");
         var response = new Response()
         {
             Data = taskIds,
