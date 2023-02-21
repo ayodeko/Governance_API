@@ -57,6 +57,10 @@ public class MeetingServices : IMeetingService
         var loggedInUser = GetLoggedUser();
         _logger.LogInformation("Inside Create New Meeting");
         var meeting = _meetingMapses.InMap(createMeetingPOST, new Meeting());
+        if (meeting.IsPast)
+        {
+            meeting.Status = MeetingStatus.Ended;
+        }
         await _meetingValidator.ValidateAndThrowAsync(meeting);
         meeting.ModelStatus = ModelStatus.Draft;
         await _unit.Meetings.Add(meeting, loggedInUser);

@@ -46,7 +46,7 @@ namespace GovernancePortal.EF.Repository
                         .Include(x => x.Items).Include(y => y.Participants)
                         .Where(x => status == null || (x.Items.Any(i => i.Status == (TaskItemStatus)TaskStatus.Completed) && x.Items.Any(i => i.Status != (TaskItemStatus)TaskStatus.Completed)))
                         .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
-                        .Where(x => string.IsNullOrEmpty(userId) || x.Participants.All(c => c.UserId == userId))
+                        .Where(x => string.IsNullOrEmpty(userId) || x.Participants.Any(c => c.UserId == userId))
                         .Where(x => x.CompanyId.Equals(companyId)))
 
                     .OrderByDescending(X => X.DateCreated).Skip(skip)
@@ -56,10 +56,11 @@ namespace GovernancePortal.EF.Repository
             else
             {
                 result = (_context.Set<TaskModel>()
-                 .Include(x => x.Items).Include(y => y.Participants)
+                 .Include(x => x.Items)
+                 .Include(y => y.Participants)
                .Where(x => status == null || x.Items.All(y => y.Status == (TaskItemStatus)status))
                .Where(x => string.IsNullOrEmpty(searchString) || x.Title.Contains(searchString))
-               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.All(c => c.UserId == userId))
+               .Where(x => string.IsNullOrEmpty(userId) || x.Participants.Any(c => c.UserId == userId))
                .Where(x => x.CompanyId.Equals(companyId)))
 
                .OrderByDescending(X => X.DateCreated).Skip(skip)
