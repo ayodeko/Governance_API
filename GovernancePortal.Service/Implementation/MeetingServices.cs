@@ -775,6 +775,7 @@ public class MeetingServices : IMeetingService
         var minute = _meetingMapses.InMap(data, existingMeeting);
         minute.IsUploaded = true;
         existingMeeting.StandAloneMinute = minute;
+        existingMeeting.isMinutesUploaded = true;
         _unit.SaveToDB();
         var response = new Response
         {

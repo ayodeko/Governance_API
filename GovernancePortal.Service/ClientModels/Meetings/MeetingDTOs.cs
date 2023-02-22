@@ -120,6 +120,7 @@ public class MeetingBaseDto
     public bool IsMinutesPublished { get; set; }
     public bool IsMeetingPackDownloadable { get; set; }
     public bool IsMeetingPackPublished { get; set; }
+    public bool isMinutesUploaded { get; set; }
     public bool IsPast { get; set; }
     public string ChairPersonId { get; set; }
     public string SecretaryId { get; set; }
@@ -180,6 +181,7 @@ public class UpdateMeetingGET
     public bool IsMeetingPackPublished { get; set; }
     public bool IsAttendanceTaken { get; set; }
     public bool IsAttendanceSaved { get; set; }
+    public bool isMinutesUploaded { get; set; }
     public bool IsPast { get; set; }
     public string Venue { get; set; }
     public string Link { get; set; }
@@ -204,6 +206,7 @@ public class UpdateMeetingPOST
     public bool IsMeetingPackPublished { get; set; }
     public bool IsAttendanceTaken { get; set; }
     public bool IsAttendanceSaved { get; set; }
+    public bool isMinutesUploaded { get; set; }
     public bool IsPast { get; set; }
     public string Venue { get; set; }
     public string Link { get; set; }
