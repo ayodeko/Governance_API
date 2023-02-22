@@ -489,7 +489,7 @@ public class MeetingServices : IMeetingService
                 AgendaItemId = y.Id,
                 Title = y.Title
             }).ToList(),
-            //Venue = existingMeeting.Venue,
+            Venue = existingMeeting.Venue,
             MeetingDate = existingMeeting.DateTime
         };
     
