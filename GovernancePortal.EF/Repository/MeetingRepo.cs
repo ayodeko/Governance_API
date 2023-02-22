@@ -87,6 +87,9 @@ public class MeetingRepo : GenericRepo<Meeting>, IMeetingRepo
             .Include(x => x.SubItems)
             .ThenInclude(x => x.SubItems)
             .ThenInclude(x => x.SubItems)
+            .Include(x => x.CoCreators)
+            .Include(x => x.RestrictedUsers)
+            .Include(x => x.InterestTagUsers)
             .Where(x => x.MeetIdHolder.Equals(meetingId) && x.CompanyId.Equals(companyId));
     }
 
