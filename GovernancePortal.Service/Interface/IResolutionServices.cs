@@ -27,6 +27,8 @@ public interface IResolutionServices
     Task<Response> CreatePolling(CreatePollingPOST createPollingPOST);
     Task<Response> PollVote(string resolutionId, string userId, PollVotePOST votePost);
     Task<Response> GetPollingDetails(string resolutionId);
+    Task<Response> GetUpdatePollingDetails(string resolutionId);
+    Task<Response> UpdatePollingDetails(string resolutionId, UpdatePollingPOST updatePollingPOST);
     Task<Response> GetPollingList(string userId, string searchString, DateTime? dateTime, PageQuery pageQuery);
     Task<Response> CreatePastPoll(CreatePastPollPOST createPastPollPost);
     Task<Response> SearchPollByTitle(string searchMeetingsString);
@@ -100,6 +102,12 @@ public class CreatePollingPOST
     public List<PollItemPOST> PollItems { get; set; }
     public List<PollUserPOST> PollUsers { get; set; }
 }
+
+public class UpdatePollingPOST : CreatePollingPOST
+{
+    public string Id { get; set; }
+}
+
 public class CreatePastPollPOST
 {
     public string Title { get; set; }

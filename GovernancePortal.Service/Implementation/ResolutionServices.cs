@@ -375,6 +375,41 @@ public class ResolutionServices : IResolutionServices
         };
         return response;
     }
+    public async Task<Response> GetUpdatePollingDetails(string resolutionId)
+    {
+        var person = GetLoggedInUser();
+        var retrievedPoll = await _unit.Polls.GetPoll(resolutionId, person.CompanyId);
+        if (retrievedPoll == null || retrievedPoll.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+        var outPoll = _resolutionMaps.OutMap(retrievedPoll);
+        var response = new Response()
+        {
+            Data = outPoll,
+            Exception = null,
+            Message = "Retrieved successfully",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
+    public async Task<Response> UpdatePollingDetails(string resolutionId, UpdatePollingPOST updatePollingPOST)
+    {
+        var person = GetLoggedInUser();
+        var retrievedVoting = await _unit.Polls.GetPoll_PollVotersAsync(resolutionId, person.CompanyId);
+        if (retrievedVoting == null || retrievedVoting.ModelStatus == ModelStatus.Deleted)
+            throw new NotFoundException($"Resolution with ID: {resolutionId} not found");
+        _resolutionMaps.InMap(updatePollingPOST, retrievedVoting);
+        _unit.SaveToDB();
+        var response = new Response()
+        {
+            Data = retrievedVoting,
+            Exception = null,
+            Message = "Updated successfully",
+            IsSuccessful = true,
+            StatusCode = HttpStatusCode.OK.ToString()
+        };
+        return response;
+    }
 
     public Task<Response> GetPollingList(string userId, string searchString, DateTime? dateTime, PageQuery pageQuery)
     {

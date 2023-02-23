@@ -61,6 +61,12 @@ public static class ResolutionEndPoints
         app.MapGet("api/Resolution/{resolutionId}/GetPollingDetails",
             ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
                 resolutionServices.GetPollingDetails(resolutionId)).RequireAuthorization();
+        app.MapGet("api/Resolution/{resolutionId}/Update",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId) =>
+                resolutionServices.GetUpdatePollingDetails(resolutionId)).RequireAuthorization();
+        app.MapPost("api/Resolution/{resolutionId}/Update",
+            ([FromServices] IResolutionServices resolutionServices, string resolutionId, UpdatePollingPOST updatePollingPOST) =>
+                resolutionServices.UpdatePollingDetails(resolutionId, updatePollingPOST)).RequireAuthorization();
         
         app.MapGet("api/Resolution/PollingList",
             ([FromServices] IResolutionServices resolutionServices, string? userId, string? searchString, DateTime? dateTime, PageQuery pageQuery) =>

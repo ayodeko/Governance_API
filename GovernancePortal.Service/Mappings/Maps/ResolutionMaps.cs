@@ -15,6 +15,7 @@ class ResolutionAutoMapper : Profile
     {
         CreateMap<Voting, VotingDetailsGET>();
         CreateMap<VotingUser, VotingUserGET>();
+        CreateMap<Poll, UpdatePollingPOST>();
     }
 }
 
@@ -65,6 +66,10 @@ public class ResolutionMaps : IResolutionMaps
     public VotingDetailsGET OutMap(Voting voting)
     {
         return _autoMapper.Map(voting, new VotingDetailsGET());
+    }
+    public UpdatePollingPOST OutMap(Poll poll)
+    {
+        return _autoMapper.Map(poll, new UpdatePollingPOST());
     }
 
     public Poll InMap(CreatePollingPOST pollPost)
@@ -125,6 +130,16 @@ public class ResolutionMaps : IResolutionMaps
         };
         newPoll.PastPollItems = pollPost.PastPollItems.Select(x => InMap(x, newPoll)).ToList();
         return newPoll;
+    }
+
+    public Poll InMap(UpdatePollingPOST updatePollPost, Poll preexistingPoll)
+    {
+        preexistingPoll.Title = updatePollPost.Title;
+        preexistingPoll.isUnlimitedSelection = updatePollPost.isUnlimitedSelection;
+        preexistingPoll.IsAnonymousVote = updatePollPost.IsAnonymousVote;
+        preexistingPoll.MaximumSelection = updatePollPost.MaximumSelection;
+        preexistingPoll.DateTIme = updatePollPost.DateTime;
+        return preexistingPoll;
     }
 
     private PastPollItem InMap(PastPollItemPOST createPollPost, Poll poll)
