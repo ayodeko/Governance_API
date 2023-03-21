@@ -788,6 +788,27 @@ public class MeetingServices : IMeetingService
         return response;
     }
 
+
+    public async Task<Response> UpdateMinutesStatus(string meetingId, int minuteStatusValue)
+    {
+        var loggedInUser = GetLoggedUser();
+        _logger.LogInformation($"Inside upload Minutes for {meetingId}");
+        var existingMeeting = await _unit.Meetings.GetMeeting(meetingId, loggedInUser.CompanyId);
+        if (existingMeeting is null || existingMeeting.IsDeleted) throw new NotFoundException($"Meeting with ID: {meetingId} not found");
+
+        var meetingStatus = Enum.IsDefined(typeof(MinutesStatus), minuteStatusValue) ? (MinutesStatus)minuteStatusValue : throw new Exception("Wrong meeting type passed as query parameter");
+        existingMeeting.MinutesStatus = meetingStatus;
+        _unit.SaveToDB();
+        var response = new Response
+        {
+            Data = existingMeeting,
+            Message = "Minutes status updated successfully",
+            StatusCode = HttpStatusCode.Created.ToString(),
+            IsSuccessful = true
+        };
+        _logger.LogInformation("Upload Minutes successful: {response}", response);
+        return response;
+    }
     public Task<Response> GetMeetingDetails(string meetingId)
     {
         throw new NotImplementedException();
