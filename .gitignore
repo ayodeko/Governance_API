@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ignore settings
+GovernancePortal.Web-API/Properties/launchSettings.json
+GovernancePortal.Web-API/appsettings.json
